@@ -13,4 +13,3 @@ sudo ./centos_kvm_install.sh
 sudo ./centos_gparted_install.sh
 # Updates all Python Packages
 sudo ./centos_update_python.sh
-
