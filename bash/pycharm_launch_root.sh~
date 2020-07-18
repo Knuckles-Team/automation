@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# Locate PyCharm Installation Path 
-sudo updatedb
-pycharm_path=$(sudo locate pycharm.sh)
-# Launch PyCharm as Root
-sudo "${pycharm_path}"

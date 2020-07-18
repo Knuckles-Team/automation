@@ -1,3 +1,6 @@
+# Old Files
+*.sh~
+
 # Prerequisites
 *.d
 
