@@ -1,7 +1,19 @@
 #!/bin/bash
 
-phoronix-test-suite batch-setup
-phoronix-test-suite list-tests
+# Update & Install Dependencies
+sudo yum update -y
+sudo yum -y install wget php-cli php-xml bzip2 json
+# Download Phoronix rpm
+cd ~/Downloads
+wget https://phoronix-test-suite.com/releases/phoronix-test-suite-9.8.0.tar.gz
+# Unzip in Downloads
+sudo tar xvfz phoronix-test*.tar.gz
+cd phoronix-test-suite
+sudo ./install-sh
+# Setup Batch Tests and Install a few
+pwd
+#phoronix-test-suite batch-setup
+#phoronix-test-suite list-tests
 phoronix-test-suite install povray
 phoronix-test-suite install gimp
 phoronix-test-suite install ocrmypdf

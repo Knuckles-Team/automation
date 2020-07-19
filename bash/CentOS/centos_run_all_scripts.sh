@@ -13,6 +13,8 @@ sudo ./centos_python_env_install.sh
 sudo ./centos_kvm_install.sh
 # Install Gparted
 sudo ./centos_gparted_install.sh
+# Install VLC
+sudo ./centos_vlc_install.sh
 # Update FFmpeg
 sudo ./centos_update_ffmpeg.sh
 # Updates all Python Packages
