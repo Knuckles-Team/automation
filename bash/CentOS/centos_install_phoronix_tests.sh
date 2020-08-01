@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Update & Install Dependencies
 sudo yum update -y

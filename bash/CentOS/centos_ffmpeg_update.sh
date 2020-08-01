@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Update dependencies first
 sudo yum install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel

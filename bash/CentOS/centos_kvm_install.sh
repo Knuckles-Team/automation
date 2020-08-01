@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Install KVM on CentOS Server
 # Install required packages

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 sudo swupd bundle-add desktop
 sudo swupd bundle-add python3-tcl

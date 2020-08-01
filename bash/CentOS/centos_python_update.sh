@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script will update all installed Python packages and dependencies to ther latest version.
 # Update Packages

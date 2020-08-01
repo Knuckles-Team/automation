@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script will install Python 3.X, 3.8, all required Python and Linux dependencies and Pycharm Community Editiion. 
 # Update Packages

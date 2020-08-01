@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Go to Downloads Folder
 cd ~/Downloads

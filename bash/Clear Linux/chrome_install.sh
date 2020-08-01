@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 swupd bundle-add package-utils
 curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm

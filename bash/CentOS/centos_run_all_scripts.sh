@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script will install CentOS with additional configurations
 # Enable NTFS External Storage
