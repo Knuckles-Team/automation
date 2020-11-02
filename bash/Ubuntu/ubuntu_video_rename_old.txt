@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# This script takes all mkv files in the current directory and sets the filename
+# (without .mkv) as its title in metadata
+
+function install {
+  sudo apt update
+  sudo apt install -y mkvtoolnix atomicparsley mediainfo
+}
+
+function main {
+  
+relative_directory="$(pwd)"
+#main_directory=readlink -f ${relative_directory}
+#find "$(pwd)" -maxdepth 1 -type d | while read dir; do echo $dir; done
+for directory in "$(find "${relative_directory}" -maxdepth 1 -type d | while read dir; do echo $dir; done)"
+do
+  # use nullglob in case there are no matching files
+  shopt -s nullglob
+  # create an array with all the filer/dir inside ~/myDir
+  mp4_list=("${relative_directory}"/*.mp4)
+  mkv_list=("${relative_directory}"/*.mkv)
+  printf "MP4 LIST: ${mp4_list}\n"
+  printf "MKV LIST: ${mkv_list}\n"
+  if [[ ! -z "${mkv_list}" ]]
+  then
+    for mkvfile in "${mkv_list}"
+    do
+      printf "Checking MKV: ${mkvfile}\n"
+      x="${mkvfile}"
+      y=${x%.mkv}
+      mkv_title=${y##*/}
+      current_mkv_title=$(mediainfo "${mkvfile}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
+      printf "Current Title: ${current_mkv_title}\nProposed Title: ${mkv_title}\n"
+      if [[ "${mkv_title}" != "${current_mkv_title}" ]]
+      then    	
+    	mkvpropedit "${mkvfile}" -e info -s title="${mkv_title}"
+    	printf "Complete!\nCleaned MKV Title: ${mkv_title}\n"
+      else
+        printf "Titles already the same, no need to update: ${mkvfile}\n"
+      fi    
+    done
+  else
+    printf "Found no MKV Files\n"
+  fi
+  sleep 1
+  if [[ ! -z "${mp4_list}" ]]
+  then
+    for mp4file in "${mp4_list}"
+    do
+      printf "Checking MP4: ${mp4file}\n"
+      x="${mp4file}"
+      y=${x%.mp4}
+      mp4_title=${y##*/}    
+      current_mp4_title=$(mediainfo "${mp4file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
+      # mediainfo "/media/mrdr/File Storage/Movies/28 Days Later 2002 1080p/28 Days Later 2002 1080p.mp4" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//'
+      printf "Current Title: ${current_mp4_title}\nProposed Title: ${mp4_title}\n"
+      if [[ "${mp4_title}" != "${current_mp4_title}" ]]
+      then            
+      	 AtomicParsley "${mp4file}" --title "${mp4_title}" --comment "" --overWrite
+      	 printf "Complete!\nCleaned MP4 Title: ${mp4_title}\n"
+      else
+      	printf "Titles already the same, no need to update: ${mp4file}\n"
+      fi
+    done
+  else
+    printf "Found no MP4 Files\n"
+  fi
+  sleep 1
+done 
+printf "Done Changing Titles\n"
+
+}
+
+function file_rename {
+  list=$1
+  file_type=$2
+  if [[ ! -z "${list}" ]]
+  then
+    for file in "${list}"
+    do
+      printf "Checking MKV: ${file}\n"
+      x="${file}"
+      y="${x%.}${file_type}"
+      title=${y##*/}
+      current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
+      printf "Current Title: ${current_title}\nProposed Title: ${title}\n"
+      if [[ "${title}" != "${current_title}" ]]
+      then    	
+    	mkvpropedit "${file}" -e info -s title="${title}"
+    	printf "Complete!\nCleaned MKV Title: ${title}\n"
+      else
+        printf "Titles already the same, no need to update: ${file}\n"
+      fi    
+    done
+  else
+    printf "Found no MKV Files\n"
+  fi
+}
