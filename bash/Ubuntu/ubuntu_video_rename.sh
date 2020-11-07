@@ -55,19 +55,10 @@ function file_rename {
 }
 
 function find_files {
-  #find "/media/mrdr/File Storage/Movies/A.Quiet.Place.2018.1080p.BluRay.H264.AAC-RARBG" -maxdepth 1 -type d | while read dir; do echo $dir; done
-  #echo "ALL DIRECTORIES: ${directories}"
   for directory in "${directories[@]}"
   do
-    # use nullglob in case there are no matching files
-    #shopt -s nullglob
-    #echo "directory: ${directory}"
-    #echo "relative directory: ${relative_directory}"
-    # create an array with all the filer/dir inside ~/myDir
     mp4_list=("${directory}"/*.mp4)
     mkv_list=("${directory}"/*.mkv)
-    #printf "MP4 LIST: ${mp4_list}\n"
-    #printf "MKV LIST: ${mkv_list}\n"
     if [[ ! -z "${mkv_list}" ]]
     then
       echo "Processing MKV Files"
@@ -90,10 +81,6 @@ function find_files {
 function find_directories {
   shopt -s dotglob
   shopt -s nullglob
-  #directories=(${relative_directories})
-  #find "/media/mrdr/File Storage/Movies/A.Quiet.Place.2018.1080p.BluRay.H264.AAC-RARBG" -maxdepth 1 -type d | while read dir; do echo $dir; done
-  #find "/media/mrdr/File Storage/Movies/" -maxdepth 1 -type d | while read dir; do echo $dir; done
-  #find "$(pwd)" -maxdepth 1 -type d | while read dir; do echo $dir; done
   i=0
   while read line
   do
@@ -120,13 +107,14 @@ function rename_directory {
   fi 
 }
 
-# Main function clean will take the directory where this script is called from and 
+# Clean function clean will take the directory where this script is called from and 
 function clean {  
   find_directories
   find_files
   printf "Done Changing Titles\n"
 }
 
+function main {
 if [[ $# -le 0 ]] ; then
   usage
   exit 0
@@ -134,8 +122,8 @@ elif [[ $1 == "install_dependencies" ]] ; then
   install_dependencies
 elif [[ $1 == "clean" ]] ;then
   relative_directory="${2}"
-  #echo "Directory: ${relative_directory}"
   clean
-  #rename_directory 
 fi
+}
 
+main

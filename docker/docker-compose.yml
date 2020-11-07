@@ -43,3 +43,75 @@ services:
       - shared-workspace:/opt/workspace
     depends_on:
       - spark-master
+  spark-worker-3:
+    image: bde2020/spark-worker
+    container_name: spark-worker-3
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8083:8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+  spark-worker-4:
+    image: bde2020/spark-worker
+    container_name: spark-worker-4
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8084:8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+  spark-worker-5:
+    image: bde2020/spark-worker
+    container_name: spark-worker-5
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8085:8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+  spark-worker-6:
+    image: bde2020/spark-worker
+    container_name: spark-worker-6
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8086:8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+  spark-worker-7:
+    image: bde2020/spark-worker
+    container_name: spark-worker-6
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8087:8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+  spark-worker-8:
+    image: bde2020/spark-worker
+    container_name: spark-worker-6
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8088:8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
