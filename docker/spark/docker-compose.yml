@@ -93,7 +93,7 @@ services:
       - spark-master
   spark-worker-7:
     image: bde2020/spark-worker
-    container_name: spark-worker-6
+    container_name: spark-worker-7
     environment:
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=512m
@@ -105,7 +105,7 @@ services:
       - spark-master
   spark-worker-8:
     image: bde2020/spark-worker
-    container_name: spark-worker-6
+    container_name: spark-worker-8
     environment:
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=512m

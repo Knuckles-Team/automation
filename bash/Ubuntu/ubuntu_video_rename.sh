@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
-function usage {
+usage() {
   echo "Usage: "
   echo "sudo ./ubuntu_video_rename.sh install_dependencies"
   echo "sudo ./ubuntu_video_rename.sh clean <directory_to_search>"
   echo "sudo ./ubuntu_video_rename.sh clean \"$(pwd)\""
 }
 
-function install_dependencies {
+install_dependencies() {
   sudo apt update
   sudo apt install -y mkvtoolnix atomicparsley mediainfo
 }
 
-function file_rename {
+file_rename() {
   list=$1
   file_type=$2
   if [[ ! -z "${list}" ]]
@@ -54,7 +54,7 @@ function file_rename {
   fi
 }
 
-function find_files {
+find_files() {
   for directory in "${directories[@]}"
   do
     mp4_list=("${directory}"/*.mp4)
@@ -78,7 +78,7 @@ function find_files {
   done
 }
 
-function find_directories {
+find_directories() {
   shopt -s dotglob
   shopt -s nullglob
   i=0
@@ -94,7 +94,7 @@ function find_directories {
   printf 'Directory: %s\n' "${directories[@]}"
 }
 
-function rename_directory {
+rename_directory() {
   parentdir="$(dirname "${1}")"
   original_directory="${1}"
   proposed_directory="${parentdir}/${2}"
@@ -108,22 +108,22 @@ function rename_directory {
 }
 
 # Clean function clean will take the directory where this script is called from and 
-function clean {  
+clean() {  
   find_directories
   find_files
   printf "Done Changing Titles\n"
 }
 
-function main {
-if [[ $# -le 0 ]] ; then
-  usage
-  exit 0
-elif [[ $1 == "install_dependencies" ]] ; then
-  install_dependencies
-elif [[ $1 == "clean" ]] ;then
-  relative_directory="${2}"
-  clean
-fi
+main() {
+  if [[ $# -le 0 ]] ; then
+    usage
+    exit 0
+  elif [[ $1 == "install_dependencies" ]] ; then
+    install_dependencies
+  elif [[ $1 == "clean" ]] ;then
+    relative_directory="${2}"
+    clean
+  fi
 }
 
 main

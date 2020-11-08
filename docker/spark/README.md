@@ -270,5 +270,32 @@ data.show(n=5)
 +---+---+---+---+-----------+
 only showing top 5 rows
 ```
+
+#### Docker Commands
+Remove all stopped containers
+```
+docker rm $(docker ps -a -q)
+```
+
+Force-remove a running container
+```
+docker rm --force redis
+```
+
+Remove all containers
+```
+docker rm --force $(docker ps -a -q)
+```
+
+Bash shell in the container.
+```
+docker exec -it <container name> /bin/bash
+```
+
+To execute whatever command you specify in the container.
+```
+docker exec -it <container name> <command>
+```
+
 ### Tutorial
 https://www.kdnuggets.com/2020/07/apache-spark-cluster-docker.html
