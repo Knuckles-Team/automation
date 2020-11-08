@@ -1,19 +1,21 @@
 #!/bin/bash
 
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
-usage() {
+function usage() {
   echo "Usage: "
   echo "sudo ./ubuntu_video_rename.sh install_dependencies"
   echo "sudo ./ubuntu_video_rename.sh clean <directory_to_search>"
   echo "sudo ./ubuntu_video_rename.sh clean \"$(pwd)\""
 }
 
-install_dependencies() {
+function install_dependencies_ubuntu() {
+  printf "Installing Dependencies..."
   sudo apt update
   sudo apt install -y mkvtoolnix atomicparsley mediainfo
+  printf "Successfully Installed Dependencies"
 }
 
-file_rename() {
+function file_rename() {
   list=$1
   file_type=$2
   if [[ ! -z "${list}" ]]
@@ -54,7 +56,7 @@ file_rename() {
   fi
 }
 
-find_files() {
+function find_files() {
   for directory in "${directories[@]}"
   do
     mp4_list=("${directory}"/*.mp4)
@@ -78,26 +80,31 @@ find_files() {
   done
 }
 
-find_directories() {
+function find_directories() {
   shopt -s dotglob
   shopt -s nullglob
   i=0
+  
   while read line
   do
-    if [[ -d "${line}" ]]
+    printf "LINE: ${line}\n"
+    if [ -d "${line}" ]
     then
       directories[ $i ]="${line}" 
       echo "Found Valid Directory: ${directories[i]} Count: ${i}"       
       (( i++ ))
-    fi
-  done < <(find "${relative_directory}" -maxdepth 2 -type d | while read dir; do echo $dir; done)  
-  printf 'Directory: %s\n' "${directories[@]}"
+    else
+      echo "Did not find a directory at: ${line} Count: ${i}"
+    fi    
+  done < <(find "${relative_directory}" -maxdepth 2 -type d -print0 | while read -d '' -r dir; do echo "${dir}"; done)  
+  printf 'Directories: %s\n' "${directories[@]}"
 }
 
-rename_directory() {
+function rename_directory() {
   parentdir="$(dirname "${1}")"
   original_directory="${1}"
   proposed_directory="${parentdir}/${2}"
+  printf "Original Direcotry: ${original_directory}\nNew Directory: ${proposed_directory}"
   if [[ "${original_directory}" != "${proposed_directory}" ]]
   then    
     sudo mv "${1}" "${parentdir}/${2}"
@@ -108,22 +115,27 @@ rename_directory() {
 }
 
 # Clean function clean will take the directory where this script is called from and 
-clean() {  
+function clean_files() {  
   find_directories
   find_files
   printf "Done Changing Titles\n"
 }
 
-main() {
-  if [[ $# -le 0 ]] ; then
-    usage
+function main() {
+  echo "0 ${args[0]}" 
+  echo "1 ${args[1]}" 
+  
+  if [[ "${#args[@]}" -le 0 ]] ; then
+    usage    
     exit 0
-  elif [[ $1 == "install_dependencies" ]] ; then
-    install_dependencies
-  elif [[ $1 == "clean" ]] ;then
-    relative_directory="${2}"
-    clean
+  elif [[ ${args[0]} == "install_dependencies" ]] ; then
+    install_dependencies_ubuntu
+    
+  elif [[ ${args[0]} == "clean" ]] ; then
+    relative_directory="${args[1]}"
+    clean_files
   fi
 }
 
+args=("$@")
 main
