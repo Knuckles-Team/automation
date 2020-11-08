@@ -2,7 +2,8 @@
 
 # This script will update all installed Python packages and dependencies to ther latest version.
 # Update Packages
-sudo apt -y update
+sudo apt update
+sudo apt upgrade -y
 # Update PIP
 sudo python3 -m pip install --upgrade pip
 # Install Python Depedencies
