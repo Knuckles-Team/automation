@@ -12,6 +12,7 @@ sudo ./ubuntu_python_update.sh
 sudo ./ubuntu_kvm.sh
 sudo ./ubuntu_vlc.sh
 sudo ./ubuntu_steam.sh
+sudo ./ubuntu_git_config.sh
 sudo ./ubuntu_docker.sh
 printf "Applications installed successfully"
 
