@@ -34,9 +34,9 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose -y
 '
 sudo docker run hello-world
 
-sudo groupadd docker
-sudo usermod -aG docker mrdr
-sudo su - mrdr
+#sudo groupadd docker
+#sudo usermod -aG docker mrdr
+#sudo su - mrdr
 
 # Start Docker
 sudo systemctl start docker
