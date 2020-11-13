@@ -17,3 +17,8 @@ sudo apt purge $(dpkg -l | awk '/^rc/ { print $2 }')
 
 # Upgrading OS
 sudo do-release-upgrade
+# Forcefull upgrade.
+# sudo do-release-upgrade -d
+
+# Check latest release
+lsb_release -a
