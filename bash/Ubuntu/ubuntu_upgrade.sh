@@ -2,6 +2,8 @@
 
 # Updating packages from repositories.
 sudo apt update
+# Install update manager
+sudo apt install update-manager-core
 # Upgrading Packages.
 sudo apt dist-upgrade -y
 
