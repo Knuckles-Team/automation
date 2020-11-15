@@ -9,7 +9,7 @@ sudo apt dist-upgrade -y
 
 # House Cleaning
 # The first line will remove/fix any residual/broken packages if any.
-sudo apt --purge autoremove
+sudo apt --purge autoremove -y
 # The clean command removes all old .deb files from the apt cache (/var/cache/apt/archives)
 sudo apt clean all
 # Removes package configurations left over from packages that have been removed (but not purged).
