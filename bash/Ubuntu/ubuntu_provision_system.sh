@@ -18,5 +18,6 @@ sudo ./ubuntu_gimp.sh
 sudo ./ubuntu_wireshark.sh
 sudo ./ubuntu_transmissionqt.sh
 sudo ./ubuntu_gparted.sh
+sudo ./ubuntu_dos2unix.sh
 printf "Applications installed successfully"
 
