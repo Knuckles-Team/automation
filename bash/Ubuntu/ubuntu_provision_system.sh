@@ -14,5 +14,9 @@ sudo ./ubuntu_vlc.sh
 sudo ./ubuntu_steam.sh
 sudo ./ubuntu_git_config.sh
 sudo ./ubuntu_docker.sh
+sudo ./ubuntu_gimp.sh
+sudo ./ubuntu_wireshark.sh
+sudo ./ubuntu_transmissionqt.sh
+sudo ./ubuntu_gparted.sh
 printf "Applications installed successfully"
 
