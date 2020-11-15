@@ -5,8 +5,8 @@ Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.8.5/python-3.8.5-amd
 #Invoke-WebRequest -Uri "https://download.jetbrains.com/python/pycharm-community-2020.1.3.exe" -OutFile "C:/temp/pycharm.exe"
 Invoke-WebRequest -Uri "https://github.com/serwy/tkthread/files/4258625/thread2.8.4.zip" -OutFile "C:/temp/tkthread.zip"
 # Install exes
-#C:/temp/python-installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0
-#C:/temp/pycharm.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
+C:/temp/python-installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0
+C:/temp/pycharm.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
 # Unzip tkthread and install
 Expand-Archive -LiteralPath "C:/temp/tkthread.zip" -DestinationPath "C:\Program Files\Python38\tcl\tcl8.6\thread2.8.4"
 # Sleep for 30 seconds to install Python

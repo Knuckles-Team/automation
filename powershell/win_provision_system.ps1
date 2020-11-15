@@ -1,0 +1,5 @@
+﻿& "$PSScriptRoot\win_chrome_install.ps1"
+& "$PSScriptRoot\win_python_env_install.ps1"
+#& "$PSScriptRoot\myScript1.ps1"
+& "$PSScriptRoot\win_vlc_install.ps1"
+& "$PSScriptRoot\win_steam_install.ps1"
