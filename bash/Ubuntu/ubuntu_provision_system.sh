@@ -10,6 +10,7 @@ sudo ./ubuntu_nfs_server.sh
 sudo ./ubuntu_python_env_install.sh
 sudo ./ubuntu_python_update.sh
 sudo ./ubuntu_kvm.sh
+sudo ./ubuntu_ffmpeg.sh
 sudo ./ubuntu_vlc.sh
 sudo ./ubuntu_steam.sh
 sudo ./ubuntu_git_config.sh
