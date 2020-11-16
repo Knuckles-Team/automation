@@ -20,5 +20,7 @@ sudo ./ubuntu_wireshark.sh
 sudo ./ubuntu_transmissionqt.sh
 sudo ./ubuntu_gparted.sh
 sudo ./ubuntu_dos2unix.sh
+sudo ./ubuntu_android_tools.sh
+sudo ./ubuntu_nexus_tools_install.sh
 printf "Applications installed successfully"
 
