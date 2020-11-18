@@ -11,8 +11,12 @@ function usage() {
   echo "sudo ./ubuntu_transmission.sh add <link>"
   echo "Remove Torrent"
   echo "sudo ./ubuntu_transmission.sh remove <#> (Run the status command to see the Torrent IDs)"
+  echo "Change Download Directory"
+  echo "sudo ./ubuntu_transmission.sh set_download_path"
   echo "Download Status"
   echo "sudo ./ubuntu_transmission.sh status"
+  echo "Stop Daemon"
+  echo "sudo ./ubuntu_transmission.sh stop"
 }
 
 # Install Transmission.
@@ -21,10 +25,26 @@ function install() {
   sudo apt update
   sudo apt install transmission-qt transmission-cli transmission-daemon -y
   mkdir ~/Torrents/ || echo "Directory ~/Torrents/ already exists"
-  transmission-daemon --download-dir ~/Torrents/
+  #transmission-daemon --download-dir ~/Torrents/
   /etc/init.d/transmission-daemon stop
+  sudo sed -i "s/\"download-dir\": \"\/var\/lib\/transmission-daemon\/downloads\"/\"download-dir\": \"\/media\/${USER}\/movies\/Torrents\/Complete\"/" /etc/transmission-daemon/settings.json
+  sudo sed -i "s/\"incomplete-dir\": \"\/var\/lib\/transmission-daemon\/Downloads\"/\"incomplete-dir\": \"\/media\/${USER}\/movies\/Torrents\/Downloading\"/" /etc/transmission-daemon/settings.json
+  sudo sed -i 's/"rpc-authentication-required": true/"rpc-authentication-required": false/' /etc/transmission-daemon/settings.json
+  sudo mkdir -p /etc/systemd/system/transmission-daemon.service.d/
+  printf "[Service]\nEnvironment=TRANSMISSION_HOME=/etc/transmission-daemon" | sudo tee -a /etc/systemd/system/transmission-daemon.service.d/override.conf
+  /etc/init.d/transmission-daemon restart
+  sudo systemctl daemon-reload
+  transmission-remote -l
+}
+
+# Set Download Path
+function set_download_path() {
+  /etc/init.d/transmission-daemon stop
+  sudo sed -i "s/\"download-dir\": \"\/var\/lib\/transmission-daemon\/downloads\"/\"download-dir\": ${1}/" /etc/transmission-daemon/settings.json
+  sudo sed -i "s/\"incomplete-dir\": \"\/var\/lib\/transmission-daemon\/Downloads\"/\"incomplete-dir\": ${1}/" /etc/transmission-daemon/settings.json
   sudo sed -i 's/"rpc-authentication-required": true/"rpc-authentication-required": false/' /etc/transmission-daemon/settings.json
   /etc/init.d/transmission-daemon restart
+  sudo systemctl daemon-reload
   transmission-remote -l
 }
 
@@ -72,6 +92,10 @@ function main() {
     remove "${args[1]}"
   elif [[ ${args[0]} == "status" ]] ; then
     status
+  elif [[ ${args[0]} == "stop" ]] ; then
+    stop
+  elif [[ ${args[0]} == "set_download_path" ]] ; then
+    set_download_path
   fi
 }
 
