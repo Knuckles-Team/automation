@@ -23,9 +23,9 @@ function install() {
   mkdir ~/Torrents/ || echo "Directory ~/Torrents/ already exists"
   transmission-daemon --download-dir ~/Torrents/
   /etc/init.d/transmission-daemon stop
-  sudo sed -i 's/rpc-authentication-required: true/rpc-authentication-required: false' /etc/transmission-daemon/settings.json
+  sudo sed -i 's/rpc-authentication-required: true/rpc-authentication-required: false/' /etc/transmission-daemon/settings.json
   /etc/init.d/transmission-daemon restart
-  transmission-remote -l 
+  transmission-remote -l
 }
 
 # Load Transmission Daemon
