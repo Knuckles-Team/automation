@@ -22,6 +22,10 @@ function install() {
   sudo apt install transmission-qt transmission-cli transmission-daemon -y
   mkdir ~/Torrents/ || echo "Directory ~/Torrents/ already exists"
   transmission-daemon --download-dir ~/Torrents/
+  /etc/init.d/transmission-daemon stop
+  sudo sed -i 's/rpc-authentication-required: true/rpc-authentication-required: false' /etc/transmission-daemon/settings.json
+  /etc/init.d/transmission-daemon restart
+  transmission-remote -l 
 }
 
 # Load Transmission Daemon
