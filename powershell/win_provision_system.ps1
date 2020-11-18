@@ -5,5 +5,7 @@
 & "$PSScriptRoot\win_vlc_install.ps1"
 & "$PSScriptRoot\win_steam_install.ps1"
 & "$PSScriptRoot\win_git_install.ps1"
+& "$PSScriptRoot\win_7z_install.ps1"
+& "$PSScriptRoot\win_openssh_install.ps1"
 & "$PSScriptRoot\win_sourcetree_install.ps1"
 & "$PSScriptRoot\win_transmission_install.ps1"
