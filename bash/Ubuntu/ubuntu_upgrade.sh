@@ -4,7 +4,11 @@
 sudo apt update
 # Install update manager
 sudo apt install update-manager-core
-# Upgrading Packages.
+
+# Upgrading Packages
+sudo apt upgrade -y
+
+# Upgrading Distrubution
 sudo apt dist-upgrade -y
 
 # House Cleaning
