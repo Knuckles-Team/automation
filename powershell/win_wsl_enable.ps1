@@ -1,6 +1,6 @@
 # Enable Ubuntu and Fedora Linux and set Ubuntu default user to root
 # Enable WSL2
-Write-Output y | Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+Write-Output y | Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
 
 # Download Ubuntu
 $Path = $env:TEMP;
