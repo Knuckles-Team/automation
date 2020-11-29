@@ -2,7 +2,6 @@
 # Get Features 
 # dism /online /Get-Features
 
-
 # Install windows features function
 function InstallFeature($name){
   Write-Host "adding Windows 10 feature $name";
