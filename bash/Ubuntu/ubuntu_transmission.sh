@@ -76,10 +76,16 @@ function load() {
   sudo transmission-daemon
 }
 
+# Start All Torrents
+function start() {
+  sudo transmission-remote --start all
+}
+
 # Stop Transmission Daemon
 function stop() {
+  sudo transmission-remote --stop all
   sudo transmission-remote --exit
-  killall transmission-daemon
+  #killall transmission-daemon
 }
 
 # Add Torrent
