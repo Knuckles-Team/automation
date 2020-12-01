@@ -120,6 +120,8 @@ function main() {
     install
   elif [[ ${args[0]} == "load" ]] ; then
     load
+  elif [[ ${args[0]} == "start" ]] ; then
+    start
   elif [[ ${args[0]} == "add" ]] ; then
     add "${args[1]}"
   elif [[ ${args[0]} == "remove" ]] ; then
