@@ -39,16 +39,22 @@ function install() {
   sudo transmission-remote -w "/home/${USER}/Torrents"
   # Add User to the debian-transmission group
   sudo usermod -a -G debian-transmission ${USER}
+  sudo usermod -a -G debian-transmission root
   # Change the folder ownership
   sudo chgrp debian-transmission /home/${USER}/Torrents
   # Grant write access to the group
   sudo chmod 770 /home/${USER}/Torrents
   sudo service transmission-daemon stop
   sudo sed -i 's/"umask": 18/"umask": 2/' /etc/transmission-daemon/settings.json
-  sudo /etc/init.d/transmission-daemon restart
-  sudo systemctl daemon-reload
-  sudo adduser debian-transmission users
+  sudo sed -i 's/USER=.*/USER=root/' /etc/init.d/transmission-daemon
+  sudo chown -R root /var/lib/transmission-daemon/info/
+  sudo chmod 755 /var/lib/transmission-daemon/info/settings.json
+  sudo chown -R root /media/mrdr/movies/Torrents
+  sudo chown -R root /media/mrdr/movies/Torrents/Complete
+  sudo chown -R root /media/mrdr/movies/Torrents/Downloading
   sudo service transmission-daemon start
+  sudo systemctl daemon-reload
+  sudo adduser debian-transmission ${USER}
   sudo transmission-remote -l
 }
 
@@ -64,6 +70,8 @@ function set_download_path() {
   #sudo /etc/init.d/transmission-daemon stop || echo "Already Stopped"
   sudo sed -i "s#download-dir[\"].*#download-dir\": \"${download_dir}\",#" /etc/transmission-daemon/settings.json
   sudo sed -i "s#incomplete-dir[\"].*#incomplete-dir\": \"${incomplete_dir}\",#" /etc/transmission-daemon/settings.json
+  sudo chown -R root ${download_dir}
+  sudo chown -R root ${incomplete_dir}
   sudo transmission-remote -w "${download_dir}"
   echo 'Successfully updated download directory/(ies)'
   sudo /etc/init.d/transmission-daemon restart
