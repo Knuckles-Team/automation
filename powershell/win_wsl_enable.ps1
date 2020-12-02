@@ -1,6 +1,7 @@
 # Enable Ubuntu and Fedora Linux and set Ubuntu default user to root
+Write-Host "Enabling WSL2"
 # Enable WSL2
-Write-Output y | Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
 
 # Download Ubuntu
 $Path = $env:TEMP;
@@ -15,3 +16,4 @@ Remove-Item $Path\$Ubuntu_Installer
 Remove-Item $Path\$Fedora_Installer
 
 ubuntu config --default-user root
+Write-Host "WSL2 Enabled Successfully"

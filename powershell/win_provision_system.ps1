@@ -1,5 +1,5 @@
-﻿& "$PSScriptRoot\win_chrome_install.ps1"
-& "$PSScriptRoot\win_feature_enable.ps1"
+﻿Write-Host "Provisioning System"
+& "$PSScriptRoot\win_chrome_install.ps1"
 & "$PSScriptRoot\win_wsl_enable.ps1"
 & "$PSScriptRoot\win_python_env_install.ps1"
 & "$PSScriptRoot\win_gimp_install.ps1"
@@ -11,3 +11,5 @@
 & "$PSScriptRoot\win_openssh_install.ps1"
 & "$PSScriptRoot\win_sourcetree_install.ps1"
 & "$PSScriptRoot\win_transmission_install.ps1"
+& "$PSScriptRoot\win_feature_enable.ps1"
+Write-Host "System Provisioned Successfully"

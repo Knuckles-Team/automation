@@ -5,7 +5,7 @@
 # Install windows features function
 function InstallFeature($name){
   Write-Host "adding Windows 10 feature $name";
-  Write-Output y | Enable-WindowsOptionalFeature -Online -FeatureName $name -NoRestart
+  Enable-WindowsOptionalFeature -Online -FeatureName $name -NoRestart
 }
 
 InstallFeature Microsoft-Hyper-V-All
