@@ -31,4 +31,3 @@ InstallFeature VirtualMachinePlatform
 InstallFeature Microsoft-Windows-Subsystem-Linux
 InstallFeature MicrosoftWindowsPowerShellV2
 InstallFeature MicrosoftWindowsPowerShellV2Root
-InstallFeature Client-UnifiedWriteFilter
