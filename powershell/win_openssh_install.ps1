@@ -1,4 +1,5 @@
 # Install OpenSSH Client and Server
+Write-Host "Installing OpenSSH"
 # Find latest version
 Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
 
@@ -16,3 +17,4 @@ Get-NetFirewallRule -Name *ssh*
 # There should be a firewall rule named "OpenSSH-Server-In-TCP", which should be enabled
 # If the firewall does not exist, create one
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+Write-Host "OpenSSH Installed Successfully"
