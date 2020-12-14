@@ -30,6 +30,9 @@ function file_rename() {
       elif [[ "${file_type}" == "mp4" ]]
     	then
     	  y="${x%.mp4}"
+      elif [[ "${file_type}" == "webm" ]]
+    	then
+    	  y="${x%.webm}"
       fi      
       title=${y##*/}
       current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
@@ -40,10 +43,14 @@ function file_rename() {
         then
     	  mkvpropedit "${file}" -e info -s title="${title}"
     	  printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+    	elif [[ "${file_type}" == "webm" ]]
+    	then
+    	  mkvpropedit "${file}" -e info -s title="${title}"
+    	  printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
     	elif [[ "${file_type}" == "mp4" ]]
     	then
     	  AtomicParsley "${file}" --title "${title}" --comment "" --overWrite
-    	  printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+    	  printf "Complete!\nCleaned ${file_type} Title: ${title}\n"    	
     	fi    	
       else
         printf "Titles already the same, no need to update: ${file}\n"
@@ -61,6 +68,7 @@ function find_files() {
   do
     mp4_list=("${directory}"/*.mp4)
     mkv_list=("${directory}"/*.mkv)
+    webm_list=("${directory}"/*.webm)
     if [[ ! -z "${mkv_list}" ]]
     then
       echo "Processing MKV Files"
@@ -75,6 +83,14 @@ function find_files() {
       file_rename "${mp4_list}" "mp4"
     else
       printf "Found no mp4 Files in ${directory}\n"
+    fi
+    sleep 1
+    if [[ ! -z "${webm_list}" ]]
+    then
+      echo "Processing WEBM Files"
+      file_rename "${webm_list}" "webm"
+    else
+      printf "Found no webm Files in ${directory}\n"
     fi
     sleep 1
   done
