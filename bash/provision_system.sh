@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Updating First"
+echo "Updating & Upgrading First"
 sudo ./os_upgrade.sh
 
 echo "Installing all applications"
