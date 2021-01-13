@@ -23,6 +23,7 @@ sudo ./gparted_install.sh
 sudo ./dos2unix_install.sh
 sudo ./adb_install.sh
 sudo ./wireshark_install.sh
+sudo ./signal_install.sh
 sudo ./hypnotix_install.sh
 echo "System Provisioned Successfully"
 
