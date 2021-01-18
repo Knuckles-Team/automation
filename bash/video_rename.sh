@@ -3,7 +3,7 @@
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
 function usage() {
   echo "Usage: "
-  echo "sudo ./video_rename.sh install_dependencies"
+  echo "sudo ./video_rename.sh install"
   echo "sudo ./video_rename.sh clean <directory_to_search>"
   echo "sudo ./video_rename.sh clean \"$(pwd)\""
 }
@@ -168,7 +168,7 @@ function main() {
   if [[ "${#args[@]}" -le 0 ]] ; then
     usage    
     exit 0
-  elif [[ ${args[0]} == "install_dependencies" ]] ; then
+  elif [[ ${args[0]} == "install" ]] ; then
     install_dependencies
     
   elif [[ ${args[0]} == "clean" ]] ; then

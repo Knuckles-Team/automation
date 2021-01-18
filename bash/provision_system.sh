@@ -13,13 +13,14 @@ sudo ./kvm_install.sh
 sudo ./ffmpeg_install.sh
 sudo ./vlc_install.sh
 sudo ./tmux_install.sh
-sudo ./video_rename install_dependencies
+sudo ./video_rename install
 sudo ./steam_install.sh
 sudo ./git_install.sh
 sudo ./docker_install.sh
 sudo ./gimp_install.sh
-sudo ./transmission_client.sh install_dependencies
+sudo ./transmission_client.sh install
 sudo ./gparted_install.sh
+sudo ./stat_log.sh install
 sudo ./dos2unix_install.sh
 sudo ./adb_install.sh
 sudo ./wireshark_install.sh

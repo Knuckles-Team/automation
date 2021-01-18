@@ -4,7 +4,7 @@
 function usage() {
   echo "Usage: "
   echo "Install Transmission"
-  echo "sudo ./transmission.sh install_dependencies"
+  echo "sudo ./transmission.sh install"
   echo "Start the client"
   echo "sudo ./transmission_client.sh load"
   echo "Add Links [Magnet or Torrent] or File Locations"
@@ -154,7 +154,7 @@ function main() {
   if [[ "${#args[@]}" -le 0 ]] ; then
     usage    
     exit 0
-  elif [[ ${args[0]} == "install_dependencies" ]] ; then
+  elif [[ ${args[0]} == "install" ]] ; then
     install_dependencies
   elif [[ ${args[0]} == "load" ]] ; then
     load
