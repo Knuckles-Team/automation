@@ -51,6 +51,20 @@ function backup_logs(){
 	else
 		  echo "Previous iostat log does not exist"
 	fi
+	if [ -e "${turbostat_log}" ]
+	then
+		  mv "${turbostat_log}" "${turbostat_log}.bak"
+			echo "Successfully backed up turbostat log"
+	else
+		  echo "Previous turbostat log does not exist"
+	fi
+	if [ -e "${numastat_log}" ]
+	then
+		  mv "${numastat_log}" "${numastat_log}.bak"
+			echo "Successfully backed up numastat log"
+	else
+		  echo "Previous numastat log does not exist"
+	fi
 	if [ -e "${mpstat_log}" ]
 	then
 		  mv "${mpstat_log}" "${mpstat_log}.bak"
@@ -70,6 +84,8 @@ function backup_logs(){
 function display_logs(){
 	cat "${vmstat_log}"
 	cat "${iostat_log}"
+	cat "${turbostat_log}"
+	cat "${numastat_log}"
 	cat "${mpstat_log}"
 	cat "${netstat_log}"
 }
@@ -77,6 +93,8 @@ function display_logs(){
 function clean_logs(){
 	dos2unix -f "${vmstat_log}"
 	dos2unix -f "${iostat_log}"
+	dos2unix -f "${turbostat_log}"
+	dos2unix -f "${numastat_log}"
 	dos2unix -f "${mpstat_log}"
 	dos2unix -f "${netstat_log}"
 }
@@ -85,6 +103,8 @@ function show_processes(){
 	ps -a
 	echo "vmstat pid: ${vmstat_pid}"			
 	echo "iostat pid: ${iostat_pid}"	
+	echo "turbostat pid: ${turbostat_pid}"	
+	echo "numastat pid: ${numastat_pid}"	
 	echo "mpstat pid: ${mpstat_pid}"	
 	echo "netstat pid: ${netstat_pid}"	
 }
@@ -94,6 +114,8 @@ function create_files(){
 	echo "Creating new logfiles..."
 	touch "${vmstat_log}"
 	touch "${iostat_log}"
+	touch "${turbostat_log}"
+	touch "${numastat_log}"
 	touch "${mpstat_log}"
 	touch "${netstat_log}"	
 	echo "Logfiles created successfully"
@@ -104,38 +126,48 @@ function log_stat(){
 	create_files
 	
 	# vmstat	
-	#script -t -c 'vmstat -t 10' > "${vmstat_log}" &
-	#vmstat_pid="${!}"
+	script -c 'vmstat -t 10' -f "${vmstat_log}" &
+	vmstat_pid="${!}"
 	
 	# iostat	
-	#script -t -c 'iostat -t 10' > "${iostat_log}" &
-	#iostat_pid="${!}"
+	script -c 'iostat -t 10' -f "${iostat_log}" &
+	iostat_pid="${!}"
+	
+	# turbostat	
+	script -c 'turbostat --debug --interval 10' -f "${turbostat_log}"  &
+	turbostat_pid="${!}"
 
 	# mpstat	
-	#script -t -c 'mpstat -P ALL' > "${mpstat_log}" &
-	#mpstat_pid="${!}"
-	show_processes
+	script -c 'mpstat -P ALL' -f "${vmstat_log}"  &
+	mpstat_pid="${!}"
+
 	# Run for schedule time	
 	for ((t=1; t<=${run_time}; t++))
 	do
 		loading_message "${run_time}" "${t}"
-		if (( ${t} % 10 == 0 )) && [ ${t} -ge 10 ] || [ ${t} -eq 0 ] ; then
+		if (( ${t} % 10 == 0 )) && [ ${t} -ge 10 ]; then
+			# numastat	
+			script -c 'numastat' -f "${numastat_log}" &
+			numastat_pid="${!}"
 			# netstat	
-			script -t -c 'netstat' > "${netstat_log}" &
+			script -c 'netstat' -f "${netstat_log}" &
 			netstat_pid="${!}"
 		fi		
 		if [[ "${t}" = "${run_time}" ]]; then 
 			show_processes
 			kill -9 "${vmstat_pid}"			
 			kill -9 "${iostat_pid}"	
+			kill -9 "${turbostat_pid}"	
+			kill -9 "${numastat_pid}"
 			kill -9 "${mpstat_pid}"	
-			kill -9 "${netstat_pid}"	
+			kill -9 "${netstat_pid}"
+			show_processes	
 		fi
 		sleep 1
 	done
 
 	clean_logs
-	#display_logs
+	display_logs
 }
 
 function loading_message(){
@@ -153,11 +185,7 @@ function loading_message(){
 			loading_bar="${loading_bar} "
 		fi			
 	done		
-	if [[ "${2}" -eq "${1}" ]]; then
-		echo -ne "| Time Remaining: ${time_left} | Remaining: ${2}/${1} | Percent Complete: ${percent_left} | [${loading_bar}] | \n" 
-	else
-		echo -ne "| Time Remaining: ${time_left} | Remaining: ${2}/${1} | Percent Complete: ${percent_left} | [${loading_bar}] | \r" 
-	fi
+	echo -ne "Time Remaining: ${time_left} | Remaining: ${2}/${1} | Percent Complete: ${percent_left} | [${loading_bar}] \r" 
 	
 }
 
@@ -165,6 +193,8 @@ function main(){
 	log_dir="/media/${USER}/file_storage/Documents/automation/bash/logs"	
 	vmstat_log="${log_dir}/vmstat.txt"
 	iostat_log="${log_dir}/iostat.txt"
+	turbostat_log="${log_dir}/turbostat.txt"
+	numastat_log="${log_dir}/numastat.txt"
 	mpstat_log="${log_dir}/mpstat.txt"
 	netstat_log="${log_dir}/netstat.txt"	
 	run_time="${args[1]}"
