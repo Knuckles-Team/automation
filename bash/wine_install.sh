@@ -17,7 +17,13 @@ function detect_os(){
 
 function ubuntu_install(){
 	sudo apt update
+	# Older version of wine
 	sudo apt install wine -y
+	# Enable 32bit on OS
+#	sudo dpkg --add-architecture i386
+#	wget -nc https://dl.winehq.org/wine-builds/winehq.key
+#	sudo apt-key add winehq.key
+#	sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ groovy main'
 }
 
 function centos_install(){
