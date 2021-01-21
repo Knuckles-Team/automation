@@ -22,6 +22,7 @@ sudo ./transmission_client.sh install
 sudo ./gparted_install.sh
 sudo ./stat_log.sh install
 sudo ./dos2unix_install.sh
+sudo ./wine_install.sh
 sudo ./adb_install.sh
 sudo ./wireshark_install.sh
 sudo ./signal_install.sh

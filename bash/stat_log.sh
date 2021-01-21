@@ -39,45 +39,45 @@ function backup_logs(){
 	echo "Backing up previous logs..."
 	if [ -e "${vmstat_log}" ]
 	then
-		  mv "${vmstat_log}" "${vmstat_log}.bak"
-			echo "Successfully backed up vmstat log"
+    mv "${vmstat_log}" "${vmstat_log}.bak"
+    echo "Successfully backed up vmstat log"
 	else
-		  echo "Previous vmstat log does not exist"
+    echo "Previous vmstat log does not exist"
 	fi
 	if [ -e "${iostat_log}" ]
 	then
-		  mv "${iostat_log}" "${iostat_log}.bak"
-			echo "Successfully backed up iostat log"
+    mv "${iostat_log}" "${iostat_log}.bak"
+    echo "Successfully backed up iostat log"
 	else
-		  echo "Previous iostat log does not exist"
+    echo "Previous iostat log does not exist"
 	fi
 	if [ -e "${turbostat_log}" ]
 	then
-		  mv "${turbostat_log}" "${turbostat_log}.bak"
-			echo "Successfully backed up turbostat log"
+    mv "${turbostat_log}" "${turbostat_log}.bak"
+    echo "Successfully backed up turbostat log"
 	else
-		  echo "Previous turbostat log does not exist"
+    echo "Previous turbostat log does not exist"
 	fi
 	if [ -e "${numastat_log}" ]
 	then
-		  mv "${numastat_log}" "${numastat_log}.bak"
-			echo "Successfully backed up numastat log"
+    mv "${numastat_log}" "${numastat_log}.bak"
+    echo "Successfully backed up numastat log"
 	else
-		  echo "Previous numastat log does not exist"
+    echo "Previous numastat log does not exist"
 	fi
 	if [ -e "${mpstat_log}" ]
 	then
-		  mv "${mpstat_log}" "${mpstat_log}.bak"
-			echo "Successfully backed up mpstat log"
+    mv "${mpstat_log}" "${mpstat_log}.bak"
+    echo "Successfully backed up mpstat log"
 	else
-		  echo "Previous mpstat log does not exist"
+    echo "Previous mpstat log does not exist"
 	fi
 	if [ -e "${netstat_log}" ]
 	then
-		  mv "${netstat_log}" "${netstat_log}.bak"
-			echo "Successfully backed up netstat log"
+    mv "${netstat_log}" "${netstat_log}.bak"
+    echo "Successfully backed up netstat log"
 	else
-		  echo "Previous netstat log does not exist"
+    echo "Previous netstat log does not exist"
 	fi
 }
 
