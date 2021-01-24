@@ -185,8 +185,7 @@ function loading_message(){
 			loading_bar="${loading_bar} "
 		fi			
 	done		
-	echo -ne "Time Remaining: ${time_left} | Remaining: ${2}/${1} | Percent Complete: ${percent_left} | [${loading_bar}] \r" 
-	
+	echo -ne "Time Remaining: ${time_left} | Remaining: ${2}/${1} | Percent Complete: ${percent_left} | [${loading_bar}] \r"
 }
 
 function main(){

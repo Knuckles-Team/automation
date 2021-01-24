@@ -19,7 +19,7 @@ function ubuntu_install(){
 	# Updating packages from repositories.
 	sudo apt update
 	# Install update manager
-	sudo apt install update-manager-core
+	sudo apt install update-manager-core -y
 
 	# Upgrading Packages
 	sudo apt upgrade -y
@@ -31,9 +31,9 @@ function ubuntu_install(){
 	# The first line will remove/fix any residual/broken packages if any.
 	sudo apt --purge autoremove -y
 	# The clean command removes all old .deb files from the apt cache (/var/cache/apt/archives)
-	sudo apt clean all
+	sudo apt clean all -y
 	# Removes package configurations left over from packages that have been removed (but not purged).
-	sudo apt purge $(dpkg -l | awk '/^rc/ { print $2 }')
+	sudo apt purge $(dpkg -l | awk '/^rc/ { print $2 }') -y
 
 	# Upgrading OS
 	sudo do-release-upgrade
@@ -47,6 +47,7 @@ function ubuntu_install(){
 function centos_install(){
 	sudo yum check-update
 	sudo yum update -y
+	sudo yum upgrade
 	sudo yum clean all
 }
 
