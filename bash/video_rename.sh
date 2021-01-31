@@ -44,7 +44,7 @@ function file_rename() {
   file_type=$2
   if [[ ! -z "${list}" ]]
   then
-    for file in "${list}"
+    for file in "${list[@]}"
     do
       printf "Checking ${file_type}: ${file}\n"
       x="${file}"
