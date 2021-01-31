@@ -3,8 +3,11 @@
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
 function usage() {
   echo -e "Flags:\n"
-  echo -e "-i | --install [Install dependencies]\n-d | --download_directory [Set the download directory]\n-f | --file <FILE> [Read links from textfile]\n-l | --links <LINK1, LINK2, LINK3> [Read links from command prompt]\n-a | --audio [Downloads audio only]"
-  echo -e "\nUsage: \nInstall: "
+  echo -e "-h | --help [Help]\n-i | --install [Install dependencies]\n-d | --download_directory [Set the download directory]\n-f | --file <FILE> [Read links from textfile]\n-l | --links <LINK1, LINK2, LINK3> [Read links from command prompt]\n-a | --audio [Downloads audio only]"
+  echo -e "\nUsage: \nHelp: "
+  echo "./video_download.sh -h"
+  echo "./video_download.sh --help"
+  echo -e "\nInstall:"
   echo "sudo ./video_download.sh -i"
   echo "sudo ./video_download.sh --install"
   echo -e "\nDownload with file: "
@@ -16,7 +19,7 @@ function usage() {
   echo "./video_download.sh --links <LINK1,LINK2,LINK3>"
   echo "./video_download.sh --links <LINK1, LINK2, LINK3>"
   echo -e "\nSet Download Directory: "
-  echo './video_download.sh -f <FILE> -d "~/Downloads"'
+  echo './video_download.sh -l <LINK1, LINK2> -f <FILE> -d "~/Downloads"'
 }
 
 function detect_os(){
@@ -117,7 +120,7 @@ while test -n "$1"; do
         exit 0
       fi
       ;;
-    --)              # End of all options.
+    --)# End of all options.
       shift
       break
       ;;
