@@ -7,13 +7,15 @@ sudo apt update && sudo apt -y upgrade
 sudo apt purge xrdp
 
 # Install xfce
-sudo apt-get install -y xfce4 xfce4-goodies
+sudo apt install -y xfce4 xfce4-goodies
 
 # Install xrdp
-sudo apt-get install xrdp
+sudo apt  -y install xrdp
 
 # Set Port and other settings
-echo -e "#xce4\nStartxfce4" | sudo tee -a /etc/xrdp/startwm.sh
+sudo set -i 's#test -x /etc/X11/Xsession && exec /etc/X11/Xsession#\#test -x /etc/X11/Xsession && exec /etc/X11/Xsession#' /etc/xrdp/startwm.sh
+sudo set -i 's#exec /bin/sh /etc/X11/Xsession#\#exec /bin/sh /etc/X11/Xsession#' /etc/xrdp/startwm.sh
+echo -e "#xce4\nstartxfce4" | sudo tee -a /etc/xrdp/startwm.sh
 sudo cp /etc/xrdp/xrdp.ini /etc/xrdp/xrdp.ini.bak
 sudo sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini
 sudo sed -i 's/max_bpp=32/#max_bpp=32\nmax_bpp=128/g' /etc/xrdp/xrdp.ini
