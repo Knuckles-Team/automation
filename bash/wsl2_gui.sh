@@ -1,14 +1,15 @@
 #!/bin/bash
 
-
+# Update & Upgrade
 sudo apt update && sudo apt -y upgrade
+
 # Remove previous xrdp
 sudo apt purge xrdp
 
-# install xfce
+# Install xfce
 sudo apt-get install -y xfce4 xfce4-goodies
 
-# install xrdp
+# Install xrdp
 sudo apt-get install xrdp
 
 # Set Port and other settings
