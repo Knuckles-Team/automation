@@ -14,8 +14,8 @@ function provision(){
       adb_install
     elif [[ "${app}" == "docker" ]]; then
       docker_install
-    elif [[ "${app}" == "docker" ]]; then
-      docker_install
+    elif [[ "${app}" == "dos2unix" ]]; then
+      dos2unix_install
     elif [[ "${app}" == "docker" ]]; then
       docker_install
     elif [[ "${app}" == "docker" ]]; then
@@ -103,6 +103,16 @@ function docker_install(){
     sudo systemctl start docker
     # Enable Docker at Startup
     sudo systemctl enable docker
+  else
+    echo "Distribution ${os_version} not supported"
+	fi
+}
+
+function dos2unix_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+		sudo apt install  -y dos2unix
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+		sudo yum install -y dos2unix
   else
     echo "Distribution ${os_version} not supported"
 	fi
