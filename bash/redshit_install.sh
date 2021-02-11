@@ -18,16 +18,10 @@ function detect_os(){
 function ubuntu_install(){
 	sudo apt update
 	sudo apt install -y redshift redshift-gtk
-  rest_of_install
 }
 
 function centos_install(){
 	sudo yum redshift redshift-gtk -y
-	rest_of_install
-}
-
-function rest_of_install(){
-  echo "Done"
 }
 
 function main(){
