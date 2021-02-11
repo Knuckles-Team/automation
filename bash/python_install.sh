@@ -22,18 +22,13 @@ function ubuntu_install(){
 	sudo apt -y install mlocate
 	sudo updatedb
 	# Install Python 3.X and 3.8
-	sudo apt install python3 python3-pip python3-tk -y
+	sudo apt install python3 python3-pip build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev install gcc git tcl-thread snapd -y
 	# Update PIP
 	sudo python3 -m pip install --upgrade pip
-	# Install Python Depedencies
-	sudo apt install gcc git tcl-thread -y 
 	# Set Git Credential Store Globally
 	sudo git config --global credential.helper store
 	# Install Python Packages
 	sudo python3 -m pip install autoconf setuptools wheel git+https://github.com/nficano/pytube regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
-	# Add EPEL repository
-	# Install snapd package manager (Contains all depedencies packaged together)
-	sudo apt install snapd -y
 	# Systemmd unit that managed the main snap communication sockets needs to be enabled.
 	sudo systemctl enable --now snapd.socket
 	# Sleep for 5 seconds to allow for system link creation.
