@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function detect_os(){
   os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 	os_version="${os_version:1:-1}"
