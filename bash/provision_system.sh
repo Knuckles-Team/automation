@@ -627,6 +627,7 @@ while test -n "$1"; do
       exit 0
       ;;
     i | -i | --install_only | install_only)
+      echo "Installing only, not configuring any applications"
       config_flag='false'
       shift
       ;;
@@ -638,6 +639,7 @@ while test -n "$1"; do
         echo 'ERROR: "-d | --download-directory" requires a non-empty option argument.'
         exit 0
       fi
+      shift
       ;;
     a | -a | --applications)
       if [ ${2} ]; then
@@ -648,6 +650,7 @@ while test -n "$1"; do
         echo 'ERROR: "-a | --applications" requires a non-empty option argument.'
         exit 0
       fi
+      shift
       ;;
     --)# End of all options.
       shift
@@ -660,8 +663,8 @@ while test -n "$1"; do
       shift
       break
       ;;
+
   esac
-  shift
 done
 
 provision
