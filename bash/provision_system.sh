@@ -2,14 +2,20 @@
 
 function usage(){
   echo -e "\nUsage: "
-  echo "sudo ./provision_system.sh -a tmux,git,openssh [Install and configure applications]"
-  echo "sudo ./provision_system.sh --applications vlc,fstab,ffmpeg [Install and configure applications]"
-  echo "sudo ./provision_system.sh -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
-  echo "sudo ./provision_system.sh --install_only tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo "sudo ./provision_system.sh -h [Help]"
+  echo "sudo ./provision_system.sh --help [Help]"
+  echo "sudo ./provision_system.sh -p [Install and configure all available applications]"
+  echo "sudo ./provision_system.sh --provision [Install and configure all available applications]"
+  echo "sudo ./provision_system.sh -p -a tmux,git,openssh [Install and configure applications]"
+  echo "sudo ./provision_system.sh --provision --applications vlc,fstab,ffmpeg [Install and configure applications]"
+  echo "sudo ./provision_system.sh -p -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo "sudo ./provision_system.sh provision --install_only tmux,git,openssh [Install only flag will only install, not configure applications]"
   echo -e "\nFlags: "
+  echo "-h | --help "
   echo "-i | --install_only "
   echo "-a | --aplications "
   echo "-d | --download-directory "
+  echo -e "-p | --provision | provision \n"
 }
 
 function provision(){
@@ -625,8 +631,10 @@ download_dir="/tmp"
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
-echo "Operating System: ${os_version}"
-echo "Architecture: ${architecture}"
+
+if [ -z "$1" ]; then
+  usage
+fi
 
 while test -n "$1"; do
   case "$1" in
@@ -660,7 +668,15 @@ while test -n "$1"; do
       fi
       shift
       ;;
+    p | -p | --provision | provision)
+      echo "Provisioning System"
+      echo "Operating System: ${os_version}"
+      echo "Architecture: ${architecture}"
+      provision
+      shift
+      ;;
     --)# End of all options.
+      echo "test 1"
       shift
       break
       ;;
@@ -668,11 +684,9 @@ while test -n "$1"; do
       printf 'WARNING: Unknown option (ignored): %s\n' "$1" >&2
       ;;
     *)
+      echo "test 2"
       shift
       break
       ;;
-
   esac
 done
-
-provision
