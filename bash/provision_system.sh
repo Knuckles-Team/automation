@@ -1,7 +1,15 @@
 #!/bin/bash
 
 function usage(){
-  echo "Used this way"
+  echo -e "\nUsage: "
+  echo "sudo ./provision_system.sh -a tmux,git,openssh [Install and configure applications]"
+  echo "sudo ./provision_system.sh --applications vlc,fstab,ffmpeg [Install and configure applications]"
+  echo "sudo ./provision_system.sh -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo "sudo ./provision_system.sh --install_only tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo -e "\nFlags: "
+  echo "-i | --install_only "
+  echo "-a | --aplications "
+  echo "-d | --download-directory "
 }
 
 function provision(){
