@@ -6,6 +6,7 @@ function usage(){
   echo "sudo ./provision_system.sh --help [Help]"
   echo "sudo ./provision_system.sh -p [Install and configure all available applications]"
   echo "sudo ./provision_system.sh --provision [Install and configure all available applications]"
+  echo "sudo ./provision_system.sh provision [Install and configure all available applications]"
   echo "sudo ./provision_system.sh -p -a tmux,git,openssh [Install and configure applications]"
   echo "sudo ./provision_system.sh --provision --applications vlc,fstab,ffmpeg [Install and configure applications]"
   echo "sudo ./provision_system.sh -p -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
