@@ -49,6 +49,8 @@ function provision(){
       rygel_install
     elif [[ "${app}" == "steam" ]]; then
       steam_install
+    elif [[ "${app}" == "startup-disk-creator" ]]; then
+      startup-disk-creator_install
     elif [[ "${app}" == "tmux" ]]; then
       tmux_install
     elif [[ "${app}" == "transmission" ]]; then
@@ -546,6 +548,16 @@ function software-updater_install(){
 	fi
 }
 
+function startup-disk-creator_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+		sudo apt install -y usb-creator-gtk
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+		echo "For Ubuntu Only, not compatible with CentOS"
+  else
+    echo "Distribution ${os_version} not supported"
+	fi
+}
+
 function steam_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		sudo apt install -y steam
@@ -611,7 +623,7 @@ function wireshark_install(){
 	fi
 }
 
-apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 download_dir="/tmp"
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
