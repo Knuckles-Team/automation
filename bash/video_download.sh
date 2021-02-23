@@ -19,7 +19,7 @@ function usage() {
   echo "./video_download.sh --links <LINK1,LINK2,LINK3>"
   echo "./video_download.sh --links <LINK1, LINK2, LINK3>"
   echo -e "\nSet Download Directory: "
-  echo './video_download.sh -l <LINK1, LINK2> -f <FILE> -d "~/Downloads"'
+  echo -e "./video_download.sh -l <LINK1, LINK2> -f <FILE> -d \"~/Downloads\"\n"
 }
 
 function detect_os(){
@@ -70,6 +70,11 @@ function download(){
     fi
   done
 }
+
+if [ -z "$1" ]; then
+  usage
+  exit 0
+fi
 
 audio_flag='false'
 download_dir="~/Downloads"

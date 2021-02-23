@@ -647,6 +647,7 @@ architecture="$(uname -m)"
 
 if [ -z "$1" ]; then
   usage
+  exit 0
 fi
 
 while test -n "$1"; do
