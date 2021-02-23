@@ -465,7 +465,7 @@ function python_install(){
 		sudo apt install -y mlocate
 		sudo updatedb
     # Install Python 3.X and 3.8
-    sudo apt install python3 python3-pip build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev install gcc git tcl-thread snapd -y
+    sudo apt install -y python3 python3-pip build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
     # Update PIP
     sudo python3 -m pip install --upgrade pip
     # Install Python Packages
@@ -640,6 +640,7 @@ function wireshark_install(){
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
+provision_flag='false'
 download_dir="/tmp"
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
@@ -690,7 +691,7 @@ while test -n "$1"; do
       echo "Operating System: ${os_version}"
       echo "Architecture: ${architecture}"
       echo "User: ${computer_user}"
-      provision
+      provision_flag='true'
       shift
       ;;
     --)# End of all options.
@@ -708,3 +709,9 @@ while test -n "$1"; do
       ;;
   esac
 done
+
+if [ ${provision_flag} == "true" ]; then
+  provision
+else
+  exit 0
+fi
