@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This script will configure Windows Subsystem Linux on Ubuntu to operate with GUI
+echo "Configuring Windows Subsystem Linux: Ubuntu for GUI"
 # Update & Upgrade
 sudo apt update && sudo apt -y upgrade
 
