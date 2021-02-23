@@ -652,6 +652,9 @@ fi
 while test -n "$1"; do
   case "$1" in
     h | -h | --help)
+      echo "Operating System: ${os_version}"
+      echo "Architecture: ${architecture}"
+      echo "User: ${computer_user}"
       usage
       exit 0
       ;;
@@ -683,9 +686,9 @@ while test -n "$1"; do
       ;;
     p | -p | --provision | provision)
       echo "Provisioning System"
-      echo "User: ${computer_user}"
       echo "Operating System: ${os_version}"
       echo "Architecture: ${architecture}"
+      echo "User: ${computer_user}"
       provision
       shift
       ;;
