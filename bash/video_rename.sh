@@ -183,10 +183,6 @@ args=("$@")
 main
 
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
-apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
-config_flag='true'
-provision_flag='false'
-download_dir="/tmp"
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
