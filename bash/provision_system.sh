@@ -595,7 +595,7 @@ function transmission_install(){
 	fi
 }
 
-function youtube_dl_install(){
+function youtube-dl_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		sudo apt install -y youtube-dl
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
