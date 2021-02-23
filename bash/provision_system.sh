@@ -692,7 +692,6 @@ while test -n "$1"; do
       shift
       ;;
     --)# End of all options.
-      echo "test 1"
       shift
       break
       ;;
@@ -700,7 +699,6 @@ while test -n "$1"; do
       printf 'WARNING: Unknown option (ignored): %s\n' "$1" >&2
       ;;
     *)
-      echo "test 2"
       shift
       break
       ;;

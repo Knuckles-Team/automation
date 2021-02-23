@@ -3,9 +3,11 @@
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
 function usage() {
   echo "Usage: "
+  echo "sudo ./video_rename.sh -i"
+  echo "sudo ./video_rename.sh --install"
   echo "sudo ./video_rename.sh install"
-  echo "sudo ./video_rename.sh clean <directory_to_search>"
-  echo "sudo ./video_rename.sh clean \"$(pwd)\""
+  echo "sudo ./video_rename.sh -c <directory_to_search>"
+  echo "sudo ./video_rename.sh --clean \"$(pwd)\""
 }
 
 function detect_os(){
@@ -179,3 +181,56 @@ function main() {
 
 args=("$@")
 main
+
+computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
+apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+config_flag='true'
+provision_flag='false'
+download_dir="/tmp"
+os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+os_version="${os_version:1:-1}"
+architecture="$(uname -m)"
+
+if [ -z "$1" ]; then
+  usage
+  exit 0
+fi
+
+while test -n "$1"; do
+  case "$1" in
+    h | -h | --help)
+      echo "Operating System: ${os_version}"
+      echo "Architecture: ${architecture}"
+      echo "User: ${computer_user}"
+      usage
+      exit 0
+      ;;
+    i | -i | --install | install)
+      install_dependencies
+      exit 0
+      ;;
+    c | -c | --clean)
+      if [ ${2} ]; then
+        relative_directory="${2}"
+        shift
+      else
+        echo 'ERROR: "-c | --clean" requires a non-empty option argument.'
+        exit 0
+      fi
+      shift
+      ;;
+    --)# End of all options.
+      shift
+      break
+      ;;
+    -?*)
+      printf 'WARNING: Unknown option (ignored): %s\n' "$1" >&2
+      ;;
+    *)
+      shift
+      break
+      ;;
+  esac
+done
+
+clean_files
