@@ -465,7 +465,7 @@ function python_install(){
 		sudo apt install -y mlocate
 		sudo updatedb
     # Install Python 3.X and 3.8
-    sudo apt install -y python3 python3-pip build-essential python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
+    sudo apt install -y python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
     # Update PIP
     sudo python3 -m pip install --upgrade pip
     # Install Python Packages
