@@ -6,7 +6,7 @@ echo "Configuring Windows Subsystem Linux: Ubuntu for GUI"
 sudo apt update && sudo apt -y upgrade
 
 # Remove previous xrdp
-sudo apt purge xrdp xfce4 xfce4-goodies
+sudo apt purge -y xrdp xfce4 xfce4-goodies
 
 # Install xfce
 sudo apt install -y xfce4 xfce4-goodies
