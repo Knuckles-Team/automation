@@ -21,9 +21,6 @@ function ubuntu_install(){
 	# Install update manager
 	sudo apt install update-manager-core -y
 
-	# Upgrading Packages
-	sudo apt upgrade -y
-
 	# Upgrading Distrubution
 	sudo apt dist-upgrade -y
 
@@ -33,7 +30,7 @@ function ubuntu_install(){
 	# The clean command removes all old .deb files from the apt cache (/var/cache/apt/archives)
 	sudo apt clean all -y
 	# Removes package configurations left over from packages that have been removed (but not purged).
-	sudo apt purge $(dpkg -l | awk '/^rc/ { print $2 }') -y
+	#sudo apt purge $(dpkg -l | awk '/^rc/ { print $2 }') -y
 
 	# Upgrading OS
 	sudo do-release-upgrade
