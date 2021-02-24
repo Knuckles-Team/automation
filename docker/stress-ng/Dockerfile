@@ -2,10 +2,9 @@
 
 FROM ubuntu:latest
 
-COPY run_stress-ng.sh /run_stress-ng.sh
-
 RUN echo "Testing stress-ng ubuntu" \
  && mkdir -p /logs \
+ && mkdir -p /content \
  && apt update \
  && apt install -y apt-utils \
  && apt upgrade -y \
@@ -13,6 +12,8 @@ RUN echo "Testing stress-ng ubuntu" \
  && chmod +x /*.sh \
  && dos2unix /*.sh
 
-CMD script -q -c "/run_stress-ng.sh 20s" /logs/stress-ng.log \
+COPY run_stress-ng.sh /content/run_stress-ng.sh
+
+CMD script -q -c "/content/run_stress-ng.sh 20s" /logs/stress-ng.log \
  && echo -e "\n\n\nStress-ng log" \
  && cat /logs/stress-ng.log && echo -e "\n\nSuccess\n\n"

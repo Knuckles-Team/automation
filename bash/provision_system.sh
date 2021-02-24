@@ -469,7 +469,7 @@ function python_install(){
 		sudo apt install -y mlocate
 		sudo updatedb
     # Install Python 3.X and 3.8
-    sudo apt install -y python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
+    sudo apt install -y qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
     # Update PIP
     sudo python3 -m pip install --upgrade pip
     # Install Python Packages
@@ -485,7 +485,7 @@ function python_install(){
     sudo python3 -m pip install --upgrade pip
     sudo python3.8 -m pip install --upgrade pip
     # Install Python Depedencies
-    sudo yum install gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
+    sudo yum install qt5-default gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
     # Set Git Credential Store Globally
     sudo git config --global credential.helper store
     # Install Python Packages
