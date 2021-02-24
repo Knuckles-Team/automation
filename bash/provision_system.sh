@@ -160,6 +160,8 @@ function docker_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		sudo apt install -y containerd docker.io docker-compose
     sudo docker run hello-world
+    sudo groupadd docker
+	  sudo usermod -aG docker ${computer_user}
     # Start Docker
     sudo systemctl start docker
     # Enable Docker at Startup
@@ -168,6 +170,8 @@ function docker_install(){
 		sudo yum install -y yum-utils
     sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     sudo yum install docker-ce docker-ce-cli containerd.io -y
+    sudo groupadd docker
+	  sudo usermod -aG docker ${computer_user}
     # Start Docker
     sudo systemctl start docker
     # Enable Docker at Startup
