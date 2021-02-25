@@ -586,6 +586,7 @@ function wireshark_install(){
 
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 download_dir="/tmp"
@@ -593,6 +594,13 @@ os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 
+# Check if arguments were provided
+if [ -z "$1" ]; then
+  usage
+  exit 0
+fi
+
+# Check if OS is supported
 if [[ "${os_version}" == "Ubuntu" ]] ; then
 	pkg_mgr='apt'
 elif [[ "${os_version}" == "CentOS Linux" ]] ; then
@@ -603,9 +611,10 @@ else
   exit 0
 fi
 
-if [ -z "$1" ]; then
-  usage
-  exit 0
+# Check if device is a Raspberry Pi, or other ARM devices
+if [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
+  echo "Selecting apps for Raspberry Pi or other ARM Devices"
+  apps=("${pi_apps[@]}")
 fi
 
 while test -n "$1"; do
