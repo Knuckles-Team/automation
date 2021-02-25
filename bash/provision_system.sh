@@ -50,6 +50,8 @@ function provision(){
       kvm_install
     elif [[ "${app}" == "nfs" ]]; then
       nfs_install
+    elif [[ "${app}" == "openjdk" ]]; then
+      openjdk_install
     elif [[ "${app}" == "openssh" ]]; then
       openssh_install
     elif [[ "${app}" == "phoronix" ]]; then
@@ -184,34 +186,16 @@ function docker_install(){
 }
 
 function dos2unix_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y dos2unix
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y dos2unix
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y dos2unix
 }
 
 function tmux_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y tmux
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y tmux
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y tmux
 }
 
 # Rygel (DLNA)
 function rygel_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y rygel
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y rygel
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y rygel
 	if [[ ${config_flag} == "true" ]]; then
 	  echo "uris=/media/${computer_user}/Movies/Movies" | sudo tee -a /etc/rygel.conf
 	fi
@@ -266,23 +250,11 @@ function fstab_install(){
 
 
 function gimp_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y gimp
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y gimp
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y gimp
 }
 
 function git_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y git
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y git
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y git
 	if [[ ${config_flag} == "true" ]]; then
 	  git config --global credential.helper store
 	fi
@@ -301,13 +273,7 @@ function gnome-theme_install(){
 }
 
 function gparted_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y gparted
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y gparted
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y gparted
 }
 
 function hypnotix_install(){
@@ -431,6 +397,10 @@ function nfs_install(){
 	fi
 }
 
+function openjdk_install(){
+  sudo "${pkg_mgr}" install -y openjdk-8-jdk
+}
+
 function openssh_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		sudo apt install -y nmap openssh-server
@@ -441,7 +411,7 @@ function openssh_install(){
     # Create Firewall Rule for SSH
     sudo ufw allow ssh
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum –y install openssh-server openssh-clients
+		sudo yum -y install openssh-server openssh-clients
   else
     echo "Distribution ${os_version} not supported"
 	fi
@@ -544,13 +514,7 @@ function pycharm_install(){
 }
 
 function redshift_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y redshift redshift-gtk
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y redshift redshift-gtk
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y redshift redshift-gtk
 }
 
 function software-updater_install(){
@@ -586,23 +550,11 @@ function steam_install(){
 }
 
 function transmission_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y transmission-qt transmission-cli transmission-daemon
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y transmission-qt transmission-cli transmission-daemon
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y transmission-qt transmission-cli transmission-daemon
 }
 
 function youtube-dl_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y youtube-dl
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y youtube-dl
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y youtube-dl
 }
 
 function vlc_install(){
@@ -618,13 +570,7 @@ function vlc_install(){
 }
 
 function wine_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y wine
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y wine
-  else
-    echo "Distribution ${os_version} not supported"
-	fi
+  sudo "${pkg_mgr}" install -y wine
 }
 
 function wireshark_install(){
@@ -639,13 +585,23 @@ function wireshark_install(){
 }
 
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
-apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 download_dir="/tmp"
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
+
+if [[ "${os_version}" == "Ubuntu" ]] ; then
+	pkg_mgr='apt'
+elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+  pkg_mgr='yum'
+else
+  pkg_mgr='na'
+  echo "Distribution ${os_version} not supported"
+  exit 0
+fi
 
 if [ -z "$1" ]; then
   usage
