@@ -1,3 +1,8 @@
+#!/bin/bash
+
+# Create Ubuntu Preseed
+function create_preseed(){
+  echo '
 #### Contents of the preconfiguration file (for stretch)
 ### Localization
 # Preseeding only locale sets language, country and locale.
@@ -132,7 +137,7 @@ d-i mirror/http/proxy string
 # To create a normal user account.
 d-i passwd/user-fullname string Ubuntu-VM
 d-i passwd/username string ubuntuvm
-# Normal user's password, either in clear text
+# Normal users password, either in clear text
 #d-i passwd/user-password password insecure
 #d-i passwd/user-password-again password insecure
 # or encrypted using a crypt(3) hash.
@@ -140,14 +145,14 @@ d-i passwd/username string ubuntuvm
 # Create the first user with the specified UID instead of the default.
 #d-i passwd/user-uid string 1010
 # The installer will warn about weak passwords. If you are sure you know
-# what you're doing and want to override it, uncomment this.
+# what youre doing and want to override it, uncomment this.
 #d-i user-setup/allow-password-weak boolean true
 
 # The user account will be added to some standard initial groups. To
 # override that, use this.
 #d-i passwd/user-default-groups string audio cdrom video
 
-# Set to true if you want to encrypt the first user's home directory.
+# Set to true if you want to encrypt the first users home directory.
 d-i user-setup/encrypt-home boolean false
 
 ### Clock and time zone setup
@@ -188,7 +193,7 @@ d-i clock-setup/ntp boolean true
 # and not e.g. /dev/discs/disc0/disc).
 # For example, to use the first SCSI/SATA hard disk:
 #d-i partman-auto/disk string /dev/sda
-# In addition, you'll need to specify the method to use.
+# In addition, youll need to specify the method to use.
 # The presently available methods are:
 # - regular: use the usual partition types for your architecture
 # - lvm:     use LVM to partition the disk
@@ -247,7 +252,7 @@ d-i partman-auto/choose_recipe select atomic
 #d-i partman/default_filesystem string ext4
 
 # The full recipe format is documented in the file partman-auto-recipe.txt
-# included in the 'debian-installer' package or available from D-I source
+# included in the "debian-installer" package or available from D-I source
 # repository. This also documents how to specify settings such as file
 # system labels, volume group names and which physical devices to include
 # in a volume group.
@@ -266,7 +271,7 @@ d-i partman/confirm_nooverwrite boolean true
 # so this will only work if the disks are the same size.
 #d-i partman-auto/disk string /dev/sda /dev/sdb
 
-# Next you need to specify the physical partitions that will be used. 
+# Next you need to specify the physical partitions that will be used.
 #d-i partman-auto/expert_recipe string \
 #      multiraid ::                                         \
 #              1000 5000 4000 raid                          \
@@ -299,7 +304,7 @@ d-i partman/confirm_nooverwrite boolean true
 #    .
 
 # For additional information see the file partman-auto-raid-recipe.txt
-# included in the 'debian-installer' package or available from D-I source
+# included in the "debian-installer" package or available from D-I source
 # repository.
 
 # This makes partman automatically partition without confirmation.
@@ -320,7 +325,7 @@ d-i partman/confirm_nooverwrite boolean true
 # specify a path for the installer to retrieve the filesystem image that will
 # be deployed to disk and used as a base system for the installation.
 #d-i live-installer/net-image string /install/filesystem.squashfs
- 
+
 # Configure APT to not install recommended packages by default. Use of this
 # option can result in an incomplete system and should only be used by very
 # experienced users.
@@ -336,7 +341,7 @@ d-i partman/confirm_nooverwrite boolean true
 #d-i apt-setup/restricted boolean true
 d-i apt-setup/universe boolean true
 #d-i apt-setup/backports boolean true
-# Uncomment this if you don't want to use a network mirror.
+# Uncomment this if you dont want to use a network mirror.
 #d-i apt-setup/use_mirror boolean false
 # Select which update services to use; define the mirrors to be used.
 # Values shown below are the normal defaults.
@@ -389,9 +394,9 @@ d-i pkgsel/include string openssh-server build-essential
 # popular and include it on CDs.
 #popularity-contest popularity-contest/participate boolean false
 
-# By default, the system's locate database will be updated after the
+# By default, the systems locate database will be updated after the
 # installer has finished installing most packages. This may take a while, so
-# if you don't want it, you can set this to "false" to turn it off.
+# if you dont want it, you can set this to "false" to turn it off.
 #d-i pkgsel/updatedb boolean true
 
 ### Boot loader installation
@@ -457,7 +462,7 @@ d-i finish-install/reboot_in_progress note
 
 ### Preseeding other packages
 # Depending on what software you choose to install, or if things go wrong
-# during the installation process, it's possible that other questions may
+# during the installation process, its possible that other questions may
 # be asked. You can preseed those too, of course. To get a list of every
 # possible question that could be asked during an install, do an
 # installation, and then run these commands:
@@ -471,8 +476,8 @@ d-i finish-install/reboot_in_progress note
 # d-i preseeding is inherently not secure. Nothing in the installer checks
 # for attempts at buffer overflows or other exploits of the values of a
 # preconfiguration file like this one. Only use preconfiguration files from
-# trusted locations! To drive that home, and because it's generally useful,
-# here's a way to run any shell command you'd like inside the installer,
+# trusted locations! To drive that home, and because its generally useful,
+# heres a way to run any shell command youd like inside the installer,
 # automatically.
 
 # This first command is run as early as possible, just after
@@ -488,4 +493,187 @@ d-i finish-install/reboot_in_progress note
 # directly, or use the apt-install and in-target commands to easily install
 # packages and run commands in the target system.
 #d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+  ' | sudo tee -a "./preseed.cfg"
+}
 
+# Create CentOS Kickstart
+function create_kickstart(){
+  echo '# File: /mnt/public/Support/Platforms/CentOS8/centos8-ks.cfg
+# Locations:
+#    /mnt/public/Support/Platforms/CentOS8/centos8-ks.cfg
+# Author: bgstack15
+# Startdate: 2017-06-02
+# Title: Kickstart for CentOS 8 for ipa.example.com
+# Purpose: To provide an easy installation for VMs and other systems in the Mersey network
+# History:
+#    2017-06 I learned how to use kickstart files for the RHCSA EX-200 exam
+#    2017-08-08 Added notifyemail to --extra-args
+#    2017-10-29 major revision to use local repository
+#
+#
+#
+#
+#    2019-09-24 fork for CentOS 8
+# Usage with virt-install:
+#    vm=c8-01a ; time sudo virt-install -n "${vm}" --memory 2048 --vcpus=1 --os-variant=centos7.0 --accelerate -v --disk path=/var/lib/libvirt/images/"${vm}".qcow2,size=20 -l /mnt/public/Support/SetupsBig/Linux/CentOS-8-x86_64-1905-dvd1.iso --initrd-inject=/mnt/public/Support/Platforms/CentOS8/centos8-ks.cfg --extra-args "ks=file:/centos8-ks.cfg SERVERNAME=${vm} NOTIFYEMAIL=bgstack15@gmail.com net.ifnames=0 biosdevname=0" --debug --network type=bridge,source=br0 --noautoconsole
+#    vm=c8-01a; sudo virsh destroy "${vm}"; sudo virsh undefine --remove-all-storage "${vm}";
+# Reference:
+#    https://sysadmin.compxtreme.ro/automatically-set-the-hostname-during-kickstart-installation/
+#    /mnt/public/Support/Platforms/CentOS7/install-vm.txt
+
+#platform=x86, AMD64, or Intel EM64T
+#version=DEVEL
+# Install OS instead of upgrade
+install
+# Keyboard layouts
+keyboard "us"
+# Root password
+rootpw --plaintext f0rg3tkickstart&
+# my user
+user --groups=wheel --name=centvm --password=$6$.gh9u7vg2HDJPPX/$g3X1l.q75fs7i0UKUt6h88bDIo1YSGGj/1DGeUzzbMTb0pBh4of6iNYWyxws/937qUiPgETqOsYFI5XNrkaUe. --iscrypted --gecos="centvm"
+
+# System language
+lang en_US.UTF-8
+# Firewall configuration
+firewall --enabled --ssh
+# Reboot after installation
+reboot
+# Network information
+#attempting to put it in the included ks file that accepts hostname from the virsh command.
+#network  --bootproto=dhcp --device=eth0 --ipv6=auto --activate
+%include /tmp/network.ks
+# System timezone
+timezone America/New_York --utc
+# System authorization information
+auth  --useshadow  --passalgo=sha512
+# Use network installation instead of CDROM installation media
+#url --url="http://www.ipa.example.com/mirror/centos/8/BaseOS/x86_64/os"
+
+# Use text mode install
+text
+# SELinux configuration
+selinux --permissive
+# Do not configure the X Window System
+skipx
+
+# Use all local repositories
+# Online repos
+#repo --name=examplerpm --baseurl=http://www.ipa.example.com/example/repo/rpm/
+#repo --name=base --baseurl=https://www.ipa.example.com/mirror/centos/$releasever/BaseOS/$basearch/os/
+#repo --name=appstream --baseurl=https://www.ipa.example.com/mirror/centos/$releasever/AppStream/$basearch/os/
+#repo --name=extras --baseurl=https://www.ipa.example.com/mirror/centos/$releasever/extras/$basearch/os/
+#repo --name=powertools --baseurl=https://www.ipa.example.com/mirror/centos/$releasever/PowerTools/$basearch/os/
+#repo --name=epel --baseurl=https://www.ipa.example.com/mirror/fedora/epel/$releasever/Everything/$basearch
+
+# Offline repos
+#
+#
+#
+#
+#
+
+firstboot --disabled
+
+# System bootloader configuration
+bootloader --location=mbr
+# Partition clearing information
+clearpart --all --initlabel
+# Disk partitioning information
+autopart --type=lvm
+
+%pre
+echo "network  --bootproto=dhcp --device=eth0 --ipv6=auto --activate --hostname renameme.ipa.example.com" > /tmp/network.ks
+for x in $( cat /proc/cmdline );
+do
+   case $x in
+      SERVERNAME*)
+         eval $x
+         echo "network  --bootproto=dhcp --device=eth0 --ipv6=auto --activate --hostname ${SERVERNAME}.ipa.example.com" > /tmp/network.ks
+         ;;
+      NOTIFYEMAIL*)
+         eval $x
+         echo "${NOTIFYEMAIL}" > /mnt/sysroot/root/notifyemail.txt
+	 ;;
+   esac
+done
+cp -p /run/install/repo/ca-ipa.example.com.crt /etc/pki/ca-trust/source/anchors/ 2>/dev/null || :
+wget http://www.ipa.example.com/example/certs/ca-ipa.example.com.crt -O /etc/pki/ca-trust/source/anchors/ca-ipa.example-wget.com.crt || :
+update-ca-trust || :
+%end
+
+%post
+(
+   # Set temporary hostname
+   #hostnamectl set-hostname renameme.ipa.example.com;
+
+   ifup eth0
+   sed -i -r -e "s/ONBOOT=.*/ONBOOT=yes/;" /etc/sysconfig/network-scripts/ifcfg-e*
+
+   # Get local mirror root ca certificate
+   wget http://www.ipa.example.com/example/certs/ca-ipa.example.com.crt -O /etc/pki/ca-trust/source/anchors/ca-ipa.example.com.crt && update-ca-trust
+
+   # Get local mirror repositories
+   wget https://www.ipa.example.com/example/repo/rpm/examplerpm.repo -O /etc/yum.repos.d/examplerpm.repo;
+   wget http://www.ipa.example.com/example/repo/rpm/examplerpm.mirrorlist -O /etc/yum.repos.d/examplerpm.mirrorlist
+   distro=centos8 ; wget https://www.ipa.example.com/example/repo/mirror/example-bundle-${distro}.repo -O /etc/yum.repos.d/example-bundle-${distro}.repo && grep -oP "(?<=^\[).*(?=-example])" /etc/yum.repos.d/example-bundle-${distro}.repo | while read thisrepo; do yum-config-manager --disable "${thisrepo}"; done # NONE TO REMOVE dnf -y remove dnfdragora ; yum clean all ; yum update -y ; # Remove graphical boot and add serial console sed -i -r -e "/^GRUB_CMDLINE_LINUX=/{s/(\s*)(rhgb|quiet)\s*/\1/g;};" -e "/^GRUB_CMDLINE_LINUX=/{s/(\s*)\"$/ console=ttyS0 console=tty1\"/;}" /etc/default/grub grub2-mkconfig > /boot/grub2/grub.cfg
+
+   # postfix is already started by default on centos8
+   # Send IP address to myself
+   thisip="$( ifconfig 2>/dev/null | awk "/Bcast|broadcast/{print $2}" | tr -cd "[^0-9\.\n]" | head -n1 )"
+   {
+      echo "${SERVER} has IP ${thisip}."
+      echo "system finished kickstart at $( date "+%Y-%m-%d %T" )";
+   } | /usr/share/bgscripts/send.sh -f "root@$( hostname --fqdn )" \
+      -h -s "${SERVER} is ${thisip}" $( cat /root/notifyemail.txt 2>/dev/null )
+
+   # No changes to graphical boot
+   #
+
+   # fix the mkhomedir problem
+   systemctl enable oddjobd.service && systemctl start oddjobd.service
+
+   # Personal customizations
+   mkdir -p /mnt/bgstack15 /mnt/public
+   su bgstack15-local -c "sudo /usr/share/bgconf/bgconf.py"
+
+) >> /root/install.log 2>&1
+%end
+
+%packages
+@core
+@^minimal install
+bc
+bgconf
+bgscripts-core
+bind-utils
+cifs-utils
+cryptsetup
+dosfstools
+epel-release
+expect
+firewalld
+git
+iotop
+ipa-client
+-iwl*-firmware
+mailx
+man
+mlocate
+net-tools
+nfs-utils
+p7zip
+parted
+python3-policycoreutils
+rpm-build
+rsync
+screen
+strace
+sysstat
+tcpdump
+telnet
+vim
+wget
+yum-utils
+%end
+  ' | sudo tee -a "./kickstart.cfg"
+}
