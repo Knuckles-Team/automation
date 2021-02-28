@@ -659,11 +659,13 @@ while test -n "$1"; do
       shift
       ;;
     l | -l | --log)
-      if [ ${2} ]; then
+      if [[ ${2:0:1} == "/" ]] || [[ ${2:0:1} == "." ]] || [[ ${2:0:1} == "~" ]]; then
         log_dir="${2}"
         shift
+      elif [[ ${2:0:1} == "-" ]]; then
+        echo "No log directory specified or it must start with / . or ~, using $(pwd) instead"
       else
-        echo "No log directory specified, using $(pwd)"
+        echo "No log directory specified or it must start with / . or ~, using $(pwd) instead"
       fi
       log_flag='true'
       shift
@@ -693,7 +695,7 @@ while test -n "$1"; do
 done
 
 if [ ${log_flag} == "true" ]; then
-  mkdir -p "${log_dir}"
+  [ ! -d "${log_dir}" ] && echo "Creating log directory" && mkdir -p "${log_dir}"
 fi
 
 if [ ${update_flag} == "true" ]; then
