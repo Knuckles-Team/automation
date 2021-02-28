@@ -608,7 +608,7 @@ fi
 
 # Check if OS is supported
 if [[ "${os_version}" == "Ubuntu" ]] ; then
-	pkg_mgr='apt'
+	pkg_mgr='apt-get'
 elif [[ "${os_version}" == "CentOS Linux" ]] ; then
   pkg_mgr='yum'
 else
