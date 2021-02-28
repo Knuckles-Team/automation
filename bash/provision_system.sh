@@ -19,7 +19,8 @@ function usage(){
   echo -e "-i | --install-only | install-only "
   echo -e "-h | --help "
   echo -e "-p | --provision | provision "
-  echo -e "-u | --update | update \n"
+  echo -e "-u | --update | update "
+  echo -e "\nApps: \n${apps[*]} \n"
 }
 
 function provision(){
@@ -92,21 +93,11 @@ function provision(){
 
 function update(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		# Updating packages from repositories.
     sudo apt update
-    # Install update manager
     sudo apt install update-manager-core -y
-
-    # Upgrading Packages
     sudo apt upgrade -y
-
-    # Upgrading Distrubution
     sudo apt dist-upgrade -y
-
-    # House Cleaning
-    # The first line will remove/fix any residual/broken packages if any.
     sudo apt --purge autoremove -y
-    # The clean command removes all old .deb files from the apt cache (/var/cache/apt/archives)
     sudo apt clean all -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
 		sudo yum check-update
