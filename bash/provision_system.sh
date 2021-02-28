@@ -16,10 +16,10 @@ function usage(){
   echo -e "\nFlags: "
   echo -e "-a | --aplications "
   echo -e "-d | --download-directory "
-  echo -e "-i | --install-only "
+  echo -e "-i | --install-only | install-only "
   echo -e "-h | --help "
   echo -e "-p | --provision | provision "
-  echo -e "-u | --update \n"
+  echo -e "-u | --update | update \n"
 }
 
 function provision(){
@@ -668,7 +668,7 @@ while test -n "$1"; do
       provision_flag='true'
       shift
       ;;
-    u | -u | --update)
+    u | -u | --update | update)
       echo "Updating System"
       echo "Operating System: ${os_version}"
       echo "Architecture: ${architecture}"
