@@ -9,17 +9,20 @@ function usage(){
   echo -e "sudo ./provision_system.sh provision [Install and configure all available applications]"
   echo -e "sudo ./provision_system.sh -u [Update and upgrade computer]"
   echo -e "sudo ./provision_system.sh --update [Update and upgrade computer]"
+  echo -e "sudo ./provision_system.sh -u -l [Update and upgrade computer and save results to log file]"
+  echo -e "sudo ./provision_system.sh --update --log /home/${computer_user}/Desktop [Update and upgrade computer and save results to /home/${computer_user}/Desktop/provision_log_${date}.log]"
   echo -e "sudo ./provision_system.sh -u -p -a tmux,git,openssh [Update, Upgrade, then Install and configure applications]"
   echo -e "sudo ./provision_system.sh --update --provision --applications vlc,fstab,ffmpeg [Update, Upgrade, then Install and configure applications]"
   echo -e "sudo ./provision_system.sh -p -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
   echo -e "sudo ./provision_system.sh provision --install-only tmux,git,openssh [Install only flag will only install, not configure applications]"
   echo -e "\nFlags: "
-  echo -e "-a | --aplications "
-  echo -e "-d | --download-directory "
-  echo -e "-i | --install-only | install-only "
+  echo -e "-a | --aplications [Optional Parameter; Can specify specific applications to install]"
+  echo -e "-d | --download-directory [Optional Parameter; Must specify download directory - Default is /tmp]"
+  echo -e "-i | --install-only | install-only [Optional Parameter; Will not configure any applications]"
   echo -e "-h | --help "
-  echo -e "-p | --provision | provision "
-  echo -e "-u | --update | update "
+  echo -e "-l | --log [Optional Parameter; Can specify directory to store log]"
+  echo -e "-p | --provision | provision [Optional Parameter; Will provision system with all applications or those specified]"
+  echo -e "-u | --update | update [Optional Parameter; Will update system with the latest versions of OS and Apps]"
   echo -e "\nApps: \n${apps[*]} \n"
 }
 
@@ -93,18 +96,18 @@ function provision(){
 
 function update(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo apt update
-    sudo apt install update-manager-core -y
-    sudo apt upgrade -y
-    sudo apt dist-upgrade -y
-    sudo apt --purge autoremove -y
-    sudo apt clean all -y
+    sudo "${pkg_mgr}" update
+    sudo "${pkg_mgr}" install update-manager-core -y
+    sudo "${pkg_mgr}" upgrade -y
+    sudo "${pkg_mgr}" dist-upgrade -y
+    sudo "${pkg_mgr}" --purge autoremove -y
+    sudo "${pkg_mgr}" clean all -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum check-update
-		sudo yum install epel-release -y
-    sudo yum update -y
-    sudo yum upgrade
-    sudo yum clean all
+		sudo "${pkg_mgr}" check-update
+		sudo "${pkg_mgr}" install epel-release -y
+    sudo "${pkg_mgr}" update -y
+    sudo "${pkg_mgr}" upgrade
+    sudo "${pkg_mgr}" clean all
   else
     echo "Cannot update. ${os_version} not supported"
 	fi
@@ -114,23 +117,23 @@ function chrome_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		if [[ "${architecture}" == "x86_64" ]]; then
       cd "${download_dir}" || echo "Directory not found or does not exist"
-      sudo apt install curl wget -y
+      sudo "${pkg_mgr}" install curl wget -y
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-      sudo apt install "${download_dir}/google-chrome-stable_current_amd64.deb"
+      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb"
       rm -rf "${download_dir}/google-chrome-stable_current_amd64.deb"
     elif [[ "${architecture}" == "x86" ]]; then
       cd "${download_dir}" || echo "Directory not found or does not exist"
-      sudo apt install curl wget -y
+      sudo "${pkg_mgr}" install curl wget -y
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
-      sudo apt install "${download_dir}/google-chrome-stable_current_i386.deb"
+      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"
       rm -rf "${download_dir}/google-chrome-stable_current_i386.deb"
     elif [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
-      sudo apt install -y chromium-browser
+      sudo "${pkg_mgr}" install -y chromium-browser
     fi
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
 		cd "${download_dir}" || echo "Directory not found or does not exist"
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-    sudo yum install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
+    sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
     rm -rf "${download_dir}/google-chrome-stable_current_amd64.rpm"
   else
     echo "Distribution ${os_version} not supported"
@@ -139,11 +142,11 @@ function chrome_install(){
 
 function adb_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install android-tools-adb android-tools-fastboot -y
+		sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
 	  adb version
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install epel-release -y
-    sudo yum install snapd -y
+		sudo "${pkg_mgr}" install epel-release -y
+    sudo "${pkg_mgr}" install snapd -y
     sudo systemctl enable --now snapd.socket
     sudo ln -s /var/lib/snapd/snap /snap
     sudo snap install android-adb --edge
@@ -155,7 +158,7 @@ function adb_install(){
 
 function docker_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y containerd docker.io docker-compose
+		sudo "${pkg_mgr}" install -y containerd docker.io docker-compose
     sudo docker run hello-world
     sudo groupadd docker
 	  sudo usermod -aG docker ${computer_user}
@@ -164,9 +167,9 @@ function docker_install(){
     # Enable Docker at Startup
     sudo systemctl enable docker
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y yum-utils
+		sudo "${pkg_mgr}" install -y yum-utils
     sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    sudo yum install docker-ce docker-ce-cli containerd.io -y
+    sudo "${pkg_mgr}" install docker-ce docker-ce-cli containerd.io -y
     sudo groupadd docker
 	  sudo usermod -aG docker ${computer_user}
     # Start Docker
@@ -200,18 +203,18 @@ function rygel_install(){
 function ffmpeg_install(){
   echo "Installing FFMPEG"
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y ffmpeg
+		sudo "${pkg_mgr}" install -y ffmpeg
 		echo "FFMPEG Installed!"
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum -y update
+		sudo "${pkg_mgr}" -y update
     # Install mlocate (Will be needed to locate pycharm.sh path
-    sudo yum -y install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel
+    sudo "${pkg_mgr}" -y install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel
     # Add Repo
-    sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-    sudo yum -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
-    sudo yum -y install http://rpmfind.net/linux/epel/7/x86_64/Packages/s/SDL2-2.0.10-1.el7.x86_64.rpm
+    sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    sudo "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
+    sudo "${pkg_mgr}" -y install http://rpmfind.net/linux/epel/7/x86_64/Packages/s/SDL2-2.0.10-1.el7.x86_64.rpm
     # Install FFmpeg
-    sudo yum -y install ffmpeg ffmpeg-devel
+    sudo "${pkg_mgr}" -y install ffmpeg ffmpeg-devel
     echo "FFMPEG Installed!"
   else
     echo "Distribution ${os_version} not supported"
@@ -220,9 +223,9 @@ function ffmpeg_install(){
 
 function fstab_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y ntfs-3g
+		sudo "${pkg_mgr}" install -y ntfs-3g
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y ntfs-3g
+		sudo "${pkg_mgr}" install -y ntfs-3g
   else
     echo "Distribution ${os_version} not supported"
 	fi
@@ -256,7 +259,7 @@ function git_install(){
 
 function gnome-theme_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
+		sudo "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
 		sudo snap install orchis-themes
 	  for i in $(snap connections | grep gtk-common-themes:gtk-3-themes | awk '{print $2}'); do sudo snap connect $i orchis-themes:gtk-3-themes; done
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
@@ -278,7 +281,7 @@ function hypnotix_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		hypnotix_git="https://github.com/linuxmint/hypnotix/releases/download/1.1/hypnotix_1.1_all.deb"
     wget -O /tmp/hypnotix.deb "${hypnotix_git}"
-    sudo apt install /tmp/hypnotix.deb -y
+    sudo "${pkg_mgr}" install /tmp/hypnotix.deb -y
     rm /tmp/hypnotix.deb
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
 		echo "No Installation Client for ${os_version} available yet"
@@ -290,7 +293,7 @@ function hypnotix_install(){
 function kvm_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		# Install Dependencies
-    sudo apt install curl wget bridge-utils cpu-checker qemu-kvm virtinst libvirt-daemon virt-manager -y
+    sudo "${pkg_mgr}" install curl wget bridge-utils cpu-checker qemu-kvm virtinst libvirt-daemon virt-manager -y
     kvm-ok
 
     # Enable libvirtd service
@@ -340,7 +343,7 @@ function kvm_install(){
     --console pty,target_type=serial \
     --extra-args "console=ttyS0,115200n8 serial auto=true priority=critical ks=file:/ks.cfg SERVERNAME=${vm} net.ifnames=0 biosdevname=0"
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		yum -y install @virt* dejavu-lgc-* xorg-x11-xauth tigervnc \ libguestfs-tools policycoreutils-python bridge-utils
+		sudo "${pkg_mgr}" -y install @virt* dejavu-lgc-* xorg-x11-xauth tigervnc \ libguestfs-tools policycoreutils-python bridge-utils
 
     # Set Sellinux context
     semanage fcontext -a -t virt_image_t "/vm(/.*)?"; restorecon -R /vm
@@ -357,9 +360,9 @@ function kvm_install(){
 
 function nfs_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y curl wget nfs-common nfs-kernel-server net-tools
+		sudo "${pkg_mgr}" install -y curl wget nfs-common nfs-kernel-server net-tools
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y nfs-utils nfs-utils-lib
+		sudo "${pkg_mgr}" install -y nfs-utils nfs-utils-lib
   else
     echo "Distribution ${os_version} not supported"
 	fi
@@ -401,7 +404,7 @@ function openjdk_install(){
 
 function openssh_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y nmap openssh-server
+		sudo "${pkg_mgr}" install -y nmap openssh-server
 
     # Start SSH
     /etc/init.d/ssh start || echo "Already Started"
@@ -409,7 +412,7 @@ function openssh_install(){
     # Create Firewall Rule for SSH
     sudo ufw allow ssh
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum -y install openssh-server openssh-clients
+		sudo "${pkg_mgr}" -y install openssh-server openssh-clients
   else
     echo "Distribution ${os_version} not supported"
 	fi
@@ -417,9 +420,9 @@ function openssh_install(){
 
 function phoronix_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y phoronix-test-suite
+		sudo "${pkg_mgr}" install -y phoronix-test-suite
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y wget php-cli php-xml bzip2 json php-pear php-devel gcc make php-pecl-json
+		sudo "${pkg_mgr}" install -y wget php-cli php-xml bzip2 json php-pear php-devel gcc make php-pecl-json
 		# Download Phoronix rpm
     cd /tmp || echo "Could not find /tmp directory"
     wget https://phoronix-test-suite.com/releases/phoronix-test-suite-9.8.0.tar.gz
@@ -434,26 +437,26 @@ function phoronix_install(){
 
 function python_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y mlocate
+		sudo "${pkg_mgr}" install -y mlocate
 		sudo updatedb
     # Install Python 3.X and 3.8
-    sudo apt install -y qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
+    sudo "${pkg_mgr}" install -y qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
     # Update PIP
     sudo python3 -m pip install --upgrade pip
     # Install Python Packages
   	sudo python3 -m pip install autoconf setuptools wheel git+https://github.com/nficano/pytube regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive ffmpeg-python m3u8 aiohttp
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
 		# Install mlocate (Will be needed to locate pycharm.sh path
-    sudo yum -y install mlocate
+    sudo "${pkg_mgr}" -y install mlocate
     sudo updatedb
     # Install Python 3.X and 3.8
-    sudo yum install python3 -y
-    sudo yum install python38 -y
+    sudo "${pkg_mgr}" install python3 -y
+    sudo "${pkg_mgr}" install python38 -y
     # Update PIP
     sudo python3 -m pip install --upgrade pip
     sudo python3.8 -m pip install --upgrade pip
     # Install Python Depedencies
-    sudo yum install qt5-default gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
+    sudo "${pkg_mgr}" install qt5-default gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
     # Set Git Credential Store Globally
     sudo git config --global credential.helper store
     # Install Python Packages
@@ -466,10 +469,10 @@ function python_install(){
 
 function pycharm_install(){
 	if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y mlocate
+		sudo "${pkg_mgr}" install -y mlocate
 		sudo updatedb
     # Install Python 3.X and 3.8
-    sudo apt install snapd -y
+    sudo "${pkg_mgr}" install snapd -y
     # Systemmd unit that managed the main snap communication sockets needs to be enabled.
     sudo systemctl enable --now snapd.socket
     # Sleep for 5 seconds to allow for system link creation.
@@ -487,7 +490,7 @@ function pycharm_install(){
     echo $pycharm_path
 	elif [[ "${os_version}" == "CentOS Linux" ]] ; then
 		# Install snapd package manager (Contains all depedencies packaged together)
-    sudo yum install snapd -y
+    sudo "${pkg_mgr}" install snapd -y
     # Systemmd unit that managed the main snap communication sockets needs to be enabled.
     sudo systemctl enable --now snapd.socket
     # Sleep for 5 seconds to allow for system link creation.
@@ -517,7 +520,7 @@ function redshift_install(){
 
 function software-updater_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y update-manager synaptic
+		sudo "${pkg_mgr}" install -y update-manager synaptic
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
 		echo "For Ubuntu Only, not compatible with CentOS"
   else
@@ -527,7 +530,7 @@ function software-updater_install(){
 
 function startup-disk-creator_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y usb-creator-gtk
+		sudo "${pkg_mgr}" install -y usb-creator-gtk
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
 		echo "For Ubuntu Only, not compatible with CentOS"
   else
@@ -537,11 +540,11 @@ function startup-disk-creator_install(){
 
 function steam_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y steam
+		sudo "${pkg_mgr}" install -y steam
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm -y
-    sudo yum install http://download1.rpmfusion.org/free/fedora/releases/19/Everything/i386/os/libtxc_dxtn-1.0.0-3.fc19.i686.rpm -y
-    sudo yum --enablerepo=steam_fedora19 install steam -y
+		sudo "${pkg_mgr}" install http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm -y
+    sudo "${pkg_mgr}" install http://download1.rpmfusion.org/free/fedora/releases/19/Everything/i386/os/libtxc_dxtn-1.0.0-3.fc19.i686.rpm -y
+    sudo "${pkg_mgr}" --enablerepo=steam_fedora19 install steam -y
   else
     echo "Distribution ${os_version} not supported"
 	fi
@@ -557,11 +560,11 @@ function youtube-dl_install(){
 
 function vlc_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo apt install -y vlc
+		sudo "${pkg_mgr}" install -y vlc
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-    sudo yum -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
-    sudo yum -y install vlc
+		sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    sudo "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
+    sudo "${pkg_mgr}" -y install vlc
   else
     echo "Distribution ${os_version} not supported"
 	fi
@@ -574,20 +577,24 @@ function wine_install(){
 function wireshark_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
 		echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
-	  sudo DEBIAN_FRONTEND=noninteractive apt install wireshark -y
+	  sudo DEBIAN_FRONTEND=noninteractive "${pkg_mgr}" install wireshark -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo yum install -y wireshark wireshark-qt
+		sudo "${pkg_mgr}" install -y wireshark wireshark-qt
   else
     echo "Distribution ${os_version} not supported"
 	fi
 }
 
+date=$(date +"%m-%d-%Y_%I-%M")
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 update_flag='false'
+log_flag='false'
+log_dir='.'
+log_file="provision_log_${date}.log"
 download_dir="/tmp"
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
@@ -651,19 +658,23 @@ while test -n "$1"; do
       config_flag='false'
       shift
       ;;
+    l | -l | --log)
+      if [ ${2} ]; then
+        log_dir="${2}"
+        shift
+      else
+        echo "No log directory specified, using $(pwd)"
+      fi
+      log_flag='true'
+      shift
+      ;;
     p | -p | --provision | provision)
       echo "Provisioning System"
-      echo "Operating System: ${os_version}"
-      echo "Architecture: ${architecture}"
-      echo "User: ${computer_user}"
       provision_flag='true'
       shift
       ;;
     u | -u | --update | update)
       echo "Updating System"
-      echo "Operating System: ${os_version}"
-      echo "Architecture: ${architecture}"
-      echo "User: ${computer_user}"
       update_flag='true'
       shift
       ;;
@@ -681,12 +692,24 @@ while test -n "$1"; do
   esac
 done
 
+if [ ${log_flag} == "true" ]; then
+  mkdir -p "${log_dir}"
+fi
+
 if [ ${update_flag} == "true" ]; then
-  update
+  if [ ${log_flag} == "true" ]; then
+    update | sudo tee -a "${log_dir}/${log_file}"
+  else
+    update
+  fi
 fi
 
 if [ ${provision_flag} == "true" ]; then
-  provision
+  if [ ${log_flag} == "true" ]; then
+    provision | sudo tee -a "${log_dir}/${log_file}"
+  else
+    provision
+  fi
 else
   exit 0
 fi
