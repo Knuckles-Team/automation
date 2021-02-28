@@ -2,25 +2,27 @@
 
 function usage(){
   echo -e "\nUsage: "
-  echo "sudo ./provision_system.sh -h [Help]"
-  echo "sudo ./provision_system.sh --help [Help]"
-  echo "sudo ./provision_system.sh -p [Install and configure all available applications]"
-  echo "sudo ./provision_system.sh --provision [Install and configure all available applications]"
-  echo "sudo ./provision_system.sh provision [Install and configure all available applications]"
-  echo "sudo ./provision_system.sh -p -a tmux,git,openssh [Install and configure applications]"
-  echo "sudo ./provision_system.sh --provision --applications vlc,fstab,ffmpeg [Install and configure applications]"
-  echo "sudo ./provision_system.sh -p -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
-  echo "sudo ./provision_system.sh provision --install_only tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo -e "sudo ./provision_system.sh -h [Help]"
+  echo -e "sudo ./provision_system.sh --help [Help]"
+  echo -e "sudo ./provision_system.sh -p [Install and configure all available applications]"
+  echo -e "sudo ./provision_system.sh --provision [Install and configure all available applications]"
+  echo -e "sudo ./provision_system.sh provision [Install and configure all available applications]"
+  echo -e "sudo ./provision_system.sh -u [Update and upgrade computer]"
+  echo -e "sudo ./provision_system.sh --update [Update and upgrade computer]"
+  echo -e "sudo ./provision_system.sh -u -p -a tmux,git,openssh [Update, Upgrade, then Install and configure applications]"
+  echo -e "sudo ./provision_system.sh --update --provision --applications vlc,fstab,ffmpeg [Update, Upgrade, then Install and configure applications]"
+  echo -e "sudo ./provision_system.sh -p -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo -e "sudo ./provision_system.sh provision --install-only tmux,git,openssh [Install only flag will only install, not configure applications]"
   echo -e "\nFlags: "
-  echo "-h | --help "
-  echo "-i | --install_only "
-  echo "-a | --aplications "
-  echo "-d | --download-directory "
-  echo -e "-p | --provision | provision \n"
+  echo -e "-a | --aplications "
+  echo -e "-d | --download-directory "
+  echo -e "-i | --install-only "
+  echo -e "-h | --help "
+  echo -e "-p | --provision | provision "
+  echo -e "-u | --update \n"
 }
 
 function provision(){
-  update
   for app in "${apps[@]}"
   do
     echo "Installing: ${app}"
@@ -42,6 +44,8 @@ function provision(){
       git_install
     elif [[ "${app}" == "gnome-theme" ]]; then
       gnome-theme_install
+    elif [[ "${app}" == "gnucobol" ]]; then
+      gnucobol_install
     elif [[ "${app}" == "gparted" ]]; then
       gparted_install
     elif [[ "${app}" == "hypnotix" ]]; then
@@ -232,11 +236,11 @@ function fstab_install(){
     echo "Distribution ${os_version} not supported"
 	fi
 	if [[ ${config_flag} == "true" ]]; then
-	  sudo mkdir "/media/${computer_user}/hdd_storage"
-    sudo mkdir "/media/${computer_user}/file_storage"
-    sudo mkdir "/media/${computer_user}/windows"
-    sudo mkdir "/media/${computer_user}/movies"
-    sudo mkdir "/media/${computer_user}/games"
+	  sudo mkdir -p "/media/${computer_user}/hdd_storage"
+    sudo mkdir -p "/media/${computer_user}/file_storage"
+    sudo mkdir -p "/media/${computer_user}/windows"
+    sudo mkdir -p "/media/${computer_user}/movies"
+    sudo mkdir -p "/media/${computer_user}/games"
 
     # If these fstab directories exist, update them. Otherwise create an entry for them.
     sudo grep -q '^/dev/sda1' /etc/fstab && sudo sed -i "s#/dev/sda1.*#/dev/sda1 /media/${computer_user}/hdd_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sda1 /media/${computer_user}/hdd_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
@@ -247,7 +251,6 @@ function fstab_install(){
     sudo mount -a
 	fi
 }
-
 
 function gimp_install(){
   sudo "${pkg_mgr}" install -y gimp
@@ -270,6 +273,10 @@ function gnome-theme_install(){
   else
     echo "Distribution ${os_version} not supported"
 	fi
+}
+
+function gnucobol_install(){
+  sudo "${pkg_mgr}" install -y gnucobol
 }
 
 function gparted_install(){
@@ -309,7 +316,7 @@ function kvm_install(){
           <range start="192.168.0.2" end="192.168.255.254"/>
         </dhcp>
       </ip>
-    </network>' >> network.xml
+    </network>' sudo tee -a ./network.xml
 
     sudo cp ./network.xml /root/
     cat /root/network.xml
@@ -585,10 +592,11 @@ function wireshark_install(){
 }
 
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
-apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
-pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
+update_flag='false'
 download_dir="/tmp"
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
@@ -626,9 +634,15 @@ while test -n "$1"; do
       usage
       exit 0
       ;;
-    i | -i | --install_only | install_only)
-      echo "Installing only, not configuring any applications"
-      config_flag='false'
+    a | -a | --applications)
+      if [ ${2} ]; then
+        IFS=',' read -r -a apps <<< "$2"
+        echo "Apps to install: ${apps[*]}"
+        shift
+      else
+        echo 'ERROR: "-a | --applications" requires a non-empty option argument.'
+        exit 0
+      fi
       shift
       ;;
     d | -d | --download-directory)
@@ -641,15 +655,9 @@ while test -n "$1"; do
       fi
       shift
       ;;
-    a | -a | --applications)
-      if [ ${2} ]; then
-        IFS=',' read -r -a apps <<< "$2"
-        echo "Apps to install: ${apps[*]}"
-        shift
-      else
-        echo 'ERROR: "-a | --applications" requires a non-empty option argument.'
-        exit 0
-      fi
+    i | -i | --install-only | install-only)
+      echo "Installing only, not configuring any applications"
+      config_flag='false'
       shift
       ;;
     p | -p | --provision | provision)
@@ -658,6 +666,14 @@ while test -n "$1"; do
       echo "Architecture: ${architecture}"
       echo "User: ${computer_user}"
       provision_flag='true'
+      shift
+      ;;
+    u | -u | --update)
+      echo "Updating System"
+      echo "Operating System: ${os_version}"
+      echo "Architecture: ${architecture}"
+      echo "User: ${computer_user}"
+      update_flag='true'
       shift
       ;;
     --)# End of all options.
@@ -673,6 +689,10 @@ while test -n "$1"; do
       ;;
   esac
 done
+
+if [ ${update_flag} == "true" ]; then
+  update
+fi
 
 if [ ${provision_flag} == "true" ]; then
   provision
