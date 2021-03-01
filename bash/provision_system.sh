@@ -74,6 +74,8 @@ function provision(){
       rygel_install
     elif [[ "${app}" == "steam" ]]; then
       steam_install
+    elif [[ "${app}" == "stat_log" ]]; then
+      stat_log_install
     elif [[ "${app}" == "startup-disk-creator" ]]; then
       startup-disk-creator_install
     elif [[ "${app}" == "tmux" ]]; then
@@ -103,19 +105,19 @@ function update(){
     sudo "${pkg_mgr}" --purge autoremove -y
     sudo "${pkg_mgr}" clean all -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" check-update
-		sudo "${pkg_mgr}" install epel-release -y
+    sudo "${pkg_mgr}" check-update
+    sudo "${pkg_mgr}" install epel-release -y
     sudo "${pkg_mgr}" update -y
     sudo "${pkg_mgr}" upgrade
     sudo "${pkg_mgr}" clean all
   else
     echo "Cannot update. ${os_version} not supported"
-	fi
+  fi
 }
 
 function chrome_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		if [[ "${architecture}" == "x86_64" ]]; then
+    if [[ "${architecture}" == "x86_64" ]]; then
       cd "${download_dir}" || echo "Directory not found or does not exist"
       sudo "${pkg_mgr}" install curl wget -y
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -131,21 +133,21 @@ function chrome_install(){
       sudo "${pkg_mgr}" install -y chromium-browser
     fi
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		cd "${download_dir}" || echo "Directory not found or does not exist"
+    cd "${download_dir}" || echo "Directory not found or does not exist"
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
     sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
     rm -rf "${download_dir}/google-chrome-stable_current_amd64.rpm"
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function adb_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
-	  adb version
+    sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
+    adb version
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" install epel-release -y
+    sudo "${pkg_mgr}" install epel-release -y
     sudo "${pkg_mgr}" install snapd -y
     sudo systemctl enable --now snapd.socket
     sudo ln -s /var/lib/snapd/snap /snap
@@ -153,25 +155,25 @@ function adb_install(){
     adb version
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function docker_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y containerd docker.io docker-compose
+    sudo "${pkg_mgr}" install -y containerd docker.io docker-compose
     sudo docker run hello-world
     sudo groupadd docker
-	  sudo usermod -aG docker ${computer_user}
+    sudo usermod -aG docker ${computer_user}
     # Start Docker
     sudo systemctl start docker
     # Enable Docker at Startup
     sudo systemctl enable docker
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" install -y yum-utils
+    sudo "${pkg_mgr}" install -y yum-utils
     sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     sudo "${pkg_mgr}" install docker-ce docker-ce-cli containerd.io -y
     sudo groupadd docker
-	  sudo usermod -aG docker ${computer_user}
+    sudo usermod -aG docker ${computer_user}
     # Start Docker
     sudo systemctl start docker
     # Enable Docker at Startup
@@ -180,7 +182,7 @@ function docker_install(){
     sudo docker run hello-world
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function dos2unix_install(){
@@ -194,19 +196,19 @@ function tmux_install(){
 # Rygel (DLNA)
 function rygel_install(){
   sudo "${pkg_mgr}" install -y rygel
-	if [[ ${config_flag} == "true" ]]; then
-	  echo "uris=/media/${computer_user}/Movies/Movies" | sudo tee -a /etc/rygel.conf
-	fi
+  if [[ ${config_flag} == "true" ]]; then
+    echo "uris=/media/${computer_user}/Movies/Movies" | sudo tee -a /etc/rygel.conf
+  fi
 }
 
 # FFMPEG
 function ffmpeg_install(){
   echo "Installing FFMPEG"
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y ffmpeg
-		echo "FFMPEG Installed!"
+    sudo "${pkg_mgr}" install -y ffmpeg
+    echo "FFMPEG Installed!"
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" -y update
+    sudo "${pkg_mgr}" -y update
     # Install mlocate (Will be needed to locate pycharm.sh path
     sudo "${pkg_mgr}" -y install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel
     # Add Repo
@@ -218,19 +220,19 @@ function ffmpeg_install(){
     echo "FFMPEG Installed!"
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function fstab_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y ntfs-3g
+    sudo "${pkg_mgr}" install -y ntfs-3g
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" install -y ntfs-3g
+    sudo "${pkg_mgr}" install -y ntfs-3g
   else
     echo "Distribution ${os_version} not supported"
-	fi
-	if [[ ${config_flag} == "true" ]]; then
-	  sudo mkdir -p "/media/${computer_user}/hdd_storage"
+  fi
+  if [[ ${config_flag} == "true" ]]; then
+    sudo mkdir -p "/media/${computer_user}/hdd_storage"
     sudo mkdir -p "/media/${computer_user}/file_storage"
     sudo mkdir -p "/media/${computer_user}/windows"
     sudo mkdir -p "/media/${computer_user}/movies"
@@ -243,7 +245,7 @@ function fstab_install(){
     sudo grep -q '^/dev/sde2' /etc/fstab && sudo sed -i "s#/dev/sde2.*#/dev/sde2 /media/${computer_user}/movies ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sde2 /media/${computer_user}/movies ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
     sudo grep -q '^/dev/sdf2' /etc/fstab && sudo sed -i "s#/dev/sdf2 /media/${computer_user}/games ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sdf2 /media/${computer_user}/games ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
     sudo mount -a
-	fi
+  fi
 }
 
 function gimp_install(){
@@ -252,21 +254,21 @@ function gimp_install(){
 
 function git_install(){
   sudo "${pkg_mgr}" install -y git
-	if [[ ${config_flag} == "true" ]]; then
-	  git config --global credential.helper store
-	fi
+  if [[ ${config_flag} == "true" ]]; then
+    git config --global credential.helper store
+  fi
 }
 
 function gnome-theme_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
-		sudo snap install orchis-themes
-	  for i in $(snap connections | grep gtk-common-themes:gtk-3-themes | awk '{print $2}'); do sudo snap connect $i orchis-themes:gtk-3-themes; done
+    sudo "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
+    sudo snap install orchis-themes
+    for i in $(snap connections | grep gtk-common-themes:gtk-3-themes | awk '{print $2}'); do sudo snap connect $i orchis-themes:gtk-3-themes; done
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		echo "For Ubuntu Only, not compatible with CentOS"
+    echo "For Ubuntu Only, not compatible with CentOS"
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function gnucobol_install(){
@@ -279,20 +281,20 @@ function gparted_install(){
 
 function hypnotix_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		hypnotix_git="https://github.com/linuxmint/hypnotix/releases/download/1.1/hypnotix_1.1_all.deb"
+    hypnotix_git="https://github.com/linuxmint/hypnotix/releases/download/1.1/hypnotix_1.1_all.deb"
     wget -O /tmp/hypnotix.deb "${hypnotix_git}"
     sudo "${pkg_mgr}" install /tmp/hypnotix.deb -y
     rm /tmp/hypnotix.deb
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		echo "No Installation Client for ${os_version} available yet"
+    echo "No Installation Client for ${os_version} available yet"
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function kvm_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		# Install Dependencies
+    # Install Dependencies
     sudo "${pkg_mgr}" install curl wget bridge-utils cpu-checker qemu-kvm virtinst libvirt-daemon virt-manager -y
     kvm-ok
 
@@ -343,7 +345,7 @@ function kvm_install(){
     --console pty,target_type=serial \
     --extra-args "console=ttyS0,115200n8 serial auto=true priority=critical ks=file:/ks.cfg SERVERNAME=${vm} net.ifnames=0 biosdevname=0"
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" -y install @virt* dejavu-lgc-* xorg-x11-xauth tigervnc \ libguestfs-tools policycoreutils-python bridge-utils
+    sudo "${pkg_mgr}" -y install @virt* dejavu-lgc-* xorg-x11-xauth tigervnc \ libguestfs-tools policycoreutils-python bridge-utils
 
     # Set Sellinux context
     semanage fcontext -a -t virt_image_t "/vm(/.*)?"; restorecon -R /vm
@@ -355,19 +357,19 @@ function kvm_install(){
     chkconfig libvirtd on; shutdown -r now
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function nfs_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y curl wget nfs-common nfs-kernel-server net-tools
+    sudo "${pkg_mgr}" install -y curl wget nfs-common nfs-kernel-server net-tools
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" install -y nfs-utils nfs-utils-lib
+    sudo "${pkg_mgr}" install -y nfs-utils nfs-utils-lib
   else
     echo "Distribution ${os_version} not supported"
-	fi
-	if [[ ${config_flag} == "true" ]]; then
-	  # Create directory
+  fi
+  if [[ ${config_flag} == "true" ]]; then
+    # Create directory
     nfs_directory="/mnt/nfs/"
     sudo mkdir ${nfs_directory} -p
     ls -la ${nfs_directory}
@@ -395,7 +397,7 @@ function nfs_install(){
     #sudo ufw status
     #sudo ufw allow from client_ip to any port nfs
     #sudo ufw status
-	fi
+  fi
 }
 
 function openjdk_install(){
@@ -404,7 +406,7 @@ function openjdk_install(){
 
 function openssh_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y nmap openssh-server
+    sudo "${pkg_mgr}" install -y nmap openssh-server
 
     # Start SSH
     /etc/init.d/ssh start || echo "Already Started"
@@ -412,18 +414,18 @@ function openssh_install(){
     # Create Firewall Rule for SSH
     sudo ufw allow ssh
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" -y install openssh-server openssh-clients
+    sudo "${pkg_mgr}" -y install openssh-server openssh-clients
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function phoronix_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y phoronix-test-suite
+    sudo "${pkg_mgr}" install -y phoronix-test-suite
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" install -y wget php-cli php-xml bzip2 json php-pear php-devel gcc make php-pecl-json
-		# Download Phoronix rpm
+    sudo "${pkg_mgr}" install -y wget php-cli php-xml bzip2 json php-pear php-devel gcc make php-pecl-json
+    # Download Phoronix rpm
     cd /tmp || echo "Could not find /tmp directory"
     wget https://phoronix-test-suite.com/releases/phoronix-test-suite-9.8.0.tar.gz
     # Unzip in Downloads
@@ -432,13 +434,13 @@ function phoronix_install(){
     sudo ./install-sh
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function python_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y mlocate
-		sudo updatedb
+    sudo "${pkg_mgr}" install -y mlocate
+    sudo updatedb
     # Install Python 3.X and 3.8
     sudo "${pkg_mgr}" install -y qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
     # Update PIP
@@ -446,7 +448,7 @@ function python_install(){
     # Install Python Packages
   	sudo python3 -m pip install autoconf setuptools wheel git+https://github.com/nficano/pytube regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive ffmpeg-python m3u8 aiohttp
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		# Install mlocate (Will be needed to locate pycharm.sh path
+    # Install mlocate (Will be needed to locate pycharm.sh path
     sudo "${pkg_mgr}" -y install mlocate
     sudo updatedb
     # Install Python 3.X and 3.8
@@ -464,13 +466,13 @@ function python_install(){
     sudo python3.8 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function pycharm_install(){
-	if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y mlocate
-		sudo updatedb
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+    sudo "${pkg_mgr}" install -y mlocate
+    sudo updatedb
     # Install Python 3.X and 3.8
     sudo "${pkg_mgr}" install snapd -y
     # Systemmd unit that managed the main snap communication sockets needs to be enabled.
@@ -488,8 +490,8 @@ function pycharm_install(){
     pycharm_path=$(sudo locate pycharm.sh)
     # Launch PyCharm as Root
     echo $pycharm_path
-	elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		# Install snapd package manager (Contains all depedencies packaged together)
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+    # Install snapd package manager (Contains all depedencies packaged together)
     sudo "${pkg_mgr}" install snapd -y
     # Systemmd unit that managed the main snap communication sockets needs to be enabled.
     sudo systemctl enable --now snapd.socket
@@ -508,10 +510,10 @@ function pycharm_install(){
     echo $pycharm_path
   else
     echo "Distribution ${os_version} not supported"
-	fi
-	if [[ ${config_flag} == "true" ]]; then
-	  git config --global credential.helper store
-	fi
+  fi
+  if [[ ${config_flag} == "true" ]]; then
+    git config --global credential.helper store
+  fi
 }
 
 function redshift_install(){
@@ -520,34 +522,37 @@ function redshift_install(){
 
 function software-updater_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y update-manager synaptic
+    sudo "${pkg_mgr}" install -y update-manager synaptic
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		echo "For Ubuntu Only, not compatible with CentOS"
+    echo "For Ubuntu Only, not compatible with CentOS"
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
+function stat_log_install(){
+  sudo "${pkg_mgr}" install -y sysstat net-tools numactl linux-tools-common
+}
 function startup-disk-creator_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y usb-creator-gtk
+    sudo "${pkg_mgr}" install -y usb-creator-gtk
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		echo "For Ubuntu Only, not compatible with CentOS"
+    echo "For Ubuntu Only, not compatible with CentOS"
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function steam_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y steam
+    sudo "${pkg_mgr}" install -y steam
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" install http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm -y
+    sudo "${pkg_mgr}" install http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm -y
     sudo "${pkg_mgr}" install http://download1.rpmfusion.org/free/fedora/releases/19/Everything/i386/os/libtxc_dxtn-1.0.0-3.fc19.i686.rpm -y
     sudo "${pkg_mgr}" --enablerepo=steam_fedora19 install steam -y
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function transmission_install(){
@@ -560,14 +565,14 @@ function youtube-dl_install(){
 
 function vlc_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		sudo "${pkg_mgr}" install -y vlc
+    sudo "${pkg_mgr}" install -y vlc
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
     sudo "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
     sudo "${pkg_mgr}" -y install vlc
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function wine_install(){
@@ -576,19 +581,19 @@ function wine_install(){
 
 function wireshark_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-		echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
-	  sudo DEBIAN_FRONTEND=noninteractive "${pkg_mgr}" install wireshark -y
+    echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+    sudo DEBIAN_FRONTEND=noninteractive "${pkg_mgr}" install wireshark -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-		sudo "${pkg_mgr}" install -y wireshark wireshark-qt
+    sudo "${pkg_mgr}" install -y wireshark wireshark-qt
   else
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 date=$(date +"%m-%d-%Y_%I-%M")
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
-apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
-pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "statlog" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 update_flag='false'
@@ -608,7 +613,7 @@ fi
 
 # Check if OS is supported
 if [[ "${os_version}" == "Ubuntu" ]] ; then
-	pkg_mgr='apt-get'
+  pkg_mgr='apt-get'
 elif [[ "${os_version}" == "CentOS Linux" ]] ; then
   pkg_mgr='yum'
 else

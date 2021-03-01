@@ -3,10 +3,10 @@
 function usage(){
 	echo "Usage:"	
 	echo "sudo ./stat_log.sh install"
-	echo "sudo ./stat_log.sh run <*optional* runtime (seconds)>"
+	echo "sudo ./stat_log.sh -r <*optional* runtime (seconds)>"
 	echo "Example:"
-	echo "sudo ./stat_log.sh run"
-	echo "sudo ./stat_log.sh run 600"
+	echo "sudo ./stat_log.sh -r"
+	echo "sudo ./stat_log.sh --run 600"
 }
 
 function detect_os(){
@@ -110,14 +110,13 @@ function show_processes(){
 }
 
 function create_files(){
-	mkdir -p "${log_dir}"
 	echo "Creating new logfiles..."
-	touch "${vmstat_log}"
-	touch "${iostat_log}"
-	touch "${turbostat_log}"
-	touch "${numastat_log}"
-	touch "${mpstat_log}"
-	touch "${netstat_log}"	
+	echo -e "User: ${computer_user}\nDate: ${date}\nOperating System: ${os_version}\nArchitecture: ${architecture}" >> "${log_dir}/${vmstat_log}"
+	echo -e "User: ${computer_user}\nDate: ${date}\nOperating System: ${os_version}\nArchitecture: ${architecture}" >> "${log_dir}/${iostat_log}"
+	echo -e "User: ${computer_user}\nDate: ${date}\nOperating System: ${os_version}\nArchitecture: ${architecture}" >> "${log_dir}/${turbostat_log}"
+	echo -e "User: ${computer_user}\nDate: ${date}\nOperating System: ${os_version}\nArchitecture: ${architecture}" >> "${log_dir}/${numastat_log}"
+	echo -e "User: ${computer_user}\nDate: ${date}\nOperating System: ${os_version}\nArchitecture: ${architecture}" >> "${log_dir}/${mpstat_log}"
+	echo -e "User: ${computer_user}\nDate: ${date}\nOperating System: ${os_version}\nArchitecture: ${architecture}" >> "${log_dir}/${netstat_log}"
 	echo "Logfiles created successfully"
 }
 
@@ -126,33 +125,39 @@ function log_stat(){
 	create_files
 	
 	# vmstat	
-	script -c 'vmstat -t 10' -f "${vmstat_log}" &
+	#script -c 'vmstat -t 10' -f "${vmstat_log}" &
+	vmstat -t 10 >> "${log_dir}/${vmstat_log}" &
 	vmstat_pid="${!}"
 	
 	# iostat	
-	script -c 'iostat -t 10' -f "${iostat_log}" &
+	#script -c 'iostat -t 10' -f "${iostat_log}" &
+	iostat -t 10 >> "${log_dir}/${iostat_log}" &
 	iostat_pid="${!}"
 	
 	# turbostat	
-	script -c 'turbostat --debug --interval 10' -f "${turbostat_log}"  &
+	#script -c 'turbostat --debug --interval 10' -f "${turbostat_log}" &
+	turbostat --debug --interval 10 >> "${log_dir}/${turbostat_log}" &
 	turbostat_pid="${!}"
 
 	# mpstat	
-	script -c 'mpstat -P ALL' -f "${vmstat_log}"  &
+	#script -c 'mpstat -P ALL' -f "${vmstat_log}" &
+	mpstat -P ALL >> "${log_dir}/${vmstat_log}" &
 	mpstat_pid="${!}"
 
 	# Run for schedule time	
 	for ((t=1; t<=${run_time}; t++))
 	do
-		loading_message "${run_time}" "${t}"
 		if (( ${t} % 10 == 0 )) && [ ${t} -ge 10 ]; then
 			# numastat	
-			script -c 'numastat' -f "${numastat_log}" &
+			#script -c 'numastat' -f "${numastat_log}" &
+			numastat >> "${log_dir}/${numastat_log}" &
 			numastat_pid="${!}"
 			# netstat	
-			script -c 'netstat' -f "${netstat_log}" &
+			#script -c 'netstat' -f "${netstat_log}" &
+			netstat >> "${log_dir}/${netstat_log}" &
 			netstat_pid="${!}"
-		fi		
+		fi
+		loading_message "${run_time}" "${t}"
 		if [[ "${t}" = "${run_time}" ]]; then 
 			show_processes
 			kill -9 "${vmstat_pid}"			
@@ -166,8 +171,8 @@ function log_stat(){
 		sleep 1
 	done
 
-	clean_logs
-	display_logs
+#	clean_logs
+#	display_logs
 }
 
 function loading_message(){
@@ -188,34 +193,74 @@ function loading_message(){
 	echo -ne "Time Remaining: ${time_left} | Remaining: ${2}/${1} | Percent Complete: ${percent_left} | [${loading_bar}] \r"
 }
 
-function main(){
-	log_dir="/media/${USER}/file_storage/Documents/automation/bash/logs"	
-	vmstat_log="${log_dir}/vmstat.txt"
-	iostat_log="${log_dir}/iostat.txt"
-	turbostat_log="${log_dir}/turbostat.txt"
-	numastat_log="${log_dir}/numastat.txt"
-	mpstat_log="${log_dir}/mpstat.txt"
-	netstat_log="${log_dir}/netstat.txt"	
-	run_time="${args[1]}"
-	echo "${args[0]} ${args[1]} ${args[2]}"
-	
-	if [[ "${#args[@]}" -le 0 ]] ; then
-    usage    
-    exit 0
-	elif [[ "${args[0]}" == "install" ]] ; then
-		detect_os
-  elif [[ "${args[0]}" == "run" ]] ; then
-		# Check runtime; Run with default time if none was specified
-		if [[ "${run_time}" -le "0" ]] ; then
-			run_time="30"
-		fi
-    log_stat 
-	else
-		usage
-		exit 0
-	fi
-}
+date=$(date +"%m-%d-%Y_%I-%M")
+computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
+os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+os_version="${os_version:1:-1}"
+architecture="$(uname -m)"
+log_dir="$(pwd)/logs"
+log_file="stat_log_${date}.log"
+vmstat_log="vmstat_${date}.log"
+iostat_log="iostat_${date}.log"
+turbostat_log="turbostat_${date}.log"
+numastat_log="numastat_${date}.log"
+mpstat_log="mpstat_${date}.log"
+netstat_log="netstat_${date}.log"
+run_flag="false"
 
-args=${@}
-main
+# Check if arguments were provided
+if [ -z "$1" ]; then
+  usage
+  exit 0
+fi
 
+while test -n "$1"; do
+  case "$1" in
+    h | -h | --help)
+      echo "Operating System: ${os_version}"
+      echo "Architecture: ${architecture}"
+      echo "User: ${computer_user}"
+      usage
+      exit 0
+      ;;
+    l | -l | --log)
+      if [[ ${2:0:1} == "/" ]] || [[ ${2:0:1} == "." ]] || [[ ${2:0:1} == "~" ]]; then
+        log_dir="${2}"
+        shift
+      elif [[ ${2:0:1} == "-" ]]; then
+        echo "No log directory specified or it must start with / . or ~, using $(pwd)/log instead"
+      else
+        echo "No log directory specified or it must start with / . or ~, using $(pwd)/log instead"
+      fi
+      shift
+      ;;
+    r | -r | --run)
+      if [[ "${2}" ]] ; then
+        run_time="${2}"
+        shift
+      else
+        run_time="30"
+      fi
+      run_flag='true'
+      shift
+      ;;
+    --)# End of all options.
+      shift
+      break
+      ;;
+    -?*)
+      printf 'WARNING: Unknown option (ignored): %s\n' "$1" >&2
+      ;;
+    *)
+      shift
+      break
+      ;;
+  esac
+done
+
+if [ ${run_flag} == "true" ]; then
+  mkdir -p "${log_dir}"
+  log_stat | sudo tee -a "${log_dir}/${log_file}"
+else
+  exit 0
+fi
