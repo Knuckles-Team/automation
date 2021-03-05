@@ -593,7 +593,7 @@ do
       NOTIFYEMAIL*)
          eval $x
          echo "${NOTIFYEMAIL}" > /mnt/sysroot/root/notifyemail.txt
-	 ;;
+  ;;
    esac
 done
 cp -p /run/install/repo/ca-ipa.example.com.crt /etc/pki/ca-trust/source/anchors/ 2>/dev/null || :

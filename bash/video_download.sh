@@ -24,27 +24,31 @@ function usage() {
 
 function detect_os(){
   os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
-	os_version="${os_version:1:-1}"
-	echo "${os_version}"
-	if [[ $os_version = "Ubuntu" ]] ; then
-		echo "Installing for Ubuntu"		
-		ubuntu_install
+  os_version="${os_version:1:-1}"
+  echo "${os_version}"
+  if [[ $os_version = "Ubuntu" ]] ; then
+    echo "Installing for Ubuntu"
+    ubuntu_install
   elif [[ $os_version = "CentOS Linux" ]] ; then
-		echo "Installing for CentOS"
-		centos_install
+    echo "Installing for CentOS"
+    centos_install
   else 
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function ubuntu_install(){
-	sudo apt update
+  sudo apt update
   sudo apt install -y youtube-dl
 }
 
 function centos_install(){
-	sudo yum update -y
-	sudo yum install youtube-dl -y
+  sudo yum update -y
+  sudo yum install youtube-dl -y
+}
+
+function python_install(){
+  sudo pip3 install youtube-dl
 }
 
 function download(){
@@ -113,6 +117,7 @@ while test -n "$1"; do
         echo 'ERROR: "-l | --links" requires a non-empty option argument.'
         exit 0
       fi
+      shift
       ;;
     f | -f | --file)
       if [ ${2} ]; then
@@ -124,6 +129,7 @@ while test -n "$1"; do
         echo 'ERROR: "-f | --file" requires a non-empty option argument.'
         exit 0
       fi
+      shift
       ;;
     --)# End of all options.
       shift

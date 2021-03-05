@@ -25,35 +25,35 @@ function usage() {
 
 function detect_os(){
   os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
-	os_version="${os_version:1:-1}"
-	echo "${os_version}"
-	if [[ $os_version = "Ubuntu" ]] ; then
-		echo "Installing for Ubuntu"		
-		ubuntu_install
+  os_version="${os_version:1:-1}"
+  echo "${os_version}"
+  if [[ $os_version = "Ubuntu" ]] ; then
+    echo "Installing for Ubuntu"
+    ubuntu_install
   elif [[ $os_version = "CentOS Linux" ]] ; then
-		echo "Installing for CentOS"
-		centos_install
+    echo "Installing for CentOS"
+    centos_install
   else 
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function ubuntu_install(){
-	sudo apt update
-	sudo apt install transmission-qt transmission-cli transmission-daemon -y
-	rest_of_install
+  sudo apt update
+  sudo apt install transmission-qt transmission-cli transmission-daemon -y
+  rest_of_install
 }
 
 function centos_install(){
-	sudo yum install epel-release -y
-	sudo yum install transmission-qt transmission-cli transmission-daemon -y
-	rest_of_install
+  sudo yum install epel-release -y
+  sudo yum install transmission-qt transmission-cli transmission-daemon -y
+  rest_of_install
 }
 
 # Install Transmission.
 function install_dependencies() {
-	echo "Installing Transmission" 
-	detect_os
+  echo "Installing Transmission"
+  detect_os
 }
 
 function rest_of_install() {

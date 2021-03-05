@@ -12,32 +12,32 @@ function usage() {
 
 function detect_os(){
   os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
-	os_version="${os_version:1:-1}"
-	echo "${os_version}"
-	if [[ $os_version = "Ubuntu" ]] ; then
-		echo "Installing for Ubuntu"		
-		ubuntu_install
+  os_version="${os_version:1:-1}"
+  echo "${os_version}"
+  if [[ $os_version = "Ubuntu" ]] ; then
+    echo "Installing for Ubuntu"
+    ubuntu_install
   elif [[ $os_version = "CentOS Linux" ]] ; then
-		echo "Installing for CentOS"
-		centos_install
+    echo "Installing for CentOS"
+    centos_install
   else 
     echo "Distribution ${os_version} not supported"
-	fi
+  fi
 }
 
 function ubuntu_install(){
-	sudo apt update
+  sudo apt update
   sudo apt install -y mkvtoolnix atomicparsley mediainfo
 }
 
 function centos_install(){
-	sudo yum update -y
-	sudo yum install mkvtoolnix atomicparsley mediainfo -y
+  sudo yum update -y
+  sudo yum install mkvtoolnix atomicparsley mediainfo -y
 }
 
 function install_dependencies() {
   printf "Installing Dependencies..."
-	detect_os  
+  detect_os
   printf "Successfully Installed Dependencies"
 }
 
@@ -52,32 +52,32 @@ function file_rename() {
       x="${file}"
       if [[ "${file_type}" == "mkv" ]]
         then
-    	  y="${x%.mkv}"
+        y="${x%.mkv}"
       elif [[ "${file_type}" == "mp4" ]]
-    	then
-    	  y="${x%.mp4}"
+      then
+        y="${x%.mp4}"
       elif [[ "${file_type}" == "webm" ]]
-    	then
-    	  y="${x%.webm}"
+      then
+        y="${x%.webm}"
       fi      
       title=${y##*/}
       current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
       printf "Current Title: ${current_title}\nProposed Title: ${title}\n"
       if [[ "${title}" != "${current_title}" ]]
-      then    	
+      then
         if [[ "${file_type}" == "mkv" ]]
         then
-    	  mkvpropedit "${file}" -e info -s title="${title}"
-    	  printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
-    	elif [[ "${file_type}" == "webm" ]]
-    	then
-    	  mkvpropedit "${file}" -e info -s title="${title}"
-    	  printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
-    	elif [[ "${file_type}" == "mp4" ]]
-    	then
-    	  AtomicParsley "${file}" --title "${title}" --comment "" --overWrite
-    	  printf "Complete!\nCleaned ${file_type} Title: ${title}\n"    	
-    	fi    	
+        mkvpropedit "${file}" -e info -s title="${title}"
+        printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+      elif [[ "${file_type}" == "webm" ]]
+      then
+        mkvpropedit "${file}" -e info -s title="${title}"
+        printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+      elif [[ "${file_type}" == "mp4" ]]
+      then
+        AtomicParsley "${file}" --title "${title}" --comment "" --overWrite
+        printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+      fi
       else
         printf "Titles already the same, no need to update: ${file}\n"
       fi    
