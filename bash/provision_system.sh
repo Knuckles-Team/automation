@@ -54,6 +54,8 @@ function provision(){
       gparted_install
     elif [[ "${app}" == "hypnotix" ]]; then
       hypnotix_install
+    elif [[ "${app}" == "kexi" ]]; then
+      kexi_install
     elif [[ "${app}" == "kvm" ]]; then
       kvm_install
     elif [[ "${app}" == "nfs" ]]; then
@@ -90,6 +92,11 @@ function provision(){
       wireshark_install
     elif [[ "${app}" == "youtube-dl" ]]; then
       youtube-dl_install
+    elif [[ "${app}" == "xdotool" ]]; then
+
+      xdotool_install
+    elif [[ "${app}" == "xsel" ]]; then
+      xsel_install
     else
       echo "ERROR: ${app} not found"
     fi
@@ -290,6 +297,12 @@ function hypnotix_install(){
   else
     echo "Distribution ${os_version} not supported"
   fi
+}
+
+function kexi_install(){
+
+  sudo "${pkg_mgr}" install -y kexi
+
 }
 
 function kvm_install(){
@@ -590,9 +603,17 @@ function wireshark_install(){
   fi
 }
 
+function xdotool_install(){
+  sudo "${pkg_mgr}" install -y xdotool
+}
+
+function xsel_install(){
+  sudo "${pkg_mgr}" install -y xsel
+}
+
 date=$(date +"%m-%d-%Y_%I-%M")
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
-apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
 pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "statlog" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
