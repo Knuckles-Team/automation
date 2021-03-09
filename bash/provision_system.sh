@@ -610,8 +610,15 @@ function xsel_install(){
   sudo "${pkg_mgr}" install -y xsel
 }
 
-date=$(date +"%m-%d-%Y_%I-%M")
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
+os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+os_version="${os_version:1:-1}"
+architecture="$(uname -m)"
+private_ip=$(ip addr show enp0s31f6 | awk '/inet /{print $2}' )
+private_ip=${private_ip::-3}
+public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
+public_ip=${public_ip:1:-1}
+date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
 pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "statlog" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
@@ -621,9 +628,6 @@ log_flag='false'
 log_dir='.'
 log_file="provision_log_${date}.log"
 download_dir="/tmp"
-os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
-os_version="${os_version:1:-1}"
-architecture="$(uname -m)"
 
 # Check if arguments were provided
 if [ -z "$1" ]; then
@@ -654,6 +658,8 @@ while test -n "$1"; do
       echo "Operating System: ${os_version}"
       echo "Architecture: ${architecture}"
       echo "User: ${computer_user}"
+      echo "Private IP: ${private_ip}"
+      echo "Public IP: ${public_ip}"
       usage
       exit 0
       ;;
