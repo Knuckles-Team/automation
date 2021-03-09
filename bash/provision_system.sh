@@ -117,6 +117,7 @@ function provision(){
 function update(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     sudo "${pkg_mgr}" update
+    sudo "${pkg_mgr}" autoremove -y
     sudo "${pkg_mgr}" install update-manager-core -y
     sudo "${pkg_mgr}" upgrade -y
     sudo "${pkg_mgr}" dist-upgrade -y
