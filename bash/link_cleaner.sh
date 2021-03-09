@@ -2,7 +2,8 @@
 
 function usage() {
   echo "Usage: "
-  echo "sudo ./link_cleaner.sh clean <input_file> <output_file>"
+  echo "sudo ./link_cleaner.sh -c <input_file> <output_file>"
+  echo "sudo ./link_cleaner.sh --clean ./input_file.txt ./export_file.txt"
   echo "sudo ./link_cleaner.sh clean ./input_file.txt ./export_file.txt"
 }
 
@@ -41,20 +42,57 @@ function clean_links() {
   cat "${output_file}"
 }
 
-function main() {
-  echo "0 ${args[0]}" 
-  echo "1 ${args[1]}" 
-  echo "2 ${args[2]}" 
-  
-  if [[ "${#args[@]}" -le 1 ]] ; then
-    usage    
-    exit 0
-  elif [[ ${args[0]} == "clean" ]] ; then
-    input_file="${args[1]}"
-    output_file="${args[2]}" 
-    clean_links
-  fi
-}
+computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
+os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+os_version="${os_version:1:-1}"
+architecture="$(uname -m)"
+clean_flag='false'
 
-args=("$@")
-main
+# Check if arguments were provided
+if [ -z "$1" ]; then
+  usage
+  exit 0
+fi
+
+while test -n "$1"; do
+  case "$1" in
+    h | -h | --help)
+      echo "Operating System: ${os_version}"
+      echo "Architecture: ${architecture}"
+      echo "User: ${computer_user}"
+      usage
+      exit 0
+      ;;
+    c | -c | --clean | clean)
+      echo "Cleaning Links"
+      if [ ${2} ] && [ ${3} ]; then
+        clean_flag='true'
+        input_file="${1}"
+        output_file="${2}"
+        shift
+        shift
+      else
+        echo 'ERROR: "-a | --applications" requires a non-empty option argument.'
+        exit 0
+      fi
+      shift
+      ;;
+    --)# End of all options.
+      shift
+      break
+      ;;
+    -?*)
+      printf 'WARNING: Unknown option (ignored): %s\n' "$1" >&2
+      ;;
+    *)
+      shift
+      break
+      ;;
+  esac
+done
+
+if [ ${clean_flag} == "true" ]; then
+  clean_links
+fi
+
+

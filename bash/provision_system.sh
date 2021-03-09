@@ -93,7 +93,6 @@ function provision(){
     elif [[ "${app}" == "youtube-dl" ]]; then
       youtube-dl_install
     elif [[ "${app}" == "xdotool" ]]; then
-
       xdotool_install
     elif [[ "${app}" == "xsel" ]]; then
       xsel_install
