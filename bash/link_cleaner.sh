@@ -72,7 +72,7 @@ while test -n "$1"; do
         shift
         shift
       else
-        echo 'ERROR: "-a | --applications" requires a non-empty option argument.'
+        echo 'ERROR: "-c | --clean" requires two non-empty option arguments.'
         exit 0
       fi
       shift
