@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#add neofetch, sudo, dialog, udisks2, ubuntu-mate-desktop, tigervnc-standalone-server
 function usage(){
   echo -e "\nUsage: "
   echo -e "sudo ./provision_system.sh -h [Help]"
@@ -35,6 +34,8 @@ function provision(){
       adb_install
     elif [[ "${app}" == "chrome" ]]; then
       chrome_install
+    elif [[ "${app}" == "dialog" ]]; then
+      dialog_install
     elif [[ "${app}" == "docker" ]]; then
       docker_install
     elif [[ "${app}" == "dos2unix" ]]; then
@@ -47,6 +48,8 @@ function provision(){
       gimp_install
     elif [[ "${app}" == "git" ]]; then
       git_install
+    elif [[ "${app}" == "gnome" ]]; then
+      gnome_install
     elif [[ "${app}" == "gnome-theme" ]]; then
       gnome-theme_install
     elif [[ "${app}" == "gnucobol" ]]; then
@@ -61,6 +64,8 @@ function provision(){
       kvm_install
     elif [[ "${app}" == "nfs" ]]; then
       nfs_install
+    elif [[ "${app}" == "neofetch" ]]; then
+      neofetch_install
     elif [[ "${app}" == "openjdk" ]]; then
       openjdk_install
     elif [[ "${app}" == "openssh" ]]; then
@@ -81,10 +86,16 @@ function provision(){
       stat_log_install
     elif [[ "${app}" == "startup-disk-creator" ]]; then
       startup-disk-creator_install
+    elif [[ "${app}" == "sudo" ]]; then
+      sudo_install
+    elif [[ "${app}" == "tigervnc" ]]; then
+      tigervnc_install
     elif [[ "${app}" == "tmux" ]]; then
       tmux_install
     elif [[ "${app}" == "transmission" ]]; then
       transmission_install
+    elif [[ "${app}" == "udisks2" ]]; then
+      udisks2_install
     elif [[ "${app}" == "vlc" ]]; then
       vlc_install
     elif [[ "${app}" == "wine" ]]; then
@@ -163,6 +174,10 @@ function adb_install(){
   else
     echo "Distribution ${os_version} not supported"
   fi
+}
+
+function dialog_install(){
+  sudo "${pkg_mgr}" install -y dialog
 }
 
 function docker_install(){
@@ -266,6 +281,10 @@ function git_install(){
   fi
 }
 
+function gnome_install(){
+  sudo "${pkg_mgr}" install -y gnome-shell ubuntu-gnome-desktop
+}
+
 function gnome-theme_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     sudo "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
@@ -300,9 +319,7 @@ function hypnotix_install(){
 }
 
 function kexi_install(){
-
   sudo "${pkg_mgr}" install -y kexi
-
 }
 
 function kvm_install(){
@@ -371,6 +388,10 @@ function kvm_install(){
   else
     echo "Distribution ${os_version} not supported"
   fi
+}
+
+function neofetch_install(){
+  sudo "${pkg_mgr}" install -y neofetch
 }
 
 function nfs_install(){
@@ -568,8 +589,20 @@ function steam_install(){
   fi
 }
 
+function sudo_install(){
+  sudo "${pkg_mgr}" install -y sudo
+}
+
+function tigervnc_install(){
+  sudo "${pkg_mgr}" install -y tigervnc-standalone-server
+}
+
 function transmission_install(){
   sudo "${pkg_mgr}" install -y transmission-qt transmission-cli transmission-daemon
+}
+
+function udisks2_install(){
+  sudo "${pkg_mgr}" install -y udisks2
 }
 
 function youtube-dl_install(){
@@ -620,8 +653,8 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "chrome" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
-pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "statlog" "tmux" "transmission" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 update_flag='false'
