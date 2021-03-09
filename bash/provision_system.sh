@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#add neofetch, sudo, dialog, udisks2, ubuntu-mate-desktop, tigervnc-standalone-server
 function usage(){
   echo -e "\nUsage: "
   echo -e "sudo ./provision_system.sh -h [Help]"
