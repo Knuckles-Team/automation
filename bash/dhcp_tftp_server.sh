@@ -2,9 +2,10 @@
 
 function usage() {
   echo "Usage: "
-  echo "sudo ./dhcp_tftp_server.sh --install"
+  echo "sudo ./dhcp_tftp_server.sh --help"
+  echo "sudo ./dhcp_tftp_server.sh --install --adapters <public_network_adapter_name> <private_network_adapter_name>"
   echo "sudo ./dhcp_tftp_server.sh --dhcp"
-  echo "sudo ./dhcp_tftp_server.sh --new-iso"
+  echo "sudo ./dhcp_tftp_server.sh --new-iso <iso_image.iso>"
 }
 function install() {
   sudo apt update
@@ -101,14 +102,14 @@ function set_dhcp() {
 iface ${public_network_adapter} inet static
 address ${public_ip}
 netmask 255.255.0.0
-gateway $(echo '${public_ip}' | awk -F. '{print $1"."$2"."}').0.1
+gateway $(echo '${public_ip}' | awk -F. '{print $1"."$2}').0.1
 
 auto ${private_network_adapter}
 iface ${private_network_adapter} inet static
 address ${private_ip}
 netmask 255.255.128.0
 broadcast 192.168.127.255
-network 192.168.0.0
+network $(echo '${private_ip}' | awk -F. '{print $1"."$2}').0.0
 " | sudo tee /etc/network/interfaces
 
   # Network YAML file.
@@ -127,50 +128,50 @@ ethernets:
 " | sudo tee /etc/netplan/vagrant.yaml
 
   # DHCP Configuration File
-  echo '# DHCP CONF - PXE DHCP and General DHCP
+  echo "# DHCP CONF - PXE DHCP and General DHCP
 authoritative;
 allow booting;
 allow bootp;
 
-class "PXE_Clients" {
-  match if substring(option vendor-class-identifier, 0, 9) = "PXEClient";
-  log(info, "Found PXE Client on network");
+class 'PXE_Clients' {
+  match if substring(option vendor-class-identifier, 0, 9) = 'PXEClient';
+  log(info, 'Found PXE Client on network');
 }
 
 share-network private-network {
   # General subnet 32,768 IP Addresses
-  subnet 192.168.0.0 netmask 255.255.128.0 {
+  subnet $(echo '${private_ip}' | awk -F. '{print $1"."$2}').0.0 netmask 255.255.128.0 {
     default-lease-time 2592000;
     max-lease-time 2592000;
 
     option subnet-mask 255.255.128.0;
-    option routers 192.168.0.1;
+    option routers ${private_ip};
     option domain-name-servers 1.1.1.1,8.8.8.8;
-    option broadcast-address 192.168.127.255;
+    option broadcast-address $(echo '${private_ip}' | awk -F. '{print $1"."$2}').127.255;
 
     pool {
-      range 192.168.0.2 192.168.127.254;
-      log(info, "allocated IP to general machine);
+      range $(echo '${private_ip}' | awk -F. '{print $1"."$2}').0.2 $(echo '${private_ip}' | awk -F. '{print $1"."$2}').127.254;
+      log(info, 'allocated IP to general machine');
     }
   }
 
   # PXE Subnet 32,768 IP Addresses
-  subnet 192.168.128.0 netmask 255.255.128.0 {
-    filename "tftpboot/mboot.efi";
+  subnet $(echo '${private_ip}' | awk -F. '{print $1"."$2}').128.0 netmask 255.255.128.0 {
+    filename 'tftpboot/mboot.efi';
 
     option subnet-mask 255.255.128.0;
-    option routers 192.168.128.1;
+    option routers $(echo '${private_ip}' | awk -F. '{print $1"."$2}').128.1;
     option domain-name-servers 1.1.1.1,8.8.8.8;
-    option broadcast-address 192.168.128.255;
+    option broadcast-address $(echo '${private_ip}' | awk -F. '{print $1"."$2}').128.255;
 
     pool {
-      range 192.168.128.2 192.168.255.254;
-      allow members of "PXE_Clients";
-      log(info, "allocated IP to PXE Client");
+      range $(echo '${private_ip}' | awk -F. '{print $1"."$2}').128.2 $(echo '${private_ip}' | awk -F. '{print $1"."$2}').255.254;
+      allow members of 'PXE_Clients';
+      log(info, 'allocated IP to PXE Client');
     }
   }
 }
-' | sudo tee /etc/dhcp/dhcpd.conf
+" | sudo tee /etc/dhcp/dhcpd.conf
 
   cat /etc/dhcp/dhcpd.conf
 
@@ -453,6 +454,17 @@ while test -n "$1"; do
       usage
       echo "These are your network devices: $(ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d')"
       exit 0
+      ;;
+    a | -a | --adapters)
+      if [ ${2} ] && [ ${3} ]; then
+        public_network_adapter="${2}"
+        private_network_adapter="${3}"
+        shift
+      else
+        echo 'ERROR: "-a | --adapters" requires two non-empty option arguments.'
+        exit 0
+      fi
+      shift
       ;;
     i | -i | --install | install)
       install_flag='true'
