@@ -3,9 +3,9 @@
 function usage() {
   echo "Usage: "
   echo "sudo ./dhcp_tftp_server.sh --help"
-  echo "sudo ./dhcp_tftp_server.sh --install --adapters <public_network_adapter_name> <private_network_adapter_name>"
-  echo "sudo ./dhcp_tftp_server.sh --dhcp"
-  echo "sudo ./dhcp_tftp_server.sh --new-iso <iso_image.iso>"
+  echo "sudo ./dhcp_tftp_server.sh --install --adapters <public_network_adapter_name> <private_network_adapter_name> --private-ip '192.168.0.1'"
+  echo "sudo ./dhcp_tftp_server.sh --dhcp --adapters <public_network_adapter_name> <private_network_adapter_name> --private-ip '192.168.0.1'"
+  echo "sudo ./dhcp_tftp_server.sh --new-iso </path/to/iso_image.iso>"
 }
 function install() {
   sudo apt update
@@ -481,6 +481,15 @@ while test -n "$1"; do
         shift
       else
         echo 'ERROR: "-n | --new-iso" requires a non-empty option argument.'
+        exit 0
+      fi
+      ;;
+    p | -p | --private-ip)
+      if [ ${2} ]; then
+        private_ip="${2}"
+        shift
+      else
+        echo 'ERROR: "-p | --private-ip" requires a non-empty option argument.'
         exit 0
       fi
       shift
