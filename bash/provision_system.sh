@@ -478,6 +478,8 @@ function powershell_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     # Install pre-requisite packages.
     sudo "${pkg_mgr}" install -y wget apt-transport-https software-properties-common
+    # Navigate to tmp directory
+    cd /tmp || echo "Could not find /tmp directory"
     # Download the Microsoft repository GPG keys
     wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
     # Register the Microsoft repository GPG keys
@@ -485,7 +487,7 @@ function powershell_install(){
     # Update the list of products
     sudo "${pkg_mgr}" update
     # Enable the "universe" repositories
-    sudo add-apt-repository universe
+    sudo add-apt-repository -y universe
     # Install PowerShell
     sudo "${pkg_mgr}" install -y powershell
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
