@@ -72,6 +72,8 @@ function provision(){
       openssh_install
     elif [[ "${app}" == "phoronix" ]]; then
       phoronix_install
+    elif [[ "${app}" == "powershell" ]]; then
+      powershell_install
     elif [[ "${app}" == "python" ]]; then
       python_install
     elif [[ "${app}" == "pycharm" ]]; then
@@ -472,6 +474,31 @@ function phoronix_install(){
   fi
 }
 
+function powershell_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+    # Install pre-requisite packages.
+    sudo "${pkg_mgr}" install -y wget apt-transport-https software-properties-common
+    # Download the Microsoft repository GPG keys
+    wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+    # Register the Microsoft repository GPG keys
+    sudo dpkg -i packages-microsoft-prod.deb
+    # Update the list of products
+    sudo "${pkg_mgr}" update
+    # Enable the "universe" repositories
+    sudo add-apt-repository universe
+    # Install PowerShell
+    sudo "${pkg_mgr}" install -y powershell
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+    sudo "${pkg_mgr}" install -y wget curl
+    # Register the Microsoft RedHat repository
+    curl https://packages.microsoft.com/config/rhel/7/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
+    # Install PowerShell
+    sudo yum install -y powershell
+  else
+    echo "Distribution ${os_version} not supported"
+  fi
+}
+
 function python_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     sudo "${pkg_mgr}" install -y mlocate
@@ -654,8 +681,8 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "chrome" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
-pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 update_flag='false'
