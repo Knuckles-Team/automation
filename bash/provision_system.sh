@@ -1,5 +1,5 @@
 #!/bin/bash
-#sudo apt install trash-cli
+
 function usage(){
   echo -e "\nUsage: "
   echo -e "sudo ./provision_system.sh -h [Help]"
