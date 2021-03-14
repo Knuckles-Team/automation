@@ -96,6 +96,8 @@ function provision(){
       tmux_install
     elif [[ "${app}" == "transmission" ]]; then
       transmission_install
+    elif [[ "${app}" == "trash-cli" ]]; then
+      trash-cli_install
     elif [[ "${app}" == "udisks2" ]]; then
       udisks2_install
     elif [[ "${app}" == "vlc" ]]; then
@@ -631,6 +633,10 @@ function transmission_install(){
   sudo "${pkg_mgr}" install -y transmission-qt transmission-cli transmission-daemon
 }
 
+function trash-cli_install(){
+  sudo "${pkg_mgr}" install -y trash-cli
+}
+
 function udisks2_install(){
   sudo "${pkg_mgr}" install -y udisks2
 }
@@ -683,8 +689,8 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "chrome" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
-pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 update_flag='false'
@@ -719,7 +725,7 @@ fi
 while test -n "$1"; do
   case "$1" in
     h | -h | --help)
-      echo "Operating System: ${os_version}"
+      echo -e "\n\nOperating System: ${os_version}"
       echo "Architecture: ${architecture}"
       echo "User: ${computer_user}"
       echo "Private IP: ${private_ip}"
