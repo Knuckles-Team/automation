@@ -30,6 +30,7 @@ function provision(){
   for app in "${apps[@]}"
   do
     echo "Installing: ${app}"
+    #"${app}_install"
     if [[ "${app}" == "adb" ]]; then
       adb_install
     elif [[ "${app}" == "chrome" ]]; then
