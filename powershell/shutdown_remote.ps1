@@ -1,0 +1,1 @@
+#https://www.wikihow.com/Shut-Down-or-Restart-Another-Computer-Using-CMD

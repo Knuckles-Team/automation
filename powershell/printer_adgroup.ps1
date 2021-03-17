@@ -1,0 +1,1 @@
+#https://devblogs.microsoft.com/scripting/weekend-scripter-easily-publish-all-printers-on-a-print-server-to-active-directory/
