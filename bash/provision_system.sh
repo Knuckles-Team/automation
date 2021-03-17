@@ -112,6 +112,8 @@ function provision(){
       adb_install
     elif [[ "${app}" == "chrome" ]]; then
       chrome_install
+    elif [[ "${app}" == "chrome-remote-desktop" ]]; then
+      chrome-remote-desktop_install
     elif [[ "${app}" == "dialog" ]]; then
       dialog_install
     elif [[ "${app}" == "docker" ]]; then
@@ -216,6 +218,22 @@ function update(){
   fi
 }
 
+function adb_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+    sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
+    adb version
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+    sudo "${pkg_mgr}" install epel-release -y
+    sudo "${pkg_mgr}" install snapd -y
+    sudo systemctl enable --now snapd.socket
+    sudo ln -s /var/lib/snapd/snap /snap
+    sudo snap install android-adb --edge
+    adb version
+  else
+    echo "Distribution ${os_version} not supported"
+  fi
+}
+
 function chrome_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     if [[ "${architecture}" == "x86_64" ]]; then
@@ -243,20 +261,10 @@ function chrome_install(){
   fi
 }
 
-function adb_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
-    adb version
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install epel-release -y
-    sudo "${pkg_mgr}" install snapd -y
-    sudo systemctl enable --now snapd.socket
-    sudo ln -s /var/lib/snapd/snap /snap
-    sudo snap install android-adb --edge
-    adb version
-  else
-    echo "Distribution ${os_version} not supported"
-  fi
+function chrome-remote-desktop_install(){
+  wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
+  sudo "${pkg_mgr}" install -y /tmp/chrome-remote-desktop_current_amd64.deb
+  mkdir -p ~/.config/chrome-remote-desktop
 }
 
 function dialog_install(){
@@ -767,8 +775,8 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "chrome" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
-pi_apps=( "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+pi_apps=( "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 update_flag='false'
