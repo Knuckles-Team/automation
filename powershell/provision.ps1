@@ -34,6 +34,15 @@ function EnableFeatures(){
   InstallFeature MicrosoftWindowsPowerShellV2Root
 }
 
+function AudacityInstall() {
+  Write-Host "Installing Audacity"
+  $Path = $env:TEMP;
+  $Installer = "audacity_installer.exe";
+  Invoke-WebRequest "https://www.fosshub.com/Audacity.html/audacity-win-3.0.0.exe" -OutFile $Path\$Installer;
+  Start-Process -FilePath $Path\$Installer -Args "/silent /install" -Verb RunAs -Wait;
+  Remove-Item $Path\$Installer
+  Write-Host "Audacity Installed Successfully"
+}
 function ChromeInstall() {
   Write-Host "Installing Chrome"
   $Path = $env:TEMP;
@@ -230,6 +239,7 @@ function Main {
   TransmissionInstall
   VLCInstall
   WSLInstall
+  AudacityInstall
 }
 
 Main

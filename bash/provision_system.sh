@@ -110,6 +110,8 @@ function provision(){
     #"${app}_install"
     if [[ "${app}" == "adb" ]]; then
       adb_install
+    elif [[ "${app}" == "audacity" ]]; then
+      audacity_install
     elif [[ "${app}" == "chrome" ]]; then
       chrome_install
     elif [[ "${app}" == "chrome-remote-desktop" ]]; then
@@ -229,6 +231,22 @@ function adb_install(){
     sudo ln -s /var/lib/snapd/snap /snap
     sudo snap install android-adb --edge
     adb version
+  else
+    echo "Distribution ${os_version} not supported"
+  fi
+}
+
+function audacity_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+    sudo add-apt-repository ppa:ubuntuhandbook1/audacity
+    sudo "${pkg_mgr}" update
+    sudo "${pkg_mgr}" install audacity
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+    sudo "${pkg_mgr}" install epel-release
+    sudo "${pkg_mgr}" install snapd
+    sudo systemctl enable --now snapd.socket
+    sudo ln -s /var/lib/snapd/snap /snap
+    sudo snap install audacity
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -775,8 +793,8 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
-pi_apps=( "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+pi_apps=( "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 provision_flag='false'
 update_flag='false'
