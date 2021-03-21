@@ -93,7 +93,7 @@ function ChromeInstall() {
   }
 }
 
-function 7zipInstall() {
+function SevenzipInstall() {
   $appToMatch = '*7*zip*'
   $result = Get-InstalledApps | Where-Object {$_.DisplayName -like $appToMatch}
   If ($null -eq $result) {
@@ -165,7 +165,7 @@ function OpenSSHInstall() {
   # Install OpenSSH Client and Server
   Write-Host "Installing OpenSSH"
   # Find latest version
-  Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
+  Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
 
   # Install the OpenSSH Client
   Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
@@ -208,7 +208,7 @@ function PythonInstall(){
     # Install Python Dependencies
     python -m pip install autoconf setuptools wheel pytubex regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
     # Remove downloaded files and directory
-    rm -r C:\temp\
+    Remove-Item -r C:\temp\
     Write-Host "Python Environment Installed Successfully"
   }
   else {
@@ -227,13 +227,15 @@ function PycharmInstall(){
 
     $location = Get-Location
     $tkthread_path = "$location\thread2.8.4.zip"
-
+    $tkthread_final_path = $(python -c "import os, sys; print(os.path.dirname(sys.executable))")
+    $tkthread_final_path = "$tkthread_final_path\tcl\tcl8.6\thread2.8.4"
+    Expand-Archive $tkthread_path -DestinationPath $tkthread_final_path
     # Install exes
     C:/temp/pycharm.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
     # Reload Environment Variables when installing something during script
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     # Remove downloaded files and directory
-    rm -r C:\temp\
+    Remove-Item -r C:\temp\
     Write-Host "Pycharm Installed Successfully"
   }
   else {
@@ -342,7 +344,7 @@ function WSLInstall() {
 function Main {
   ChromeInstall
   EnableFeatures
-  7zipInstall
+  SevenzipInstall
   WSLInstall
   DockerInstall
   AudacityInstall
