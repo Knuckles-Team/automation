@@ -246,7 +246,7 @@ function audacity_install(){
     sudo "${pkg_mgr}" install snapd
     sudo systemctl enable --now snapd.socket
     sudo ln -s /var/lib/snapd/snap /snap
-    sudo snap install audacity
+    sudo snap install audacity -y
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -258,13 +258,13 @@ function chrome_install(){
       cd "${download_dir}" || echo "Directory not found or does not exist"
       sudo "${pkg_mgr}" install curl wget -y
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb"
+      sudo "${pkg_mgr}" install -y "${download_dir}/google-chrome-stable_current_amd64.deb"
       rm -rf "${download_dir}/google-chrome-stable_current_amd64.deb"
     elif [[ "${architecture}" == "x86" ]]; then
       cd "${download_dir}" || echo "Directory not found or does not exist"
       sudo "${pkg_mgr}" install curl wget -y
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
-      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"
+      sudo "${pkg_mgr}" install -y "${download_dir}/google-chrome-stable_current_i386.deb"
       rm -rf "${download_dir}/google-chrome-stable_current_i386.deb"
     elif [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
       sudo "${pkg_mgr}" install -y chromium-browser
@@ -272,7 +272,7 @@ function chrome_install(){
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     cd "${download_dir}" || echo "Directory not found or does not exist"
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-    sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
+    sudo "${pkg_mgr}" install -y "${download_dir}/google-chrome-stable_current_x86_64.rpm"
     rm -rf "${download_dir}/google-chrome-stable_current_amd64.rpm"
   else
     echo "Distribution ${os_version} not supported"
