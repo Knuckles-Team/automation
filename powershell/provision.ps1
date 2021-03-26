@@ -191,6 +191,29 @@ function GitInstall() {
   }
 }
 
+function NotepadPPInstall() {
+  $appToMatch = '*Notepad*'
+  $result = Get-InstalledApps | Where-Object {$_.DisplayName -like $appToMatch}
+  If ($null -eq $result) {
+    Write-Host "Installing Notepad++"
+    $Path = $env:TEMP;
+    $Installer = "notepad_installer.exe";
+    if (Test-Path -Path $Path\$Installer -PathType Leaf) {
+      Write-Host "Notepad++ already downloaded!"
+    }
+    else {
+      Invoke-WebRequest "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v7.9.5/npp.7.9.5.Installer.x64.exe" -OutFile $Path\$Installer;
+    }
+    Start-Process -FilePath $Path\$Installer -Args "/silent /install" -Verb RunAs -Wait;
+    Remove-Item $Path\$Installer
+    Write-Host "Notepad++ Installed Successfully"
+  }
+  else {
+    Write-Host "Notepad++ already installed!"
+  }
+}
+
+
 function OpenSSHInstall() {
   # Install OpenSSH Client and Server
   Write-Host "Installing OpenSSH"
@@ -414,6 +437,7 @@ function Main {
   AudacityInstall
   GimpInstall
   GitInstall
+  NotepadPPInstall
   OpenSSHInstall
   PythonInstall
   PycharmInstall
