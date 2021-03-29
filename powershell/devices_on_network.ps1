@@ -1,3 +1,4 @@
+# https://stackoverflow.com/questions/41785413/use-powershell-to-get-device-names-and-their-ipaddress-on-a-home-network
 Write-Host "Discovering devices..."
 #$FileOut = ".\Computers.csv"
 ### Ping subnet
