@@ -256,7 +256,7 @@ function audacity_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     sudo add-apt-repository -y ppa:ubuntuhandbook1/audacity
     sudo "${pkg_mgr}" update
-    sudo "${pkg_mgr}" install audacity
+    sudo "${pkg_mgr}" install -y audacity
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     sudo "${pkg_mgr}" install epel-release
     sudo "${pkg_mgr}" install snapd
