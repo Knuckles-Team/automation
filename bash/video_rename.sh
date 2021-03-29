@@ -48,38 +48,33 @@ function file_rename() {
   then
     for file in "${list[@]}"
     do
-      #printf "Checking ${file_type}: ${file}\n"
+      printf "Checking Filetype: ${file_type}\n File: ${file}\n"
       x="${file}"
-      if [[ "${file_type}" == "mkv" ]]
-        then
+      if [[ "${file_type}" == "mkv" ]]; then
         y="${x%.mkv}"
-      elif [[ "${file_type}" == "mp4" ]]
-      then
+      elif [[ "${file_type}" == "mp4" ]]; then
         y="${x%.mp4}"
-      elif [[ "${file_type}" == "webm" ]]
-      then
+      elif [[ "${file_type}" == "webm" ]]; then
         y="${x%.webm}"
       fi      
       title=${y##*/}
       current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
-      #printf "Current Title: ${current_title}\nProposed Title: ${title}\n"
-      if [[ "${title}" != "${current_title}" ]]
-      then
-        if [[ "${file_type}" == "mkv" ]]
-        then
-        mkvpropedit "${file}" -e info -s title="${title}" > /dev/null 2>&1
-        #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
-      elif [[ "${file_type}" == "webm" ]]
-      then
-        mkvpropedit "${file}" -e info -s title="${title}" > /dev/null 2>&1
-        #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
-      elif [[ "${file_type}" == "mp4" ]]
-      then
-        AtomicParsley "${file}" --title "${title}" --comment "" --overWrite > /dev/null 2>&1
-        #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
-      fi
-#      else
-#        printf "Titles already the same, no need to update: ${file}\n"
+      if [[ "${title}" != "${current_title}" ]]; then
+#        printf "Current Title: ${current_title}\nProposed Title: ${title}\n"
+#        sleep 10
+        if [[ "${file_type}" == "mkv" ]]; then
+          mkvpropedit "${file}" -e info -s title="${title}" #> /dev/null 2>&1
+#          printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+#          sleep 10
+        elif [[ "${file_type}" == "webm" ]]; then
+          mkvpropedit "${file}" -e info -s title="${title}" > /dev/null 2>&1
+          #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+        elif [[ "${file_type}" == "mp4" ]]; then
+          AtomicParsley "${file}" --title "${title}" --comment "" --overWrite > /dev/null 2>&1
+          #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
+        fi
+#     else
+#       printf "Titles already the same, no need to update: ${file}\n"
       fi    
       # Rename Directory of Folder
       rename_directory "${directory}" "${title}"
@@ -95,30 +90,31 @@ function find_files() {
     mkv_list=("${directory}"/*.mkv)
     webm_list=("${directory}"/*.webm)
     percent_complete=$(((count/${#directories[@]})*100))
+    clear
     if [[ -n "${mkv_list}" ]]
     then
-      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Processing MKV Files \r"
+      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Processing MKV Files: ${directory} \r"
       file_rename "${mkv_list}" "mkv"
     else
-      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Found no MKV Files in ${directory} \r"
+      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Found no MKV Files: ${directory} \r"
     fi
     if [[ -n "${mp4_list}" ]]
     then
-      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Processing MP4 Files \r"
+      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Processing MP4 Files: ${directory} \r"
       file_rename "${mp4_list}" "mp4"
     else
-      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Found no MP4 Files in ${directory} \r"
+      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Found no MP4 Files: ${directory} \r"
     fi
     if [[ -n "${webm_list}" ]]
     then
-      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Processing WEBM Files \r"
+      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Processing WEBM Files: ${directory} \r"
       file_rename "${webm_list}" "webm"
     else
-      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Found no WEBM Files in ${directory} \r"
+      echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Found no WEBM Files: ${directory} \r"
     fi
     ((count++))
     percent_complete=$(((count/${#directories[@]})*100))
-    echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Completed File Renaming \r"
+    echo -ne "Percent Complete: ${percent_complete} | Ratio: ${count}/${#directories[@]} | Completed File Renaming                                               \r"
   done
 }
 
