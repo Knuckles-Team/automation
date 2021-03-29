@@ -254,7 +254,7 @@ function atomicparsley_install(){
 
 function audacity_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo add-apt-repository ppa:ubuntuhandbook1/audacity
+    sudo add-apt-repository -y ppa:ubuntuhandbook1/audacity
     sudo "${pkg_mgr}" update
     sudo "${pkg_mgr}" install audacity
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
