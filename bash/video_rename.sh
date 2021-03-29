@@ -48,7 +48,7 @@ function file_rename() {
   then
     for file in "${list[@]}"
     do
-      printf "Checking Filetype: ${file_type}\n File: ${file}\n"
+      #printf "Checking Filetype: ${file_type}\n File: ${file}\n"
       x="${file}"
       if [[ "${file_type}" == "mkv" ]]; then
         y="${x%.mkv}"
