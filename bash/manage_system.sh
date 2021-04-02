@@ -29,6 +29,8 @@ function usage(){
 
 function clean_system(){
   trash-cli_install
+  echo "Trash: "
+  trash-list
   echo "Emptying recycling bin"
   trash-empty
 }
