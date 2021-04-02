@@ -26,6 +26,11 @@ function usage(){
   echo -e "\nApps: \n${apps[*]} \n"
 }
 
+function clean_system(){
+  trash-cli_install
+  trash-empty
+}
+
 # testing with server user provisioning
 function server_provision(){
   set -euo pipefail
