@@ -13,10 +13,11 @@ function usage(){
   echo -e "sudo ./provision_system.sh --update --log /home/${computer_user}/Desktop [Update and upgrade computer and save results to /home/${computer_user}/Desktop/provision_log_${date}.log]"
   echo -e "sudo ./provision_system.sh -u -p -a tmux,git,openssh [Update, Upgrade, then Install and configure applications]"
   echo -e "sudo ./provision_system.sh --update --provision --applications vlc,fstab,ffmpeg [Update, Upgrade, then Install and configure applications]"
-  echo -e "sudo ./provision_system.sh -p -i -a tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo -e "sudo ./provision_system.sh -p -i -c -a tmux,git,openssh [Install only flag will only install, not configure applications]"
   echo -e "sudo ./provision_system.sh provision --install-only tmux,git,openssh [Install only flag will only install, not configure applications]"
   echo -e "\nFlags: "
   echo -e "-a | --aplications [Optional Parameter; Can specify specific applications to install]"
+  echo -e "-c | --clean [Optional Parameter; Will clean the trash bin]"
   echo -e "-d | --download-directory [Optional Parameter; Must specify download directory - Default is /tmp]"
   echo -e "-i | --install-only | install-only [Optional Parameter; Will not configure any applications]"
   echo -e "-h | --help "
@@ -28,6 +29,7 @@ function usage(){
 
 function clean_system(){
   trash-cli_install
+  echo "Emptying recycling bin"
   trash-empty
 }
 
@@ -838,6 +840,7 @@ date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
+clean_flag='false'
 provision_flag='false'
 update_flag='false'
 log_flag='false'
@@ -888,6 +891,10 @@ while test -n "$1"; do
         echo 'ERROR: "-a | --applications" requires a non-empty option argument.'
         exit 0
       fi
+      shift
+      ;;
+    c | -c | --clean)
+      clean_flag='true'
       shift
       ;;
     d | -d | --download-directory)
@@ -958,6 +965,16 @@ if [ ${provision_flag} == "true" ]; then
     provision | sudo tee -a "${log_dir}/${log_file}"
   else
     provision
+  fi
+else
+  exit 0
+fi
+
+if [ ${clean_flag} == "true" ]; then
+  if [ ${log_flag} == "true" ]; then
+    clean_system | sudo tee -a "${log_dir}/${log_file}"
+  else
+    clean_system
   fi
 else
   exit 0
