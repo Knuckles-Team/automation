@@ -1,4 +1,5 @@
 #!/bin/bash
+#https://www.xda-developers.com/uninstall-carrier-oem-bloatware-without-root-access/
 
 # Remove samsung bloatware
 
