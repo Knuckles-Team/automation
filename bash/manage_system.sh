@@ -149,6 +149,8 @@ function provision(){
       gnome-theme_install
     elif [[ "${app}" == "gnucobol" ]]; then
       gnucobol_install
+    elif [[ "${app}" == "ghostscript" ]]; then
+      ghostscript_install
     elif [[ "${app}" == "gparted" ]]; then
       gparted_install
     elif [[ "${app}" == "hypnotix" ]]; then
@@ -439,6 +441,10 @@ function gnome-theme_install(){
 
 function gnucobol_install(){
   sudo "${pkg_mgr}" install -y gnucobol
+}
+
+function ghostscript_install(){
+  sudo "${pkg_mgr}" install -y ghostscript
 }
 
 function gparted_install(){
@@ -845,8 +851,8 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kexi" "kvm" "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
-pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kexi" "kvm" "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 clean_flag='false'
 provision_flag='false'
