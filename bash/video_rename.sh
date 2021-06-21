@@ -86,9 +86,9 @@ function find_files() {
   count=0
   for directory in "${directories[@]}"
   do
-    mp4_list=("${directory}"/*.mp4)
-    mkv_list=("${directory}"/*.mkv)
-    webm_list=("${directory}"/*.webm)
+    mp4_list=("${directory}"/*.mp4 "${directory}"/*.MP4)
+    mkv_list=("${directory}"/*.mkv "${directory}"/*.MKV)
+    webm_list=("${directory}"/*.webm "${directory}"/*.WEBM)
     percent_complete=$(((count/${#directories[@]})*100))
     clear
     if [[ -n "${mkv_list}" ]]
