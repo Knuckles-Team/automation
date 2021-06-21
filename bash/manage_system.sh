@@ -2,19 +2,19 @@
 
 function usage(){
   echo -e "\nUsage: "
-  echo -e "sudo ./provision_system.sh -h [Help]"
-  echo -e "sudo ./provision_system.sh --help [Help]"
-  echo -e "sudo ./provision_system.sh -p [Install and configure all available applications]"
-  echo -e "sudo ./provision_system.sh --provision [Install and configure all available applications]"
-  echo -e "sudo ./provision_system.sh provision [Install and configure all available applications]"
-  echo -e "sudo ./provision_system.sh -u [Update and upgrade computer]"
-  echo -e "sudo ./provision_system.sh --update [Update and upgrade computer]"
-  echo -e "sudo ./provision_system.sh -u -l [Update and upgrade computer and save results to log file]"
-  echo -e "sudo ./provision_system.sh --update --log /home/${computer_user}/Desktop [Update and upgrade computer and save results to /home/${computer_user}/Desktop/provision_log_${date}.log]"
-  echo -e "sudo ./provision_system.sh -u -p -a tmux,git,openssh [Update, Upgrade, then Install and configure applications]"
-  echo -e "sudo ./provision_system.sh --update --provision --applications vlc,fstab,ffmpeg [Update, Upgrade, then Install and configure applications]"
-  echo -e "sudo ./provision_system.sh -p -i -c -a tmux,git,openssh [Install only flag will only install, not configure applications]"
-  echo -e "sudo ./provision_system.sh provision --install-only tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo -e "sudo ./manage_system.sh -h [Help]"
+  echo -e "sudo ./manage_system.sh --help [Help]"
+  echo -e "sudo ./manage_system.sh -p [Install and configure all available applications]"
+  echo -e "sudo ./manage_system.sh --provision [Install and configure all available applications]"
+  echo -e "sudo ./manage_system.sh provision [Install and configure all available applications]"
+  echo -e "sudo ./manage_system.sh -u [Update and upgrade computer]"
+  echo -e "sudo ./manage_system.sh --update [Update and upgrade computer]"
+  echo -e "sudo ./manage_system.sh -u -l [Update and upgrade computer and save results to log file]"
+  echo -e "sudo ./manage_system.sh --update --log /home/${computer_user}/Desktop [Update and upgrade computer and save results to /home/${computer_user}/Desktop/provision_log_${date}.log]"
+  echo -e "sudo ./manage_system.sh -u -p -a tmux,git,openssh [Update, Upgrade, then Install and configure applications]"
+  echo -e "sudo ./manage_system.sh --update --provision --applications vlc,fstab,ffmpeg [Update, Upgrade, then Install and configure applications]"
+  echo -e "sudo ./manage_system.sh -p -i -c -a tmux,git,openssh [Install only flag will only install, not configure applications]"
+  echo -e "sudo ./manage_system.sh provision --install-only tmux,git,openssh [Install only flag will only install, not configure applications]"
   echo -e "\nFlags: "
   echo -e "-a | --aplications [Optional Parameter; Can specify specific applications to install]"
   echo -e "-c | --clean [Optional Parameter; Will clean the trash bin]"
@@ -135,6 +135,8 @@ function provision(){
       docker_install
     elif [[ "${app}" == "dos2unix" ]]; then
       dos2unix_install
+    elif [[ "${app}" == "enscript" ]]; then
+      enscript_install
     elif [[ "${app}" == "ffmpeg" ]]; then
       ffmpeg_install
     elif [[ "${app}" == "fstab" ]]; then
@@ -173,6 +175,8 @@ function provision(){
       mkvtoolnix_install
     elif [[ "${app}" == "phoronix" ]]; then
       phoronix_install
+    elif [[ "${app}" == "poppler-utils" ]]; then
+      poppler-utils_install
     elif [[ "${app}" == "powershell" ]]; then
       powershell_install
     elif [[ "${app}" == "python" ]]; then
@@ -384,6 +388,10 @@ function dos2unix_install(){
   sudo "${pkg_mgr}" install -y dos2unix
 }
 
+function enscript_install(){
+  sudo "${pkg_mgr}" install -y enscript
+}
+
 function tmux_install(){
   sudo "${pkg_mgr}" install -y tmux
 }
@@ -476,8 +484,6 @@ function gnome_install(){
 function gnome-theme_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     sudo "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
-    sudo snap install orchis-themes
-    for i in $(snap connections | grep gtk-common-themes:gtk-3-themes | awk '{print $2}'); do sudo snap connect $i orchis-themes:gtk-3-themes; done
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     echo "For Ubuntu Only, not compatible with CentOS"
   else
@@ -683,109 +689,133 @@ function phoronix_install(){
   fi
 }
 
-function powershell_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    # Install pre-requisite packages.
-    sudo "${pkg_mgr}" install -y wget apt-transport-https software-properties-common
-    # Navigate to tmp directory
-    cd /tmp || echo "Could not find /tmp directory"
-    # Download the Microsoft repository GPG keys
-    wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-    # Register the Microsoft repository GPG keys
-    sudo dpkg -i packages-microsoft-prod.deb
-    # Update the list of products
-    sudo "${pkg_mgr}" update
-    # Enable the "universe" repositories
-    sudo add-apt-repository -y universe
-    # Install PowerShell
-    sudo "${pkg_mgr}" install -y powershell
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install -y wget curl
-    # Register the Microsoft RedHat repository
-    curl https://packages.microsoft.com/config/rhel/7/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
-    # Install PowerShell
-    sudo yum install -y powershell
+function poppler-utils_install(){
+  if ! command -v pdftotext &> /dev/null; then
+    echo -e "poppler-utils could not be found \nInstalling..."
+    sudo "${pkg_mgr}" install -y poppler-utils
   else
-    echo "Distribution ${os_version} not supported"
+    echo -e "poppler-utils already installed! \nSkipping..."
+  fi
+}
+
+function powershell_install(){
+  if ! command -v powershell &> /dev/null; then
+    echo -e "powershell could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      # Install pre-requisite packages.
+      sudo "${pkg_mgr}" install -y wget apt-transport-https software-properties-common
+      # Navigate to tmp directory
+      cd /tmp || echo "Could not find /tmp directory"
+      # Download the Microsoft repository GPG keys
+      wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+      # Register the Microsoft repository GPG keys
+      sudo dpkg -i packages-microsoft-prod.deb
+      # Update the list of products
+      sudo "${pkg_mgr}" update
+      # Enable the "universe" repositories
+      sudo add-apt-repository -y universe
+      # Install PowerShell
+      sudo "${pkg_mgr}" install -y powershell
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      sudo "${pkg_mgr}" install -y wget curl
+      # Register the Microsoft RedHat repository
+      curl https://packages.microsoft.com/config/rhel/7/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
+      # Install PowerShell
+      sudo yum install -y powershell
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
+  else
+    echo -e "powershell already installed! \nSkipping..."
   fi
 }
 
 function python_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y mlocate
-    sudo updatedb
-    # Install Python 3.X and 3.8
-    sudo "${pkg_mgr}" install -y qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
-    # Update PIP
-    sudo python3 -m pip install --upgrade pip
-    # Install Python Packages
-    sudo python3 -m pip install autoconf setuptools wheel git+https://github.com/nficano/pytube regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive ffmpeg-python m3u8 aiohttp
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    # Install mlocate (Will be needed to locate pycharm.sh path
-    sudo "${pkg_mgr}" -y install mlocate
-    sudo updatedb
-    # Install Python 3.X and 3.8
-    sudo "${pkg_mgr}" install python3 -y
-    sudo "${pkg_mgr}" install python38 -y
-    # Update PIP
-    sudo python3 -m pip install --upgrade pip
-    sudo python3.8 -m pip install --upgrade pip
-    # Install Python Depedencies
-    sudo "${pkg_mgr}" install qt5-default gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
-    # Set Git Credential Store Globally
-    sudo git config --global credential.helper store
-    # Install Python Packages
-    sudo python3 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
-    sudo python3.8 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
+  if ! command -v python3 &> /dev/null; then
+    echo -e "python3 could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install -y mlocate
+      sudo updatedb
+      # Install Python 3.X and 3.8
+      sudo "${pkg_mgr}" install -y qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
+      # Update PIP
+      sudo python3 -m pip install --upgrade pip
+      # Install Python Packages
+      sudo python3 -m pip install autoconf setuptools wheel git+https://github.com/nficano/pytube regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive ffmpeg-python m3u8 aiohttp
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      # Install mlocate (Will be needed to locate pycharm.sh path
+      sudo "${pkg_mgr}" -y install mlocate
+      sudo updatedb
+      # Install Python 3.X and 3.8
+      sudo "${pkg_mgr}" install python3 -y
+      sudo "${pkg_mgr}" install python38 -y
+      # Update PIP
+      sudo python3 -m pip install --upgrade pip
+      sudo python3.8 -m pip install --upgrade pip
+      # Install Python Depedencies
+      sudo "${pkg_mgr}" install qt5-default gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
+      # Set Git Credential Store Globally
+      sudo git config --global credential.helper store
+      # Install Python Packages
+      sudo python3 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
+      sudo python3.8 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
   else
-    echo "Distribution ${os_version} not supported"
+    echo -e "python3 already installed! \nSkipping..."
   fi
 }
 
 function pycharm_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y mlocate
-    sudo updatedb
-    # Install Python 3.X and 3.8
-    sudo "${pkg_mgr}" install snapd -y
-    # Systemmd unit that managed the main snap communication sockets needs to be enabled.
-    sudo systemctl enable --now snapd.socket
-    # Sleep for 5 seconds to allow for system link creation.
-    date +"%H:%M:%S"
-    sleep 5
-    date +"%H:%M:%S"
-    # To enable classic snap support, this creates a symbolic link between /var/lib/snapd/snap and /snap
-    sudo ln -s /var/lib/snapd/snap /snap
-    # Install PyCharm CE
-    sudo snap install pycharm-community --classic
-    # Locate PyCharm Installation Path
-    sudo updatedb
-    pycharm_path=$(sudo locate pycharm.sh)
-    # Launch PyCharm as Root
-    echo $pycharm_path
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    # Install snapd package manager (Contains all depedencies packaged together)
-    sudo "${pkg_mgr}" install snapd -y
-    # Systemmd unit that managed the main snap communication sockets needs to be enabled.
-    sudo systemctl enable --now snapd.socket
-    # Sleep for 5 seconds to allow for system link creation.
-    date +"%H:%M:%S"
-    sleep 5
-    date +"%H:%M:%S"
-    # To enable classic snap support, this creates a symbolic link between /var/lib/snapd/snap and /snap
-    sudo ln -s /var/lib/snapd/snap /snap
-    # Install PyCharm CE
-    sudo snap install pycharm-community --classic
-    # Locate PyCharm Installation Path
-    sudo updatedb
-    pycharm_path=$(sudo locate pycharm.sh)
-    # Launch PyCharm as Root
-    echo $pycharm_path
+  if ! command -v pycharm-community &> /dev/null; then
+    echo -e "pycharm-community could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install -y mlocate
+      sudo updatedb
+      # Install Python 3.X and 3.8
+      sudo "${pkg_mgr}" install snapd -y
+      # Systemmd unit that managed the main snap communication sockets needs to be enabled.
+      sudo systemctl enable --now snapd.socket
+      # Sleep for 5 seconds to allow for system link creation.
+      date +"%H:%M:%S"
+      sleep 5
+      date +"%H:%M:%S"
+      # To enable classic snap support, this creates a symbolic link between /var/lib/snapd/snap and /snap
+      sudo ln -s /var/lib/snapd/snap /snap
+      # Install PyCharm CE
+      sudo snap install pycharm-community --classic
+      # Locate PyCharm Installation Path
+      sudo updatedb
+      pycharm_path=$(sudo locate pycharm.sh)
+      # Launch PyCharm as Root
+      echo $pycharm_path
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      # Install snapd package manager (Contains all depedencies packaged together)
+      sudo "${pkg_mgr}" install snapd -y
+      # Systemmd unit that managed the main snap communication sockets needs to be enabled.
+      sudo systemctl enable --now snapd.socket
+      # Sleep for 5 seconds to allow for system link creation.
+      date +"%H:%M:%S"
+      sleep 5
+      date +"%H:%M:%S"
+      # To enable classic snap support, this creates a symbolic link between /var/lib/snapd/snap and /snap
+      sudo ln -s /var/lib/snapd/snap /snap
+      # Install PyCharm CE
+      sudo snap install pycharm-community --classic
+      # Locate PyCharm Installation Path
+      sudo updatedb
+      pycharm_path=$(sudo locate pycharm.sh)
+      # Launch PyCharm as Root
+      echo $pycharm_path
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
+    if [[ ${config_flag} == "true" ]]; then
+      git config --global credential.helper store
+    fi
   else
-    echo "Distribution ${os_version} not supported"
-  fi
-  if [[ ${config_flag} == "true" ]]; then
-    git config --global credential.helper store
+    echo -e "pycharm-community already installed! \nSkipping..."
   fi
 }
 
@@ -861,10 +891,7 @@ function trash-cli_install(){
 }
 
 function translate-shell_install(){
-  git clone https://github.com/soimort/translate-shell
-  cd translate-shell/
-  make
-  sudo make install
+  sudo "${pkg_mgr}" install -y translate-shell
 }
 
 function udisks2_install(){
@@ -892,14 +919,20 @@ function wine_install(){
 }
 
 function wireshark_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
-    sudo DEBIAN_FRONTEND=noninteractive "${pkg_mgr}" install wireshark -y
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install -y wireshark wireshark-qt
+  if ! command -v wireshark &> /dev/null; then
+    echo -e "wireshark could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+      sudo DEBIAN_FRONTEND=noninteractive "${pkg_mgr}" install wireshark -y
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      sudo "${pkg_mgr}" install -y wireshark wireshark-qt
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
   else
-    echo "Distribution ${os_version} not supported"
+    echo -e "wireshark already installed! \nSkipping..."
   fi
+
 }
 
 function xdotool_install(){
@@ -920,10 +953,10 @@ public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" \
-"ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" \
-"redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" "tmux" \
-"transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+"enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kexi" "kvm" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "poppler-utils" "powershell" \
+"python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
+"tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tesseract" "tmux" "transmission" \
@@ -945,9 +978,9 @@ fi
 
 # Check if OS is supported
 if [[ "${os_version}" == "Ubuntu" ]] ; then
-  pkg_mgr='apt-get'
+  pkg_mgr='apt'
 elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-  pkg_mgr='yum'
+  pkg_mgr='dnf'
 else
   pkg_mgr='na'
   echo "Distribution ${os_version} not supported"
