@@ -193,6 +193,8 @@ function provision(){
       sudo_install
     elif [[ "${app}" == "scrcpy" ]]; then
       scrcpy_install
+    elif [[ "${app}" == "tesseract" ]]; then
+      tesseract_install
     elif [[ "${app}" == "tigervnc" ]]; then
       tigervnc_install
     elif [[ "${app}" == "tmux" ]]; then
@@ -201,6 +203,8 @@ function provision(){
       transmission_install
     elif [[ "${app}" == "trash-cli" ]]; then
       trash-cli_install
+    elif [[ "${app}" == "translate-shell" ]]; then
+      translate-shell_install
     elif [[ "${app}" == "udisks2" ]]; then
       udisks2_install
     elif [[ "${app}" == "vlc" ]]; then
@@ -242,18 +246,23 @@ function update(){
 }
 
 function adb_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
-    adb version
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install epel-release -y
-    sudo "${pkg_mgr}" install snapd -y
-    sudo systemctl enable --now snapd.socket
-    sudo ln -s /var/lib/snapd/snap /snap
-    sudo snap install android-adb --edge
-    adb version
+  if ! command -v adb &> /dev/null; then
+    echo -e "ADB could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
+      adb version
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      sudo "${pkg_mgr}" install epel-release -y
+      sudo "${pkg_mgr}" install snapd -y
+      sudo systemctl enable --now snapd.socket
+      sudo ln -s /var/lib/snapd/snap /snap
+      sudo snap install android-adb --edge
+      adb version
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
   else
-    echo "Distribution ${os_version} not supported"
+    echo -e "ADB already installed! \nSkipping..."
   fi
 }
 
@@ -272,7 +281,9 @@ function atomicparsley_install(){
 }
 
 function audacity_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
+  if ! command -v audacity &> /dev/null; then
+    echo -e "Audacity could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
     sudo add-apt-repository -y ppa:ubuntuhandbook1/audacity
     sudo "${pkg_mgr}" update
     sudo "${pkg_mgr}" install -y audacity
@@ -285,39 +296,52 @@ function audacity_install(){
   else
     echo "Distribution ${os_version} not supported"
   fi
+  else
+    echo -e "Audacity already installed! \nSkipping..."
+  fi
 }
 
 function chrome_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    if [[ "${architecture}" == "x86_64" ]]; then
+  if ! command -v google-chrome &> /dev/null; then
+    echo -e "Chrome could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      if [[ "${architecture}" == "x86_64" ]]; then
+        cd "${download_dir}" || echo "Directory not found or does not exist"
+        sudo "${pkg_mgr}" install curl wget -y
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb"
+        rm -rf "${download_dir}/google-chrome-stable_current_amd64.deb"
+      elif [[ "${architecture}" == "x86" ]]; then
+        cd "${download_dir}" || echo "Directory not found or does not exist"
+        sudo "${pkg_mgr}" install curl wget -y
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
+        sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"
+        rm -rf "${download_dir}/google-chrome-stable_current_i386.deb"
+      elif [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
+        sudo "${pkg_mgr}" install -y chromium-browser
+      fi
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       cd "${download_dir}" || echo "Directory not found or does not exist"
-      sudo "${pkg_mgr}" install curl wget -y
-      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb"
-      rm -rf "${download_dir}/google-chrome-stable_current_amd64.deb"
-    elif [[ "${architecture}" == "x86" ]]; then
-      cd "${download_dir}" || echo "Directory not found or does not exist"
-      sudo "${pkg_mgr}" install curl wget -y
-      wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
-      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"
-      rm -rf "${download_dir}/google-chrome-stable_current_i386.deb"
-    elif [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
-      sudo "${pkg_mgr}" install -y chromium-browser
+      wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
+      rm -rf "${download_dir}/google-chrome-stable_current_amd64.rpm"
+    else
+      echo "Distribution ${os_version} not supported"
     fi
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    cd "${download_dir}" || echo "Directory not found or does not exist"
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-    sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
-    rm -rf "${download_dir}/google-chrome-stable_current_amd64.rpm"
   else
-    echo "Distribution ${os_version} not supported"
+    echo -e "Chrome already installed! \nSkipping..."
   fi
 }
 
 function chrome-remote-desktop_install(){
-  wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
-  sudo "${pkg_mgr}" install -y /tmp/chrome-remote-desktop_current_amd64.deb
-  mkdir -p ~/.config/chrome-remote-desktop
+  if ! command -v google-chrome-remote &> /dev/null; then
+    echo -e "Chrome remote desktop could not be found \nInstalling..."
+    wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
+    sudo "${pkg_mgr}" install -y /tmp/chrome-remote-desktop_current_amd64.deb
+    mkdir -p ~/.config/chrome-remote-desktop
+  else
+    echo -e "Chrome remote desktop already installed! \nSkipping..."
+  fi
 }
 
 function dialog_install(){
@@ -325,29 +349,34 @@ function dialog_install(){
 }
 
 function docker_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y containerd docker.io docker-compose
-    sudo docker run hello-world
-    sudo groupadd docker
-    sudo usermod -aG docker ${computer_user}
-    # Start Docker
-    sudo systemctl start docker
-    # Enable Docker at Startup
-    sudo systemctl enable docker
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install -y yum-utils
-    sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    sudo "${pkg_mgr}" install docker-ce docker-ce-cli containerd.io -y
-    sudo groupadd docker
-    sudo usermod -aG docker ${computer_user}
-    # Start Docker
-    sudo systemctl start docker
-    # Enable Docker at Startup
-    sudo systemctl enable docker
-    #Hello world
-    sudo docker run hello-world
+  if ! command -v docker &> /dev/null; then
+    echo -e "Docker could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install -y containerd docker.io docker-compose
+      sudo docker run hello-world
+      sudo groupadd docker
+      sudo usermod -aG docker ${computer_user}
+      # Start Docker
+      sudo systemctl start docker
+      # Enable Docker at Startup
+      sudo systemctl enable docker
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      sudo "${pkg_mgr}" install -y yum-utils
+      sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      sudo "${pkg_mgr}" install docker-ce docker-ce-cli containerd.io -y
+      sudo groupadd docker
+      sudo usermod -aG docker ${computer_user}
+      # Start Docker
+      sudo systemctl start docker
+      # Enable Docker at Startup
+      sudo systemctl enable docker
+      #Hello world
+      sudo docker run hello-world
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
   else
-    echo "Distribution ${os_version} not supported"
+    echo -e "Docker already installed! \nSkipping..."
   fi
 }
 
@@ -361,56 +390,71 @@ function tmux_install(){
 
 # Rygel (DLNA)
 function rygel_install(){
-  sudo "${pkg_mgr}" install -y rygel
-  if [[ ${config_flag} == "true" ]]; then
-    echo "uris=/media/${computer_user}/Movies/Movies" | sudo tee -a /etc/rygel.conf
+  if ! command -v rygel &> /dev/null; then
+    echo -e "Rygel could not be found \nInstalling..."
+    sudo "${pkg_mgr}" install -y rygel
+    if [[ ${config_flag} == "true" ]]; then
+      echo "uris=/media/${computer_user}/Movies/Movies" | sudo tee -a /etc/rygel.conf
+    fi
+  else
+    echo -e "Rygel already installed! \nSkipping..."
   fi
 }
 
 # FFMPEG
 function ffmpeg_install(){
-  echo "Installing FFMPEG"
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y ffmpeg
-    echo "FFMPEG Installed!"
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" -y update
-    # Install mlocate (Will be needed to locate pycharm.sh path
-    sudo "${pkg_mgr}" -y install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel
-    # Add Repo
-    sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-    sudo "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
-    sudo "${pkg_mgr}" -y install http://rpmfind.net/linux/epel/7/x86_64/Packages/s/SDL2-2.0.10-1.el7.x86_64.rpm
-    # Install FFmpeg
-    sudo "${pkg_mgr}" -y install ffmpeg ffmpeg-devel
-    echo "FFMPEG Installed!"
+  if ! command -v ffpmeg &> /dev/null; then
+    echo -e "FFMPEG could not be found \nInstalling..."
+    echo "Installing FFMPEG"
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install -y ffmpeg
+      echo "FFMPEG Installed!"
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      sudo "${pkg_mgr}" -y update
+      # Install mlocate (Will be needed to locate pycharm.sh path
+      sudo "${pkg_mgr}" -y install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel
+      # Add Repo
+      sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+      sudo "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
+      sudo "${pkg_mgr}" -y install http://rpmfind.net/linux/epel/7/x86_64/Packages/s/SDL2-2.0.10-1.el7.x86_64.rpm
+      # Install FFmpeg
+      sudo "${pkg_mgr}" -y install ffmpeg ffmpeg-devel
+      echo "FFMPEG Installed!"
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
   else
-    echo "Distribution ${os_version} not supported"
+    echo -e "FFMPEG already installed! \nSkipping..."
   fi
 }
 
 function fstab_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y ntfs-3g
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install -y ntfs-3g
-  else
-    echo "Distribution ${os_version} not supported"
-  fi
-  if [[ ${config_flag} == "true" ]]; then
-    sudo mkdir -p "/media/${computer_user}/hdd_storage"
-    sudo mkdir -p "/media/${computer_user}/file_storage"
-    sudo mkdir -p "/media/${computer_user}/windows"
-    sudo mkdir -p "/media/${computer_user}/movies"
-    sudo mkdir -p "/media/${computer_user}/games"
+  if ! command -v ntfs-3g &> /dev/null; then
+    echo -e "FSTAB could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install -y ntfs-3g
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      sudo "${pkg_mgr}" install -y ntfs-3g
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
+    if [[ ${config_flag} == "true" ]]; then
+      sudo mkdir -p "/media/${computer_user}/hdd_storage"
+      sudo mkdir -p "/media/${computer_user}/file_storage"
+      sudo mkdir -p "/media/${computer_user}/windows"
+      sudo mkdir -p "/media/${computer_user}/movies"
+      sudo mkdir -p "/media/${computer_user}/games"
 
-    # If these fstab directories exist, update them. Otherwise create an entry for them.
-    sudo grep -q '^/dev/sda1' /etc/fstab && sudo sed -i "s#/dev/sda1.*#/dev/sda1 /media/${computer_user}/hdd_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sda1 /media/${computer_user}/hdd_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
-    sudo grep -q '^/dev/sdb2' /etc/fstab && sudo sed -i "s#/dev/sdb2.*#/dev/sdb2 /media/${computer_user}/file_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sdb2 /media/${computer_user}/file_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
-    sudo grep -q '^/dev/sdc4' /etc/fstab && sudo sed -i "s#/dev/sdc4.*#/dev/sdc4 /media/${computer_user}/windows ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sdc4 /media/${computer_user}/windows ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
-    sudo grep -q '^/dev/sde2' /etc/fstab && sudo sed -i "s#/dev/sde2.*#/dev/sde2 /media/${computer_user}/movies ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sde2 /media/${computer_user}/movies ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
-    sudo grep -q '^/dev/sdf2' /etc/fstab && sudo sed -i "s#/dev/sdf2 /media/${computer_user}/games ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sdf2 /media/${computer_user}/games ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
-    sudo mount -a
+      # If these fstab directories exist, update them. Otherwise create an entry for them.
+      sudo grep -q '^/dev/sda1' /etc/fstab && sudo sed -i "s#/dev/sda1.*#/dev/sda1 /media/${computer_user}/hdd_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sda1 /media/${computer_user}/hdd_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+      sudo grep -q '^/dev/sdb2' /etc/fstab && sudo sed -i "s#/dev/sdb2.*#/dev/sdb2 /media/${computer_user}/file_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sdb2 /media/${computer_user}/file_storage ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+      sudo grep -q '^/dev/sdc4' /etc/fstab && sudo sed -i "s#/dev/sdc4.*#/dev/sdc4 /media/${computer_user}/windows ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sdc4 /media/${computer_user}/windows ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+      sudo grep -q '^/dev/sde2' /etc/fstab && sudo sed -i "s#/dev/sde2.*#/dev/sde2 /media/${computer_user}/movies ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sde2 /media/${computer_user}/movies ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+      sudo grep -q '^/dev/sdf2' /etc/fstab && sudo sed -i "s#/dev/sdf2 /media/${computer_user}/games ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab || echo -e "/dev/sdf2 /media/${computer_user}/games ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+      sudo mount -a
+    fi
+  else
+    echo -e "FSTAB already installed! \nSkipping..."
   fi
 }
 
@@ -793,6 +837,17 @@ function scrcpy_install(){
   sudo "${pkg_mgr}" install -y scrcpy
 }
 
+function tesseract_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+    sudo "${pkg_mgr}" install -y tesseract-ocr libtesseract-dev tesseract-ocr-eng
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+    sudo "${pkg_mgr}" install epel-release -y
+    sudo "${pkg_mgr}" install tesseract-devel leptonica-devel -y
+  else
+    echo "Distribution ${os_version} not supported"
+  fi
+}
+
 function tigervnc_install(){
   sudo "${pkg_mgr}" install -y tigervnc-standalone-server
 }
@@ -803,6 +858,13 @@ function transmission_install(){
 
 function trash-cli_install(){
   sudo "${pkg_mgr}" install -y trash-cli
+}
+
+function translate-shell_install(){
+  git clone https://github.com/soimort/translate-shell
+  cd translate-shell/
+  make
+  sudo make install
 }
 
 function udisks2_install(){
@@ -857,8 +919,15 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kexi" "kvm" "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tigervnc" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
-pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" "openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tmux" "transmission" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
+apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" \
+"ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kexi" "kvm" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "powershell" "python" "pycharm" \
+"redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" "tmux" \
+"transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
+"gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
+"openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tesseract" "tmux" "transmission" \
+"translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 clean_flag='false'
 provision_flag='false'
