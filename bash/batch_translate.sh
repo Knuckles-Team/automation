@@ -9,7 +9,22 @@ function usage(){
 }
 
 function install(){
-  sudo "$(pwd)/manage_system.sh" -p -a tesseract,translate-shell,poppler-utils
+  sudo "$(pwd)/manage_system.sh" -p -a tesseract,poppler-utils,ghostscript,enscript,translate-shell
+}
+
+function translate_text(){
+  count=0
+  for file in "${text_files[@]}"
+  do
+    file_type="$(echo "${file}" | sed 's/.*\.//')"
+    file_name="$(echo "${file}" | sed 's/\..*$//')"
+    echo -e "File: ${file} \nFile Name: ${file_name}\nFile Type: ${file_type}"
+    percent_complete=$(((count/${#files[@]})*100))
+    trans :en -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
+    ((count++))
+    percent_complete=$(((count/${#files[@]})*100))
+    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Completed Extracting/Translating Text                                               \r"
+  done
 }
 
 function translate(){
@@ -18,21 +33,24 @@ function translate(){
   do
     file_type="$(echo "${file}" | sed 's/.*\.//')"
     file_name="$(echo "${file}" | sed 's/\..*$//')"
+    echo -e "File: ${file} \nFile Name: ${file_name}\nFile Type: ${file_type}"
     percent_complete=$(((count/${#files[@]})*100))
-    if [[ "${file_type}" == ".png" ]] || [[ "${file_type}" == ".PNG" ]] || [[ "${file_type}" == ".jpg" ]] || \
-    [[ "${file_type}" == ".JPG" ]] || [[ "${file_type}" == ".jpeg" ]] || [[ "${file_type}" == ".jpeg" ]]; then
+    if [[ "${file_type}" == "png" ]] || [[ "${file_type}" == "PNG" ]] || [[ "${file_type}" == "jpg" ]] || \
+    [[ "${file_type}" == "JPG" ]] || [[ "${file_type}" == "jpeg" ]] || [[ "${file_type}" == "jpeg" ]]; then
       echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Processing Image File: ${file}"
-      tesseract -l eng "${file}" "${file_name}"
-    elif [[ "${file_type}" == ".pdf" ]] || [[ "${file_type}" == ".PDF" ]]; then
+      tesseract -l eng "${file}" "${file_name}-origin"
+      trans :en -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
+    elif [[ "${file_type}" == "pdf" ]] || [[ "${file_type}" == "PDF" ]]; then
       echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Processing PDF File: ${file}"
       pdftoppm -png "${file}" "${file_name}-origin"
-      tesseract -l eng "${file_name}-origin.png" "${file_name}"
+      tesseract -l eng "${file_name}-origin.png" "${file_name}-origin"
+      trans :en -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
     else
       echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | File type not found: ${file}"
     fi
     ((count++))
     percent_complete=$(((count/${#files[@]})*100))
-    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Completed Extracting Text                                               \r"
+    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Completed Extracting/Translating Text                                               \r"
   done
 }
 
@@ -40,16 +58,14 @@ computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
-private_ip=$(ip addr show enp0s31f6 | awk '/inet /{print $2}' )
-private_ip=${private_ip::-3}
-public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
-public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 
-files=[]
+files=()
+text_files=()
 install_flag='false'
 translate_flag='false'
-log_flag='true'
+translate_text_only='false'
+log_flag='false'
 log_dir='.'
 log_file="batch-translate_${date}.log"
 
@@ -65,8 +81,6 @@ while test -n "$1"; do
       echo -e "\n\nOperating System: ${os_version}"
       echo "Architecture: ${architecture}"
       echo "User: ${computer_user}"
-      echo "Private IP: ${private_ip}"
-      echo "Public IP: ${public_ip}"
       usage
       exit 0
       ;;
@@ -89,8 +103,14 @@ while test -n "$1"; do
         do
           image_list=( "${image_list[@]}" "${directory}"/*.png "${directory}"/*.PNG "${directory}"/*.jpg "${directory}"/*.JPG "${directory}"/*.jpeg "${directory}"/*.JPEG )
           pdf_list=( "${pdf_list[@]}" "${directory}"/*.pdf "${directory}"/*.PDF )
+          text_files=( "${text_files[@]}" "${directory}"/*.txt "${directory}"/*.TXT )
         done
-        files=( "${files[@]}" "${pdf_list[@]}" "${image_list[@]}" )
+        if [ "${pdf_list[@]}" ]; then
+          files=( "${files[@]}" "${pdf_list[@]}" )
+        fi
+        if [ "${image_list[@]}" ]; then
+          files=( "${files[@]}" "${image_list[@]}" )
+        fi
         shift
       else
         echo 'ERROR: "-d | --directories" requires a non-empty option argument.'
@@ -100,8 +120,7 @@ while test -n "$1"; do
       ;;
     f | -f | --file)
       if [ "${2}" ]; then
-        file="${2}"
-        IFS=$'\n' read -d '' -r -a files_read < "${file}"
+        IFS=',' read -r -a files_read <<< "$2"
         files=( "${files[@]}" "${files_read[@]}" )
         shift
       else
@@ -127,9 +146,29 @@ while test -n "$1"; do
       log_flag='true'
       shift
       ;;
+    r | -r | --read-file)
+      if [ "${2}" ]; then
+        file="${2}"
+        IFS=$'\n' read -d '' -r -a files_read < "${file}"
+        files=( "${files[@]}" "${files_read[@]}" )
+        shift
+      else
+        echo 'ERROR: "-f | --file" requires a non-empty option argument.'
+        exit 0
+      fi
+      shift
+      ;;
     t | -t | --translate | translate)
-      echo "Provisioning System"
-      translate_flag='true'
+      if [ "${2}" == "text" ]; then
+        translate_text_only="true"
+        shift
+      elif [ "${2}" == "document" ]; then
+        translate_flag="true"
+        shift
+      else
+        echo 'ERROR: "-f | --file" requires a non-empty option argument.'
+        exit 0
+      fi
       shift
       ;;
     --)# End of all options.
@@ -160,6 +199,12 @@ if [ ${translate_flag} == "true" ]; then
   else
     translate
   fi
-else
-  exit 0
+fi
+
+if [ ${translate_text_only} == "true" ]; then
+  if [ ${log_flag} == "true" ]; then
+    translate_text | sudo tee -a "${log_dir}/${log_file}"
+  else
+    translate_text
+  fi
 fi
