@@ -19,11 +19,11 @@ function translate_text(){
     file_type="$(echo "${file}" | sed 's/.*\.//')"
     file_name="$(echo "${file}" | sed 's/\..*$//')"
     echo -e "File: ${file} \nFile Name: ${file_name}\nFile Type: ${file_type}"
-    percent_complete=$(((count/${#files[@]})*100))
-    trans :en -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
+    percent_complete=$(((count/${#text_files[@]})*100))
+    trans :en -brief -input "${file_name}.txt" -output "${file_name}-translated.txt"
     ((count++))
-    percent_complete=$(((count/${#files[@]})*100))
-    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Completed Extracting/Translating Text                                               \r"
+    percent_complete=$(((count/${#text_files[@]})*100))
+    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#text_files[@]} | Completed Extracting/Translating Text"
   done
 }
 
@@ -39,12 +39,12 @@ function translate(){
     [[ "${file_type}" == "JPG" ]] || [[ "${file_type}" == "jpeg" ]] || [[ "${file_type}" == "jpeg" ]]; then
       echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Processing Image File: ${file}"
       tesseract -l eng "${file}" "${file_name}-origin"
-      trans :en -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
+      trans :en -brief -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
     elif [[ "${file_type}" == "pdf" ]] || [[ "${file_type}" == "PDF" ]]; then
       echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | Processing PDF File: ${file}"
       pdftoppm -png "${file}" "${file_name}-origin"
       tesseract -l eng "${file_name}-origin.png" "${file_name}-origin"
-      trans :en -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
+      trans :en -brief -input "${file_name}-origin.txt" -output "${file_name}-translated.txt"
     else
       echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files[@]} | File type not found: ${file}"
     fi
@@ -105,10 +105,10 @@ while test -n "$1"; do
           pdf_list=( "${pdf_list[@]}" "${directory}"/*.pdf "${directory}"/*.PDF )
           text_files=( "${text_files[@]}" "${directory}"/*.txt "${directory}"/*.TXT )
         done
-        if [ "${pdf_list[@]}" ]; then
+        if [ ${#pdf_list[@]} -gt 0 ]; then
           files=( "${files[@]}" "${pdf_list[@]}" )
         fi
-        if [ "${image_list[@]}" ]; then
+        if [ ${#image_list[@]} -gt 0 ]; then
           files=( "${files[@]}" "${image_list[@]}" )
         fi
         shift
@@ -166,7 +166,7 @@ while test -n "$1"; do
         translate_flag="true"
         shift
       else
-        echo 'ERROR: "-f | --file" requires a non-empty option argument.'
+        echo 'ERROR: "-t | --translate" requires a non-empty option argument [text/document].'
         exit 0
       fi
       shift
@@ -195,6 +195,7 @@ fi
 
 if [ ${translate_flag} == "true" ]; then
   if [ ${log_flag} == "true" ]; then
+    echo "Translating PDF/JPG/PNG Files"
     translate | sudo tee -a "${log_dir}/${log_file}"
   else
     translate
@@ -203,6 +204,7 @@ fi
 
 if [ ${translate_text_only} == "true" ]; then
   if [ ${log_flag} == "true" ]; then
+    echo "Translating Text Files"
     translate_text | sudo tee -a "${log_dir}/${log_file}"
   else
     translate_text
