@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
-function usage() {
+function usage(){
   echo -e "Flags:\n"
   echo -e "-h | --help [Help]\n-i | --install [Install dependencies]\n-d | --download_directory [Set the download directory]\n-f | --file <FILE> [Read links from textfile]\n-l | --links <LINK1, LINK2, LINK3> [Read links from command prompt]\n-a | --audio [Downloads audio only]"
   echo -e "\nUsage: \nHelp: "
@@ -117,7 +117,6 @@ while test -n "$1"; do
         echo 'ERROR: "-l | --links" requires a non-empty option argument.'
         exit 0
       fi
-      shift
       ;;
     f | -f | --file)
       if [ ${2} ]; then
@@ -129,7 +128,6 @@ while test -n "$1"; do
         echo 'ERROR: "-f | --file" requires a non-empty option argument.'
         exit 0
       fi
-      shift
       ;;
     --)# End of all options.
       shift
