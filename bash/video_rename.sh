@@ -79,38 +79,30 @@ function file_rename() {
   fi
 }
 
-function find_files() {
+function find_files(){
   count=0
   all_files_list=()
+  #echo "All Directories checked Files Found: ${directories[*]}"
   for directory in "${directories[@]}"
   do
-    readarray -d '' mkv_list < <(find "${directory}" -name "*.mkv" -print0)
-    readarray -d '' mp4_list < <(find "${directory}" -name "*.mp4" -print0)
-    readarray -d '' webm_list < <(find "${directory}" -name "*.webm" -print0)
+    readarray -d '' mkv_list < <(find "${directory}" -maxdepth 2 -name "*.mkv" -print0)
+    readarray -d '' mp4_list < <(find "${directory}" -maxdepth 2 -name "*.mp4" -print0)
+    readarray -d '' webm_list < <(find "${directory}" -maxdepth 2 -name "*.webm" -print0)
     all_files_list=( "${all_files_list[@]}" "${mp4_list[@]}" "${mkv_list[@]}" "${webm_list[@]}" )
   done
 
-  #echo "All Video Files Found: ${all_files_list[*]}"
-  for file in "${all_files_list[@]}"
+  # shellcheck disable=SC1036
+  # shellcheck disable=SC1072
+  eval files_list=($(printf "%q\n" "${all_files_list[@]}" | sort -u))
+  for file in "${files_list[@]}"
   do
+    echo "Filename: ${file}"
     ((count++))
-    percent_complete=$(((count/${#all_files_list[@]})*100))
+    total_files=${#files_list[@]}
+    percent_complete=$(( (count / total_files) * 100 ))
+    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file} in: ${directory}"
     file_rename "${file}"
-    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#all_files_list[@]} | Processing Media Files in: ${directory}"
   done
-  echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#all_files_list[@]} | Completed File Renaming"
-
-  # Rename Directory of Folder
-  if [[ "${rename_directory_flag}" == "true" ]]; then
-    for directory in "${directories[@]}"
-    do
-      echo "Renaming directory"
-      rename_directory "${directory}" "${title}"
-    done
-  else
-    echo "Skipping Renaming of Directory"
-  fi
-
 }
 
 function find_directories() {
@@ -132,6 +124,17 @@ function find_directories() {
     fi
   done < <(find "${relative_directory}" -maxdepth 2 -type d -print0 | while read -d '' -r dir; do echo "${dir}"; done)
   #printf 'Directories: %s\n' "${directories[@]}"
+
+  # Rename Directory of Folder
+  if [[ "${rename_directory_flag}" == "true" ]]; then
+    for directory in "${directories[@]}"
+    do
+      echo "Renaming directory"
+      rename_directory "${directory}" "${title}"
+    done
+  else
+    echo "Skipping Renaming of Directory"
+  fi
 }
 
 function rename_directory() {
@@ -201,7 +204,7 @@ while test -n "$1"; do
       break
       ;;
     -?*)
-      printf 'WARNING: Unknown option (ignored): %s\n' "$1" >&2
+      printf 'WARNING: Unknown option (ignored): %s\n' "$1"
       ;;
     *)
       shift
