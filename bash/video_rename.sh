@@ -77,6 +77,17 @@ function file_rename() {
       echo "No Video File found"
     fi
   fi
+
+  # Rename Directory of Folder
+  if [[ "${rename_directory_flag}" == "true" ]]; then
+    for directory in "${directories[@]}"
+    do
+      echo "Renaming directory"
+      rename_directory "${directory}" "${title}"
+    done
+  else
+    echo "Skipping Renaming of Directory"
+  fi
 }
 
 function find_files(){
@@ -125,16 +136,6 @@ function find_directories() {
   done < <(find "${relative_directory}" -maxdepth 2 -type d -print0 | while read -d '' -r dir; do echo "${dir}"; done)
   #printf 'Directories: %s\n' "${directories[@]}"
 
-  # Rename Directory of Folder
-  if [[ "${rename_directory_flag}" == "true" ]]; then
-    for directory in "${directories[@]}"
-    do
-      echo "Renaming directory"
-      rename_directory "${directory}" "${title}"
-    done
-  else
-    echo "Skipping Renaming of Directory"
-  fi
 }
 
 function rename_directory() {
