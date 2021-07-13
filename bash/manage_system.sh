@@ -175,6 +175,8 @@ function provision(){
       mkvtoolnix_install
     elif [[ "${app}" == "phoronix" ]]; then
       phoronix_install
+    elif [[ "${app}" == "preload" ]]; then
+      preload_install
     elif [[ "${app}" == "poppler-utils" ]]; then
       poppler-utils_install
     elif [[ "${app}" == "powershell" ]]; then
@@ -689,6 +691,15 @@ function phoronix_install(){
   fi
 }
 
+function preload_install(){
+  if ! command -v preload &> /dev/null; then
+    echo -e "preload could not be found \nInstalling..."
+    sudo "${pkg_mgr}" install -y preload
+  else
+    echo -e "preload already installed! \nSkipping..."
+  fi
+}
+
 function poppler-utils_install(){
   if ! command -v pdftotext &> /dev/null; then
     echo -e "poppler-utils could not be found \nInstalling..."
@@ -954,12 +965,12 @@ public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "poppler-utils" "powershell" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
-"openssh" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tesseract" "tmux" "transmission" \
+"openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tesseract" "tmux" "transmission" \
 "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
 config_flag='true'
 clean_flag='false'
