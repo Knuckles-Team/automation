@@ -60,6 +60,9 @@ os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 date=$(date +"%m-%d-%Y_%I-%M")
 
+# Batch Rename Files:
+# rename 's/.WEBRip.x264-ION10//' *
+
 files=()
 text_files=()
 install_flag='false'
