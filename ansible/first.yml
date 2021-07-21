@@ -1,0 +1,17 @@
+---
+  - name: "My first play"
+    hosts: localhost
+
+    tasks:
+
+    - name: "test reachability"
+      ping:
+
+    - name: "upgrade ubuntu"
+      apt:
+        upgrade: yes
+
+    - name: "install stress-ng"
+      apt:
+        name: stress-ng
+        state: present
