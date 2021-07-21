@@ -62,6 +62,8 @@ python3 -m pip install ansible
 #### Windows
 
 ## Hosts File
+By default, there is an "all" grouping that doesn't have to be
+specified
 ```ansible
 [southeast]
 localhost       ansible_connection=local
@@ -78,3 +80,4 @@ example2.com
 southeast
 northeast
 ```
+
