@@ -4,6 +4,7 @@ function usage(){
   echo -e "\nUsage: "
   echo -e "sudo ./batch_translate.sh -h [Help]"
   echo -e "sudo ./batch_translate.sh --help [Help]"
+  echo -e "sudo ./batch_translate.sh --directory ~/Desktop --translate document [Translate PNG/JPEG/PDF Files in Directory Specified]"
   echo -e "\nFlags: "
   echo -e "-h | --help "
 }
@@ -98,7 +99,7 @@ while test -n "$1"; do
       fi
       shift
       ;;
-    d | -d | --directories)
+    d | -d | --directory)
       if [ "${2}" ]; then
         IFS=',' read -r -a directories <<< "$2"
         echo "Directories to scan: ${directories[*]}"
@@ -116,7 +117,7 @@ while test -n "$1"; do
         fi
         shift
       else
-        echo 'ERROR: "-d | --directories" requires a non-empty option argument.'
+        echo 'ERROR: "-d | --directory" requires a non-empty option argument.'
         exit 0
       fi
       shift
