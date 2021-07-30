@@ -165,7 +165,7 @@ os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 rename_directory_flag="false"
 # To rename multiple files with pattern:
-# rename ${filename} | sed 's/^\[MKV\] //' | sed 's/\[Multi Subs\]//'
+# rename 's/^\[MKV\] //'
 
 if [ -z "$1" ]; then
   usage
