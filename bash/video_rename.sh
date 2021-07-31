@@ -56,9 +56,8 @@ function file_rename() {
   fi
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
+  echo -e "Current Title: ${current_title}\nProposed Title: ${title}\n"
   if [[ "${title}" != "${current_title}" ]]; then
-#        printf "Current Title: ${current_title}\nProposed Title: ${title}\n"
-#        sleep 10
     if [[ "${file_type}" == "mkv" ]]; then
       #echo "Modifying ${file}"
       mkvpropedit "${file}" -e info -s title="${title}" #> /dev/null 2>&1
@@ -90,7 +89,7 @@ function file_rename() {
   fi
 }
 
-function find_files(){
+function find_files() {
   count=0
   all_files_list=()
   #echo "All Directories checked Files Found: ${directories[*]}"
@@ -111,7 +110,7 @@ function find_files(){
     ((count++))
     total_files=${#files_list[@]}
     percent_complete=$(( (count / total_files) * 100 ))
-    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file} in: ${directory}"
+    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
     file_rename "${file}"
   done
 }
