@@ -56,15 +56,16 @@ function file_rename() {
   fi
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
-  echo -e "Current Title: ${current_title}\nProposed Title: ${title}\n"
-  if [[ "${title}" != "${current_title}" ]]; then
+  current_track_title=$(mediainfo "${file}" | grep "Title" | head -n 1 | awk -F  ":" '{print $2}' | sed 's/^ *//')
+  echo -e "Current Title: ${current_title}\nCurrent Track Title: ${current_track_title}\nProposed Title: ${title}\n"
+  if [[ "${title}" != "${current_title}" ]] || [[ "${title}" != "${current_track_title}" ]]; then
     if [[ "${file_type}" == "mkv" ]]; then
-      #echo "Modifying ${file}"
-      mkvpropedit "${file}" -e info -s title="${title}" #> /dev/null 2>&1
+      #echo -e "Modifying ${file}\n\n"
+      mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" > /dev/null 2>&1
       #echo "Modified ${file} with mkvpropedit"
     elif [[ "${file_type}" == "webm" ]]; then
       #echo "Modifying ${file}"
-      mkvpropedit "${file}" -e info -s title="${title}" > /dev/null 2>&1
+      mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" > /dev/null 2>&1
       #echo "Modified ${file} with mkvpropedit"
       #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
     elif [[ "${file_type}" == "mp4" ]]; then
