@@ -56,16 +56,16 @@ function file_rename() {
   fi
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
-  if [[ "${title}" != "${current_title}" ]]; then
-#        printf "Current Title: ${current_title}\nProposed Title: ${title}\n"
-#        sleep 10
+  current_track_title=$(mediainfo "${file}" | grep "Title" | head -n 1 | awk -F  ":" '{print $2}' | sed 's/^ *//')
+  echo -e "Current Title: ${current_title}\nCurrent Track Title: ${current_track_title}\nProposed Title: ${title}\n"
+  if [[ "${title}" != "${current_title}" ]] || [[ "${title}" != "${current_track_title}" ]]; then
     if [[ "${file_type}" == "mkv" ]]; then
-      #echo "Modifying ${file}"
-      mkvpropedit "${file}" -e info -s title="${title}" #> /dev/null 2>&1
+      #echo -e "Modifying ${file}\n\n"
+      mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" > /dev/null 2>&1
       #echo "Modified ${file} with mkvpropedit"
     elif [[ "${file_type}" == "webm" ]]; then
       #echo "Modifying ${file}"
-      mkvpropedit "${file}" -e info -s title="${title}" > /dev/null 2>&1
+      mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" > /dev/null 2>&1
       #echo "Modified ${file} with mkvpropedit"
       #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
     elif [[ "${file_type}" == "mp4" ]]; then
@@ -90,7 +90,7 @@ function file_rename() {
   fi
 }
 
-function find_files(){
+function find_files() {
   count=0
   all_files_list=()
   #echo "All Directories checked Files Found: ${directories[*]}"
@@ -111,7 +111,7 @@ function find_files(){
     ((count++))
     total_files=${#files_list[@]}
     percent_complete=$(( (count / total_files) * 100 ))
-    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file} in: ${directory}"
+    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
     file_rename "${file}"
   done
 }
@@ -165,7 +165,7 @@ os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 rename_directory_flag="false"
 # To rename multiple files with pattern:
-# ${filename} | sed 's/^\[MKV\] //' | sed 's/\[Multi Subs\]//'
+# rename 's/^\[MKV\] //' *
 
 if [ -z "$1" ]; then
   usage
