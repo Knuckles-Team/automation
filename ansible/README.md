@@ -356,5 +356,65 @@ This file is a template on {{hostvars[inventory_hostname]['ansible_fqdn']}}
 backup_file {% if backup_file is defined %} is defined {% else %} is not defined
 ```
 
+### Host Facts Conditional Execution
+Get web2 host variables from web1
+```bash
+ansible -m debug -i inventory -a "var=hostvars['web2']" web1
+```
 
+web2-on-web1.yml
+```yaml
+---
+- hosts: web
+  tasks:
+  - name: create
+    file:
+      dest: /tmp/web2-on-web1
+      state: '{{file_state}}'
+    when: hostvars[inventory_hostname]['inventory_hostname'] == 'web1'
 
+  - name: create
+    file:
+      dest: /tmp/web1-on-web2
+      state: '{{file_state}}'
+    when: inventory_hostname == 'web2'
+```
+
+```bash
+ansible-playbook -i inventory web2-on-web1.yml -e file_state=touch
+```
+
+### Looping Tasks with Variable Lists
+
+looping-test.yml
+```yaml
+---
+- hosts: all
+  vars:
+    packages: [git,vim,ruby]
+  tasks:
+  - name: install packages for Debian style OSs
+    apt: 
+      name: '{{item}}'
+      state: '{{pkg_state}}'
+    with_items: '{{packages}}'
+    when: ansible_os_family == "Debian"
+
+  - name: install packages for Redhat style OSs
+    yum:
+      name: '{{item}}'
+      state: '{{pkg_state}}'
+    with_items: '{{packages}}'
+    when: ansible_os_family == "RedHat"
+
+  - name: create files based on package names
+    file:
+      dest: /tmp/{{item}}
+      state: '{{packages}}'
+    with_items: '{{packages}}'
+    when: ansible_os_family == "Debian"
+```
+
+```bash
+
+```
