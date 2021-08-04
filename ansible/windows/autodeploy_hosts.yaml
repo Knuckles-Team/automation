@@ -1,0 +1,33 @@
+---
+- name: Enable Windows Subsystem Linux 2 (WSL2)
+  ansible.windows.win_powershell:
+    script: |
+      echo "Beginning Provisioning of Windows Server"
+
+- name: Set DNS Servers of Windows Server
+  ansible.windows.win_powershell:
+    script: |
+      Write-Host "Setting DNS for Windows"
+
+- name: Run PowerShell script with parameters
+  ansible.windows.win_powershell:
+    script: |
+      Write-Host "Enabling WSL2"
+      Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
+      $Path = $env:TEMP;
+      $Ubuntu_Installer = "Ubuntu.appx";
+      Invoke-WebRequest -Uri "https://aka.ms/wslubuntu2004" -OutFile $Path\$Ubuntu_Installer -UseBasicParsing;
+      Add-AppxPackage .\$Ubuntu_Installer
+      Remove-Item $Path\$Ubuntu_Installer
+      ubuntu config --default-user root
+      Write-Host "WSL2 Enabled Successfully"
+
+- name: Download Images/OVFs
+  ansible.windows.win_powershell:
+    script: |
+      Invoke-WebRequest http://www.google.com/ -OutFile c:\google.html
+
+- name: Extract/Expand Images
+  ansible.windows.win_powershell:
+    script: |
+      sz x -o$destinationUnzipPath $zipfilePath -r ;
