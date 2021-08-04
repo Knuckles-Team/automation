@@ -1,6 +1,12 @@
 [staging]
-10.10.10.10
+10.10.10.10 SCG1_IP=10.10.10.1 SCG2_IP=10.10.10.2 LDAP_IP=10.10.10.3 AWX_IP=10.10.10.4 SRS_IP=10.10.10.5
 
 [production]
-10.20.20.20
-10.20.20.21
+10.20.20.20 SCG1_IP=10.10.10.1 SCG2_IP=10.10.10.2 LDAP_IP=10.10.10.3 AWX_IP=10.10.10.4 SRS_IP=10.10.10.5
+10.20.20.21 SCG1_IP=10.10.10.1 SCG2_IP=10.10.10.2 LDAP_IP=10.10.10.3 AWX_IP=10.10.10.4 SRS_IP=10.10.10.5
+
+[staging:vars]
+srs_download_link=foo.southeast.example.com
+
+[production:vars]
+srs_download_link=foo.southeast.example.com

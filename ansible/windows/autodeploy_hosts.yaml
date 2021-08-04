@@ -25,9 +25,11 @@
 - name: Download Images/OVFs
   ansible.windows.win_powershell:
     script: |
-      Invoke-WebRequest http://www.google.com/ -OutFile c:\google.html
+      Invoke-WebRequest '{{ srs_download_link }}' -OutFile c:\google.html
 
 - name: Extract/Expand Images
   ansible.windows.win_powershell:
     script: |
+      $destinationUnzipPath=C:\TEMP
+      $zipfilePath=C:\TEMP
       sz x -o$destinationUnzipPath $zipfilePath -r ;
