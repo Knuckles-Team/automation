@@ -227,6 +227,8 @@ function provision(){
       xdotool_install
     elif [[ "${app}" == "xsel" ]]; then
       xsel_install
+    elif [[ "${app}" == "yq" ]]; then
+      yq_install
     else
       echo "ERROR: ${app} not found"
     fi
@@ -971,6 +973,25 @@ function xsel_install(){
   sudo "${pkg_mgr}" install -y xsel
 }
 
+function yq_install(){
+  if ! command -v yq &> /dev/null; then
+    echo -e "yq could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
+      sudo add-apt-repository ppa:rmescandon/yq -y
+      sudo "${pkg_mgr}" update
+      sudo "${pkg_mgr}" install yq -y
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      echo "Distribution ${os_version} not supported"
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
+  else
+    echo -e "yq already installed! \nSkipping..."
+  fi
+
+
+}
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
@@ -984,11 +1005,11 @@ apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "hypnotix" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
-"tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
+"tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tesseract" "tmux" "transmission" \
-"translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" )
+"translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "yq" )
 config_flag='true'
 clean_flag='false'
 provision_flag='false'
