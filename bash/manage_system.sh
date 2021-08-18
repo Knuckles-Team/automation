@@ -155,6 +155,8 @@ function provision(){
       ghostscript_install
     elif [[ "${app}" == "gparted" ]]; then
       gparted_install
+    elif [[ "${app}" == "gramps" ]]; then
+      gramps_install
     elif [[ "${app}" == "hypnotix" ]]; then
       hypnotix_install
     elif [[ "${app}" == "kexi" ]]; then
@@ -503,6 +505,21 @@ function ghostscript_install(){
 
 function gparted_install(){
   sudo "${pkg_mgr}" install -y gparted
+}
+
+function gramps_install(){
+  if ! command -v gramps &> /dev/null; then
+    echo -e "gramps could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install -y gramps gir1.2-goocanvas-2.0
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      echo "Distribution ${os_version} not supported"
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
+  else
+    echo -e "gramps already installed! \nSkipping..."
+  fi
 }
 
 function hypnotix_install(){
@@ -964,7 +981,7 @@ public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" \
-"enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kexi" "kvm" \
+"enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "hypnotix" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" )
