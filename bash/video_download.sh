@@ -62,7 +62,14 @@ function download(){
       else
         youtube-dl --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')";
       fi
-    elif [[ -n $( echo "${link}" | grep 'https://youtube.com' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.youtube.com' ) ]] ; then
+    elif [[ -n $( echo "${link}" | grep 'youtube' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.youtube.com' ) ]] ; then
+      echo "Downloading YouTube Video: ${link}"
+      if [[ "${audio_flag}" == "true" ]]; then
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      else
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      fi
+    elif [[ -n $( echo "${link}" | grep 'bitchute' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.bitchute.com' ) ]] ; then
       echo "Downloading YouTube Video: ${link}"
       if [[ "${audio_flag}" == "true" ]]; then
         youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
