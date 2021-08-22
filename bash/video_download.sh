@@ -72,9 +72,16 @@ function download(){
     elif [[ -n $( echo "${link}" | grep 'bitchute' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.bitchute.com' ) ]] ; then
       echo "Downloading YouTube Video: ${link}"
       if [[ "${audio_flag}" == "true" ]]; then
-        youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
       else
         youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      fi
+    elif [[ -n $( echo "${link}" | grep 'twitter' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.twitter.com' ) ]] ; then
+      echo "Downloading YouTube Video: ${link}"
+      if [[ "${audio_flag}" == "true" ]]; then
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      else
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}"
       fi
     else
       echo "ERROR: Not a valid link: ${link}"
@@ -87,6 +94,7 @@ if [ -z "$1" ]; then
   exit 0
 fi
 
+links=[]
 audio_flag='false'
 download_dir="~/Downloads"
 while test -n "$1"; do
@@ -118,7 +126,6 @@ while test -n "$1"; do
       if [ ${2} ]; then
         IFS=',' read -r -a links_direct2 <<< "$2"
         links=( "${links_direct1[@]}" "${links_direct2[@]}" )
-        echo "LINKS: ${links[*]}"
         shift
       else
         echo 'ERROR: "-l | --links" requires a non-empty option argument.'
