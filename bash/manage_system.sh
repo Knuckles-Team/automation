@@ -349,6 +349,17 @@ function chrome-remote-desktop_install(){
     wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
     sudo "${pkg_mgr}" install -y /tmp/chrome-remote-desktop_current_amd64.deb
     mkdir -p ~/.config/chrome-remote-desktop
+    # Chrome remote desktop has an issue with polkit not authenticating USB flash drives
+    # https://askubuntu.com/questions/580329/mount-flashdrive-not-authorized-to-perform-operation
+#    Stop the Chrome Remote Desktop Service:
+#
+#    /opt/google/chrome-remote-desktop/chrome-remote-desktop --stop
+#    Open all external disks, that logo appears
+#
+#    Start again the Chrome remote desktop service:
+#
+#    /opt/google/chrome-remote-desktop/chrome-remote-desktop --start
+#    I think you have to do this after each reboot.
   else
     echo -e "Chrome remote desktop already installed! \nSkipping..."
   fi
@@ -1041,12 +1052,12 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "dialog" "docker" "dos2unix" \
+apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "hypnotix" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
-pi_apps=( "atomicparsley" "audacity" "chrome" "chrome-remote-desktop" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
+pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tesseract" "tmux" "transmission" \
 "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "yq" )
