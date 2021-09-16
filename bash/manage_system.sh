@@ -169,6 +169,8 @@ function provision(){
       neofetch_install
     elif [[ "${app}" == "openjdk" ]]; then
       openjdk_install
+    elif [[ "${app}" == "openrgb" ]]; then
+      openrgb_install
     elif [[ "${app}" == "openssh" ]]; then
       openssh_install
     elif [[ "${app}" == "mediainfo" ]]; then
@@ -708,6 +710,27 @@ function openjdk_install(){
   sudo "${pkg_mgr}" install -y openjdk-8-jdk
 }
 
+function openrgb_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+    sudo "${pkg_mgr}" install -y git build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libusb-1.0-0-dev libhidapi-dev pkgconf libmbedtls-dev debhelper
+    cd ~/
+    git clone https://gitlab.com/CalcProgrammer1/OpenRGB
+    cd ./OpenRGB
+    qmake OpenRGB.pro
+    make -j$(nproc)
+    # Build Debian package
+    sudo dpkg-buildpackage -us -B
+    sudo dpkg -i ../openrgb_0.61.1_amd64.deb
+    rm -rf ../openrgb*
+    cd ..
+    rm -rf ./OpenRGB
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+    echo "Distribution ${os_version} not supported"
+  else
+    echo "Distribution ${os_version} not supported"
+  fi
+}
+
 function openssh_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     sudo "${pkg_mgr}" install -y nmap openssh-server
@@ -1054,7 +1077,7 @@ public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "hypnotix" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "phoronix" "preload" "poppler-utils" "powershell" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openrgb" "openssh" "openvpn" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
