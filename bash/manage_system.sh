@@ -483,11 +483,6 @@ function fstab_install(){
       sudo mkdir -p "${media}"
 
       # If these fstab directories exist, update them. Otherwise create an entry for them.
-#      if grep -q '^/dev/sdb1' /etc/fstab; then
-#        sudo sed -i "s#/dev/sdb1.*#/dev/sdb1 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
-#      else
-#        echo -e "/dev/sdb1 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
-#      fi
       if grep -q '^/dev/sdb2' /etc/fstab; then
         sudo sed -i "s#/dev/sdb2.*#/dev/sdb2 ${media} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
@@ -503,15 +498,20 @@ function fstab_install(){
       else
         echo -e "/dev/sdd2 ${photos} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
       fi
-      if grep -q '^/dev/sde2' /etc/fstab; then
-        sudo sed -i "s#/dev/sde2.*#/dev/sde2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+      if grep -q '^/dev/sdf2' /etc/fstab; then
+        sudo sed -i "s#/dev/sdf2.*#/dev/sdf2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sde2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sdf2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
       fi
-      if grep -q '^/dev/sdf4' /etc/fstab; then
-        sudo sed -i "s#/dev/sdf4.*#/dev/sdf4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+      if grep -q '^/dev/sdg4' /etc/fstab; then
+        sudo sed -i "s#/dev/sdg4.*#/dev/sdg4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sdf4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sdg4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+      fi
+      if grep -q '^/dev/sde4' /etc/fstab; then
+        sudo sed -i "s#/dev/sde4.*#/dev/sde4 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+      else
+        echo -e "/dev/sde4 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
       fi
       sudo mount -a
       sudo systemctl daemon-reload
