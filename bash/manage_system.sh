@@ -123,6 +123,8 @@ function provision(){
       audacity_install
     elif [[ "${app}" == "android-studio" ]]; then
       android-studio_install
+    elif [[ "${app}" == "ansible" ]]; then
+      ansible_install
     elif [[ "${app}" == "atomicparsley" ]]; then
       atomicparsley_install
     elif [[ "${app}" == "chrome" ]]; then
@@ -177,6 +179,8 @@ function provision(){
       mediainfo_install
     elif [[ "${app}" == "mkvtoolnix" ]]; then
       mkvtoolnix_install
+    elif [[ "${app}" == "packer" ]]; then
+      packer_install
     elif [[ "${app}" == "phoronix" ]]; then
       phoronix_install
     elif [[ "${app}" == "preload" ]]; then
@@ -280,6 +284,11 @@ function adb_install(){
 
 function android-studio_install(){
   sudo snap install android-studio --classic
+}
+
+function ansible_install(){
+  python_install
+  sudo python3 -m pip install ansible
 }
 
 function atomicparsley_install(){
@@ -455,6 +464,7 @@ function ffmpeg_install(){
   fi
 }
 
+#FSTab Install
 function fstab_install(){
   if ! command -v ntfs-3g &> /dev/null; then
     echo -e "FSTAB could not be found \nInstalling..."
@@ -762,6 +772,21 @@ function mediainfo_install(){
     sudo "${pkg_mgr}" install -y mediainfo
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     sudo "${pkg_mgr}" -y install mediainfo
+  else
+    echo "Distribution ${os_version} not supported"
+  fi
+}
+
+function packer_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+    sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    sudo "${pkg_mgr}" update
+    sudo "${pkg_mgr}" install packer -y
+  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+    sudo "${pkg_mgr}" install -y yum-utils
+    sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+    sudo "${pkg_mgr}" -y install packer
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -1075,9 +1100,9 @@ private_ip=${private_ip::-3}
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "android-studio" "atomicparsley" "audacity" "chrome" "dialog" "docker" "dos2unix" \
+apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "hypnotix" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openrgb" "openssh" "openvpn" "phoronix" "preload" "poppler-utils" "powershell" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openrgb" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
