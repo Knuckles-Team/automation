@@ -111,30 +111,34 @@ while test -n "$1"; do
       echo "Installing"
       detect_os
       exit 0
+      shift
       ;;
     d | -d | --download-directory)
-      if [ ${2} ]; then
+      echo -e "1: ${1}\n2: ${2}"
+      if [ "${2}" ]; then
         download_dir="${2}"
         shift
       else
         echo 'ERROR: "-d | --download-directory" requires a non-empty option argument.'
         exit 0
       fi
+      shift
       ;;
     l | -l | --links)
       echo -e "1: $1\n2: $2"
-      if [ ${2} ]; then
-        IFS=',' read -r -a links_direct2 <<< "$2"
+      if [ "${2}" ]; then
+        IFS=',' read -r -a links_direct2 <<< "${2}"
         links=( "${links_direct1[@]}" "${links_direct2[@]}" )
         shift
       else
         echo 'ERROR: "-l | --links" requires a non-empty option argument.'
         exit 0
       fi
+      shift
       ;;
     f | -f | --file)
-      if [ ${2} ]; then
-        file=${2}
+      if [ "${2}" ]; then
+        file="${2}"
         IFS=$'\n' read -d '' -r -a file_links < "${file}"
         links=( "${links[@]}" "${file_links[@]}" )
         shift
@@ -142,6 +146,7 @@ while test -n "$1"; do
         echo 'ERROR: "-f | --file" requires a non-empty option argument.'
         exit 0
       fi
+      shift
       ;;
     --)# End of all options.
       shift
@@ -155,7 +160,6 @@ while test -n "$1"; do
       break
       ;;
   esac
-  shift
 done
 
 download
