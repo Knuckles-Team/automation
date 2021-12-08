@@ -84,7 +84,7 @@ function download(){
         youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}"
       fi
     else
-      echo "ERROR: Not a valid link: ${link}"
+      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
     fi
   done
 }
