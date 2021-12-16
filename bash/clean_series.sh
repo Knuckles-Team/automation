@@ -12,9 +12,9 @@ function clean_series(){
   sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_file}"
   ffmpeg -i "${video_file}" -ss "${trim_video}" -vcodec copy -acodec copy "output-${video_file}"
   shift_subtitle.sh -f "${subtitle_file}" -s "${trim_subtitle}"
-  ffmpeg -i "output-${video_file}" -f srt -i "${subtitle_file}" -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng "output-tr.mp4"
+  ffmpeg -i "output-${video_file}" -f srt -i "${subtitle_file}" -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng "output-subtitle-${video_file}"
   mv "${video_file}" "backup-${video_file}"
-  mv "output-tr.mp4" "${video_file}"
+  mv "output-subtitle-${video_file}" "${video_file}"
 }
 
 if [ -z "$1" ]; then
