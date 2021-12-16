@@ -5,16 +5,18 @@ function usage(){
 }
 
 function clean_series(){
+  # Clean subtitles
   sed -i 's/ [0-9][0-9]* /\n\n&\n/g' "${subtitle_file}"
   sed -i 's/^ //g' "${subtitle_file}"
   sed -i 's/^[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\.[0-9][0-9][0-9] --> [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\.[0-9][0-9][0-9] /&\n/g' "${subtitle_file}"
   sed -i 's/^.*FILIMO.*$/./g' "${subtitle_file}"
   sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_file}"
+  # Trim the beginning of the video
   ffmpeg -i "${video_file}" -ss "${trim_video}" -vcodec copy -acodec copy "output-${video_file}"
+  # Shift subtitles
   shift_subtitle.sh -f "${subtitle_file}" -s "${trim_subtitle}"
-  ffmpeg -i "output-${video_file}" -f srt -i "${subtitle_file}" -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng "output-subtitle-${video_file}"
-  mv "${video_file}" "backup-${video_file}"
-  mv "output-subtitle-${video_file}" "${video_file}"
+  # Add subtitles to video
+  add_subtitles.sh -s "${subtitle_file}" -v "${video_file}"
 }
 
 if [ -z "$1" ]; then
