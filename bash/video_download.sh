@@ -58,6 +58,48 @@ function download(){
     if [[ -n $( echo "${link}" | grep 'https://rumble.com' ) ]]; then
       echo "Downloading Rumble Video: ${link}"
       if [[ "${audio_flag}" == "true" ]]; then
+        youtube-dl -x --audio-format mp3 --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f best/bestaudio "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')"
+      else
+        youtube-dl --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')"
+      fi
+    elif [[ -n $( echo "${link}" | grep 'youtube' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.youtube.com' ) ]] ; then
+      echo "Downloading YouTube Video: ${link}"
+      if [[ "${audio_flag}" == "true" ]]; then
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      else
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      fi
+    elif [[ -n $( echo "${link}" | grep 'bitchute' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.bitchute.com' ) ]] ; then
+      echo "Downloading YouTube Video: ${link}"
+      if [[ "${audio_flag}" == "true" ]]; then
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      else
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      fi
+    elif [[ -n $( echo "${link}" | grep 'twitter' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.twitter.com' ) ]] ; then
+      echo "Downloading YouTube Video: ${link}"
+      if [[ "${audio_flag}" == "true" ]]; then
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      else
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}"
+      fi
+    else
+      if [[ "${title}" == "" ]]; then
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      else
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/${title}.%(ext)s" "${link}"
+      fi
+    fi
+  done
+}
+
+function download_parallel(){
+  echo "Beginning downloading"
+  for link in "${links[@]}"
+  do
+    if [[ -n $( echo "${link}" | grep 'https://rumble.com' ) ]]; then
+      echo "Downloading Rumble Video: ${link}"
+      if [[ "${audio_flag}" == "true" ]]; then
         youtube-dl -x --audio-format mp3 --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f best/bestaudio "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" &
       else
         youtube-dl --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" &
@@ -100,6 +142,7 @@ fi
 
 links=[]
 audio_flag='false'
+parallel='false'
 download_dir="~/Downloads"
 title=""
 while test -n "$1"; do
@@ -153,6 +196,10 @@ while test -n "$1"; do
       fi
       shift
       ;;
+    p | -p | --parallel)
+      parallel="true"
+      shift
+      ;;
     t | -t | --title)
       if [ "${2}" ]; then
         title="${2}"
@@ -177,4 +224,9 @@ while test -n "$1"; do
   esac
 done
 
-download
+if [[ ${parallel} == "true" ]]; then
+  download_parallel
+else
+  download
+fi
+
