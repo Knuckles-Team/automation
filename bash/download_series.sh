@@ -52,14 +52,14 @@ function clean_series(){
       fi
       # Add subtitles to video
       "${script_dir}/add_subtitles.sh" -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
+      # Set Title for Video
+      "${script_dir}/video_rename.sh" -c "${video_files[${index}]}"
     else
       echo "Skipping ${video_files[${index}]}, already downloaded..."
     fi
     ) &
     index=${index}+1
   done < "${file}"
-  # Set Titles for Videos
-  "${script_dir}/video_rename.sh" -c "${download_dir}"
 }
 
 if [ -z "$1" ]; then

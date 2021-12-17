@@ -191,6 +191,7 @@ while test -n "$1"; do
     b | -b | --batch-clean)
       if [[ "${2}" ]]; then
         relative_directory="${2}"
+        batch_clean="true"
         echo "Relative Directory passed: ${relative_directory}"
         shift
       else
@@ -202,6 +203,7 @@ while test -n "$1"; do
     c | -c | --clean)
       if [[ "${2}" ]]; then
         file="${2}"
+        single_clean="true"
         shift
       else
         echo 'ERROR: "-c | --clean" requires a non-empty option argument.'
