@@ -164,6 +164,9 @@ os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 rename_directory_flag="false"
+file=""
+batch_clean="false"
+single_clean="false"
 # To rename multiple files with pattern:
 # rename 's/^\[MKV\] //' *
 
@@ -185,10 +188,20 @@ while test -n "$1"; do
       install_dependencies
       exit 0
       ;;
-    c | -c | --clean)
+    b | -b | --batch-clean)
       if [[ "${2}" ]]; then
         relative_directory="${2}"
         echo "Relative Directory passed: ${relative_directory}"
+        shift
+      else
+        echo 'ERROR: "-b | --batch-clean" requires a non-empty option argument.'
+        exit 0
+      fi
+      shift
+      ;;
+    c | -c | --clean)
+      if [[ "${2}" ]]; then
+        file="${2}"
         shift
       else
         echo 'ERROR: "-c | --clean" requires a non-empty option argument.'
@@ -214,4 +227,10 @@ while test -n "$1"; do
   esac
 done
 
-clean_files
+if [[ "${batch_clean}" == "true" ]]; then
+  clean_files
+fi
+
+if [[ "${single_clean}" == "true" ]]; then
+  file_rename "${file}"
+fi
