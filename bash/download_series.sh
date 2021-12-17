@@ -5,18 +5,20 @@ function usage(){
   echo "CSV Format: "
   echo "<Title>,<Video Link>,<Subtitle Link>"
 }
-
+set -x
 function clean_series(){
   index=0
   while IFS=, read -r title video_link subtitle_link
   do
-    (
+    echo -e "Reading: \nTitle: ${title}\nVideo Link: ${video_link}\nSubtitle Link: ${subtitle_link}"
     subtitle_files+=("${download_dir}/${title}.srt")
     video_files+=("${download_dir}/${title}.mp4")
+    (
     if [[ ! -f "${video_files[${index}]}" ]]; then
-      echo "Downloading ${video_files[${index}]}..."
-      ./video_download.sh --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
+      echo "Downloading Subtitle: ${subtitle_files[${index}]} ..."
       wget --output-document "${subtitle_files[${index}]}" "${subtitle_link}"
+      echo "Downloading Video: ${video_files[${index}]} ..."
+      ./video_download.sh --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
       sed -i 's/WEBVTT//' "${subtitle_files[${index}]}"
       sed -i 's/^.*FILIMO.*$/./g' "${subtitle_files[${index}]}"
       sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
@@ -32,10 +34,11 @@ function clean_series(){
       if [[ "${trim_subtitle}" == "" ]]; then
         echo "Skipping trimming subtitle for ${video_files[${index}]}"
       else
-        shift_subtitle.sh -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
+        ./shift_subtitle.sh -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
       fi
       # Add subtitles to video
-      add_subtitles.sh -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
+      ./add_subtitles.sh -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
+      rm -f "${subtitle_files[${index}]}"
     else
       echo "Skipping ${video_files[${index}]}, already downloaded..."
     fi
