@@ -44,6 +44,8 @@ function clean_series(){
     ) &
     index=${index}+1
   done < "${file}"
+  # Set Titles for Videos
+  "${script_dir}/video_rename.sh" -c "${download_dir}"
 }
 
 if [ -z "$1" ]; then
