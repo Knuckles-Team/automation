@@ -21,11 +21,19 @@ function clean_series(){
       sed -i 's/^.*FILIMO.*$/./g' "${subtitle_files[${index}]}"
       sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
       # Trim the beginning of the video
-      ffmpeg -nostdin -i "${video_files[${index}]}" -ss "${trim_video}" -vcodec copy -acodec copy "output-${video_files[${index}]}"
-      rm -f "${video_files[${index}]}"
-      mv "output-${video_files[${index}]}" "${video_files[${index}]}"
+      if [[ "${trim_video}" == "0" ]]; then
+        echo "Skipping trimming video for ${video_files[${index}]}"
+      else
+        ffmpeg -nostdin -i "${video_files[${index}]}" -ss "${trim_video}" -vcodec copy -acodec copy "output-${video_files[${index}]}"
+        rm -f "${video_files[${index}]}"
+        mv "output-${video_files[${index}]}" "${video_files[${index}]}"
+      fi
       # Shift subtitles
-      shift_subtitle.sh -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
+      if [[ "${trim_subtitle}" == "" ]]; then
+        echo "Skipping trimming subtitle for ${video_files[${index}]}"
+      else
+        shift_subtitle.sh -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
+      fi
       # Add subtitles to video
       add_subtitles.sh -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
     else
@@ -45,8 +53,8 @@ file=""
 download_dir="."
 subtitle_files=()
 video_files=()
-trim_video="15"
-trim_subtitle="-18.0 seconds"
+trim_video="0"
+trim_subtitle=""
 while test -n "$1"; do
   case "$1" in
     h | -h | --help)
