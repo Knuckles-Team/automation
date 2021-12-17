@@ -58,33 +58,37 @@ function download(){
     if [[ -n $( echo "${link}" | grep 'https://rumble.com' ) ]]; then
       echo "Downloading Rumble Video: ${link}"
       if [[ "${audio_flag}" == "true" ]]; then
-       youtube-dl -x --audio-format mp3 --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f best/bestaudio "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')";
+        youtube-dl -x --audio-format mp3 --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f best/bestaudio "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" &
       else
-        youtube-dl --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')";
+        youtube-dl --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" &
       fi
     elif [[ -n $( echo "${link}" | grep 'youtube' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.youtube.com' ) ]] ; then
       echo "Downloading YouTube Video: ${link}"
       if [[ "${audio_flag}" == "true" ]]; then
-        youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" &
       else
-        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" &
       fi
     elif [[ -n $( echo "${link}" | grep 'bitchute' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.bitchute.com' ) ]] ; then
       echo "Downloading YouTube Video: ${link}"
       if [[ "${audio_flag}" == "true" ]]; then
-        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" &
       else
-        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" &
       fi
     elif [[ -n $( echo "${link}" | grep 'twitter' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.twitter.com' ) ]] ; then
       echo "Downloading YouTube Video: ${link}"
       if [[ "${audio_flag}" == "true" ]]; then
-        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+        youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" &
       else
-        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}"
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}" &
       fi
     else
-      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}"
+      if [[ "${title}" == "" ]]; then
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" &
+      else
+        youtube-dl -f best --no-check-certificate -o "${download_dir}/${title}.%(ext)s" "${link}" &
+      fi
     fi
   done
 }
@@ -97,6 +101,7 @@ fi
 links=[]
 audio_flag='false'
 download_dir="~/Downloads"
+title=""
 while test -n "$1"; do
   case "$1" in
     a | -a | --audio)
@@ -144,6 +149,16 @@ while test -n "$1"; do
         shift
       else
         echo 'ERROR: "-f | --file" requires a non-empty option argument.'
+        exit 0
+      fi
+      shift
+      ;;
+    t | -t | --title)
+      if [ "${2}" ]; then
+        title="${2}"
+        shift
+      else
+        echo 'ERROR: "-t | --title" requires a non-empty option argument.'
         exit 0
       fi
       shift
