@@ -38,7 +38,6 @@ function clean_series(){
       fi
       # Add subtitles to video
       "${script_dir}/add_subtitles.sh" -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
-      rm -f "${subtitle_files[${index}]}"
     else
       echo "Skipping ${video_files[${index}]}, already downloaded..."
     fi

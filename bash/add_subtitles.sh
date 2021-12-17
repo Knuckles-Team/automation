@@ -9,6 +9,8 @@ function add_subtitle(){
   ffmpeg -i "${video_file}" -f srt -i "${subtitle_file}" -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng "${video_file::-4}-output.mp4"
   if [[ "${backup}" == "true" ]]; then
     cp "${video_file}" "${video_file::-4}-unsubtitled-backup.mp4"
+  else
+    rm -f "${subtitle_file}"
   fi
   rm -f "${video_file}"
   cp "${video_file::-4}-output.mp4" "${video_file}"
