@@ -26,13 +26,13 @@ function detect_os(){
 }
 
 function ubuntu_install(){
-  sudo apt update
-  sudo apt install -y mkvtoolnix atomicparsley mediainfo rename
+  apt update
+  apt install -y mkvtoolnix atomicparsley mediainfo rename
 }
 
 function centos_install(){
-  sudo yum update -y
-  sudo yum install mkvtoolnix atomicparsley mediainfo rename -y
+  yum update -y
+  yum install mkvtoolnix atomicparsley mediainfo rename -y
 }
 
 function install_dependencies() {

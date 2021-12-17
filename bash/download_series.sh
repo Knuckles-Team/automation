@@ -11,6 +11,7 @@ function install(){
   os_version="${os_version:1:-1}"
   echo "${os_version}"
   if [[ $os_version = "Ubuntu" ]] ; then
+    apt update
     apt install ffmpeg -y
   elif [[ $os_version = "CentOS Linux" ]] ; then
     yum install ffmpeg -y
