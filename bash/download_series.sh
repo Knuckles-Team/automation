@@ -11,13 +11,13 @@ function install(){
   os_version="${os_version:1:-1}"
   echo "${os_version}"
   if [[ $os_version = "Ubuntu" ]] ; then
-    sudo apt install ffmpeg -y
+    apt install ffmpeg -y
   elif [[ $os_version = "CentOS Linux" ]] ; then
-    sudo yum install ffmpeg -y
+    yum install ffmpeg -y
   else
     echo "Distribution ${os_version} not supported"
   fi
-  sudo "${script_dir}/video_rename.sh" --install
+  "${script_dir}/video_rename.sh" --install
 }
 
 function clean_series(){
