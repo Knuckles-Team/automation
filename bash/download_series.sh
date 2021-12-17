@@ -5,7 +5,21 @@ function usage(){
   echo "CSV Format: "
   echo "<Title>,<Video Link>,<Subtitle Link>"
 }
-set -x
+
+function install(){
+  os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+  os_version="${os_version:1:-1}"
+  echo "${os_version}"
+  if [[ $os_version = "Ubuntu" ]] ; then
+    sudo apt install ffmpeg -y
+  elif [[ $os_version = "CentOS Linux" ]] ; then
+    sudo yum install ffmpeg -y
+  else
+    echo "Distribution ${os_version} not supported"
+  fi
+  sudo "${script_dir}/video_rename.sh" --install
+}
+
 function clean_series(){
   index=0
   while IFS=, read -r title video_link subtitle_link
@@ -60,6 +74,7 @@ subtitle_files=()
 video_files=()
 trim_video="0"
 trim_subtitle=""
+install_flag="false"
 while test -n "$1"; do
   case "$1" in
     h | -h | --help)
@@ -84,6 +99,10 @@ while test -n "$1"; do
         echo 'ERROR: "-f | --file" requires a non-empty option argument.'
         exit 0
       fi
+      shift
+      ;;
+    i | -i | --install)
+      install_flag="true"
       shift
       ;;
     ts | -ts | --trim-subtitle)
@@ -120,4 +139,7 @@ while test -n "$1"; do
   esac
 done
 
+if [[ "${install_flag}" == "true" ]]; then
+  install
+fi
 clean_series
