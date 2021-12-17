@@ -13,7 +13,7 @@ function add_subtitle(){
     rm -f "${subtitle_file}"
   fi
   rm -f "${video_file}"
-  cp "${video_file::-4}-output.mp4" "${video_file}"
+  mv "${video_file::-4}-output.mp4" "${video_file}"
 }
 
 if [ -z "$1" ]; then
