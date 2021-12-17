@@ -18,7 +18,7 @@ function clean_series(){
       echo "Downloading Subtitle: ${subtitle_files[${index}]} ..."
       wget --output-document "${subtitle_files[${index}]}" "${subtitle_link}"
       echo "Downloading Video: ${video_files[${index}]} ..."
-      ./video_download.sh --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
+      "${script_dir}/video_download.sh" --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
       sed -i 's/WEBVTT//' "${subtitle_files[${index}]}"
       sed -i 's/^.*FILIMO.*$/./g' "${subtitle_files[${index}]}"
       sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
@@ -26,18 +26,18 @@ function clean_series(){
       if [[ "${trim_video}" == "0" ]]; then
         echo "Skipping trimming video for ${video_files[${index}]}"
       else
-        ffmpeg -nostdin -i "${video_files[${index}]}" -ss "${trim_video}" -vcodec copy -acodec copy "output-${video_files[${index}]}"
+        ffmpeg -nostdin -i "${video_files[${index}]}" -ss "${trim_video}" -vcodec copy -acodec copy "${video_files[${index}]::-4}-output.mp4"
         rm -f "${video_files[${index}]}"
-        mv "output-${video_files[${index}]}" "${video_files[${index}]}"
+        mv "${video_files[${index}]::-4}-output.mp4" "${video_files[${index}]}"
       fi
       # Shift subtitles
       if [[ "${trim_subtitle}" == "" ]]; then
         echo "Skipping trimming subtitle for ${video_files[${index}]}"
       else
-        ./shift_subtitle.sh -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
+        "${script_dir}/shift_subtitle.sh" -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
       fi
       # Add subtitles to video
-      ./add_subtitles.sh -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
+      "${script_dir}/add_subtitles.sh" -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
       rm -f "${subtitle_files[${index}]}"
     else
       echo "Skipping ${video_files[${index}]}, already downloaded..."
@@ -52,6 +52,7 @@ if [ -z "$1" ]; then
   exit 0
 fi
 
+script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 file=""
 download_dir="."
 subtitle_files=()

@@ -6,10 +6,12 @@ function usage(){
 
 function add_subtitle(){
   # For language codes, use ISO 639-2
-  ffmpeg -i "${video_file}" -f srt -i "${subtitle_file}" -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng "output-${video_file}"
-  cp "${video_file}" "backup-${video_file}"
+  ffmpeg -i "${video_file}" -f srt -i "${subtitle_file}" -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng "${video_file::-4}-output.mp4"
+  if [[ "${backup}" == "true" ]]; then
+    cp "${video_file}" "${video_file::-4}-unsubtitled-backup.mp4"
+  fi
   rm -f "${video_file}"
-  cp "output-${video_file}" "${video_file}"
+  cp "${video_file::-4}-output.mp4" "${video_file}"
 }
 
 if [ -z "$1" ]; then
@@ -19,11 +21,16 @@ fi
 
 subtitle_file="subtitle.srt"
 video_file="video.mp4"
+backup="false"
 while test -n "$1"; do
   case "$1" in
     h | -h | --help)
       usage
       exit 0
+      ;;
+    b | -b | --backup)
+      backup="true"
+      shift
       ;;
     s | -s | --subtitle-file)
       if [ "${2}" ]; then
