@@ -13,19 +13,24 @@ function clean_series(){
     (
     subtitle_files+=("${download_dir}/${title}.srt")
     video_files+=("${download_dir}/${title}.mp4")
-    ./video_download.sh --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
-    wget --output-document "${subtitle_files[${index}]}" "${subtitle_link}"
-    sed -i 's/WEBVTT//' "${subtitle_files[${index}]}"
-    sed -i 's/^.*FILIMO.*$/./g' "${subtitle_files[${index}]}"
-    sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
-    # Trim the beginning of the video
-    ffmpeg -nostdin -i "${video_files[${index}]}" -ss "${trim_video}" -vcodec copy -acodec copy "output-${video_files[${index}]}"
-    rm -f "${video_files[${index}]}"
-    mv "output-${video_files[${index}]}" "${video_files[${index}]}"
-    # Shift subtitles
-    shift_subtitle.sh -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
-    # Add subtitles to video
-    add_subtitles.sh -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
+    if [[ ! -f "${video_files[${index}]}" ]]; then
+      echo "Downloading ${video_files[${index}]}..."
+      ./video_download.sh --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
+      wget --output-document "${subtitle_files[${index}]}" "${subtitle_link}"
+      sed -i 's/WEBVTT//' "${subtitle_files[${index}]}"
+      sed -i 's/^.*FILIMO.*$/./g' "${subtitle_files[${index}]}"
+      sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
+      # Trim the beginning of the video
+      ffmpeg -nostdin -i "${video_files[${index}]}" -ss "${trim_video}" -vcodec copy -acodec copy "output-${video_files[${index}]}"
+      rm -f "${video_files[${index}]}"
+      mv "output-${video_files[${index}]}" "${video_files[${index}]}"
+      # Shift subtitles
+      shift_subtitle.sh -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
+      # Add subtitles to video
+      add_subtitles.sh -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
+    else
+      echo "Skipping ${video_files[${index}]}, already downloaded..."
+    fi
     ) &
     index=${index}+1
   done < "${file}"
