@@ -12,9 +12,11 @@ function install(){
   echo "${os_version}"
   if [[ $os_version = "Ubuntu" ]] ; then
     apt update
-    apt install ffmpeg -y
+    apt install ffmpeg python3 python3-pip -y
+    python3 -m pip install --upgrade pip
+    python3 -m pip install youtube-dl
   elif [[ $os_version = "CentOS Linux" ]] ; then
-    yum install ffmpeg -y
+    yum install ffmpeg python3 -y
   else
     echo "Distribution ${os_version} not supported"
   fi
