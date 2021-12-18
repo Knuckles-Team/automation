@@ -20,6 +20,7 @@ function install(){
   else
     echo "Distribution ${os_version} not supported"
   fi
+  "${script_dir}/video_download.sh" --install
   "${script_dir}/video_rename.sh" --install
 }
 
