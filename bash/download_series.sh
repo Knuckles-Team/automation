@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function usage(){
-  echo "download_series.sh --download-directory '~/Downloads' --file 'video_links.csv' --tv '9' -ts '+3.0 seconds'"
+  echo "download_series.sh --download-directory '~/Downloads' --file 'video_links.csv' --trim-video '9' --trim-subtitle '+3.0 seconds'"
   echo "CSV Format: "
   echo "<Title>,<Video Link>,<Subtitle Link>"
 }
