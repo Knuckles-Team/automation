@@ -1095,8 +1095,6 @@ computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
-#private_ip=$(ip addr show enp0s31f6 | awk '/inet /{print $2}' )
-#private_ip=${private_ip::-3}
 private_ip="$(hostname -I)"
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
