@@ -10,7 +10,8 @@ function add_subtitle(){
   if [[ "${backup}" == "true" ]]; then
     cp "${video_file}" "${video_file::-4}-unsubtitled-backup.mp4"
   else
-    rm -f "${subtitle_file}"
+    # rm -f "${subtitle_file}"
+    echo "subtitle added to video, backup not requested."
   fi
   rm -f "${video_file}"
   mv "${video_file::-4}-output.mp4" "${video_file}"
