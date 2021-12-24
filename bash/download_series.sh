@@ -39,6 +39,7 @@ function clean_series(){
       "${script_dir}/video_download.sh" --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
       sed -i 's/WEBVTT//' "${subtitle_files[${index}]}"
       sed -i 's/^.*FILIMO.*$/./g' "${subtitle_files[${index}]}"
+      sed -i 's/^.*the most exciting movies.*$//g' "${subtitle_files[${index}]}"
       sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
       # Trim the beginning of the video
       if [[ "${trim_video}" == "0" ]]; then
