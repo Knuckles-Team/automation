@@ -14,7 +14,11 @@ if [[ "${os_version}" == "Ubuntu" ]] ; then
   sudo modprobe msr
 elif [[ "${os_version}" == "CentOS Linux" ]] ; then
   yum install -y wget gcc make git ncurses-devel msr-tools
-  cd i7z || git clone https://github.com/ajaiantilal/i7z.git
+  if [[ -d "i7z" ]]; then
+    echo "i7z exists on your filesystem."
+  else
+    git clone https://github.com/ajaiantilal/i7z.git
+  fi
   cd i7z || echo "i7z was not cloned"
   make
   wget -nc --directory-prefix "./" http://i7z.googlecode.com/svn/trunk/i7z_rw_registers.rb
