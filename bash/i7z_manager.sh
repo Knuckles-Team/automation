@@ -8,12 +8,12 @@ os_version="${os_version:1:-1}"
 
 if [[ "${os_version}" == "Ubuntu" ]] ; then
   apt update
-  apt install -y libncurses5-dev libncursesw5-dev msr-tools
+  apt install -y libncurses5-dev libncursesw5-dev msr-tools kmod
   apt install -y i7z
   wget -nc --directory-prefix "./" http://i7z.googlecode.com/svn/trunk/i7z_rw_registers.rb
   sudo modprobe msr
 elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-  yum install -y wget gcc make git ncurses-devel msr-tools
+  yum install -y wget gcc make git ncurses-devel msr-tools kmod
   if [[ -d "i7z" ]]; then
     echo "i7z exists on your filesystem."
   else
