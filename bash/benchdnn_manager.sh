@@ -19,7 +19,7 @@ function compile_benchdnn(){
 function run_benchdnn(){
   # https://github.com/oneapi-src/oneDNN/blob/master/tests/benchdnn/README.md
   # ./benchdnn --DRIVER [COMMON-OPTIONS] [DRIVER-OPTIONS] PROBLEM-DESCRIPTION
-  ./benchdnn --DRIVER [COMMON-OPTIONS] [DRIVER-OPTIONS] PROBLEM-DESCRIPTION
+  ./benchdnn --conv --cfg f32bf16bf16
 }
 
 compile_benchdnn
