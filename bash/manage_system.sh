@@ -133,6 +133,8 @@ function provision(){
       chrome-remote-desktop_install
     elif [[ "${app}" == "dialog" ]]; then
       dialog_install
+    elif [[ "${app}" == "discord" ]]; then
+      discord_install
     elif [[ "${app}" == "docker" ]]; then
       docker_install
     elif [[ "${app}" == "dos2unix" ]]; then
@@ -378,6 +380,16 @@ function chrome-remote-desktop_install(){
 
 function dialog_install(){
   sudo "${pkg_mgr}" install -y dialog
+}
+
+function discord_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo snap install discord
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      echo "Distribution ${os_version} not supported"
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
 }
 
 function docker_install(){
@@ -1099,7 +1111,7 @@ private_ip="$(hostname -I)"
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "docker" "dos2unix" \
+apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "hypnotix" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openrgb" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
