@@ -80,11 +80,9 @@ function file_rename() {
 
   # Rename Directory of Folder
   if [[ "${rename_directory_flag}" == "true" ]]; then
-    for directory in "${directories[@]}"
-    do
-      echo "Renaming directory"
-      rename_directory "${directory}" "${title}"
-    done
+    directory="$(dirname "${file}")"
+    echo echo "Renaming directory ${directory} - ${title}"
+    rename_directory "${directory}" "${title}"
   else
     echo "Skipping Renaming of Directory"
   fi
@@ -101,10 +99,11 @@ function find_files() {
     readarray -d '' webm_list < <(find "${directory}" -maxdepth 2 -name "*.webm" -print0)
     all_files_list=( "${all_files_list[@]}" "${mp4_list[@]}" "${mkv_list[@]}" "${webm_list[@]}" )
   done
-
+  echo "All files: ${all_files_list}"
   # shellcheck disable=SC1036
   # shellcheck disable=SC1072
   eval files_list=($(printf "%q\n" "${all_files_list[@]}" | sort -u))
+  
   for file in "${files_list[@]}"
   do
     echo "Filename: ${file}"
