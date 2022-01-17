@@ -1040,7 +1040,7 @@ function udisks2_install(){
 }
 
 function youtube-dl_install(){
-  sudo "${pkg_mgr}" install -y youtube-dl
+  python3 -m pip install youtube-dl
 }
 
 function vlc_install(){
