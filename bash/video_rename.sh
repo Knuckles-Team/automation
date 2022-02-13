@@ -3,6 +3,14 @@
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
 function usage() {
   echo -e "
+Flags:
+-h | h | --help             \t Show Usage and Flags
+-i | i | --install          \t Install all install_dependencies
+-a | a | --auto-rename      \t Rename the file based on regex matching
+-r | r | --rename-directory \t Rename the directory based off the file name
+-c | c | --clean            \t Clean a single file
+-b | b | --batch-clean      \t Clean all files within a directory
+
 Usage:
 ./video_rename.sh -i
 ./video_rename.sh --install
@@ -12,17 +20,7 @@ Usage:
 ./video_rename.sh --batch-clean <directory_to_search>
 ./video_rename.sh --batch-clean \"$(pwd)\" --rename-directory --auto-rename
 ./video_rename.sh -b \"$(pwd)\" -r -a
-
-Flags:
--h | h | --help             \t Show Usage and Flags
--i | i | --install          \t Install all install_dependencies
--a | a | --auto-rename      \t Rename the file based on regex matching
--r | r | --rename-directory \t Rename the directory based off the file name
--c | c | --clean            \t Clean a single file
--b | b | --batch-clean      \t Clean all files within a directory
 "
-
-
 }
 
 function detect_os(){
@@ -66,8 +64,8 @@ function file_rename() {
     # echo "Cleaning: ${file_directory} File: ${local_filename}"
     # Filters
     pushd "${file_directory}"
-      new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}/1080p.${file_type}/;
-                                                           s/720p.*.${file_type}/720p.${file_type}/;
+      new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}$/1080p.${file_type}/;
+                                                           s/720p.*.${file_type}$/720p.${file_type}/;
                                                            s/PROPER\.REMASTERED\.//;
                                                            s/PROPER\.//;
                                                            s/\[.*\]//g;
