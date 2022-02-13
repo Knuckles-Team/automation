@@ -152,7 +152,6 @@ function find_directories() {
       (( i++ ))
     fi
   done < <(find "${relative_directory}" -maxdepth 2 -type d -print0 | while read -d '' -r dir; do echo "${dir}"; done)
-
 }
 
 function rename_directory() {
@@ -208,7 +207,7 @@ while test -n "$1"; do
         if [[ -d "${2}" ]]; then
           relative_directory="${2}"
         else
-          echo "Directory entered not found"
+          echo "Directory entered not found: ${2}"
           exit 0
         fi
         batch_clean="true"
