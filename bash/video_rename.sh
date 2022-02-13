@@ -136,7 +136,7 @@ function find_files() {
     total_files=${#files_list[@]}
     percent_complete=$(bc <<< "scale=2; ($count/$total_files)*100")
     local_filename="$(basename "${file}")"
-    printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+10}" "${percent_complete}% (${count}/${#files_list[@]})"
+    printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+12}" "${percent_complete}% (${count}/${#files_list[@]})"
     file_rename "${file}"
   done
   echo "Complete 100.00%"
