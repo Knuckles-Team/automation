@@ -2,12 +2,27 @@
 
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
 function usage() {
-  echo "Usage: "
-  echo "sudo ./video_rename.sh -i"
-  echo "sudo ./video_rename.sh --install"
-  echo "sudo ./video_rename.sh install"
-  echo "sudo ./video_rename.sh -c <directory_to_search>"
-  echo "sudo ./video_rename.sh --clean \"$(pwd)\""
+  echo -e "
+Usage:
+./video_rename.sh -i
+./video_rename.sh --install
+./video_rename.sh install
+./video_rename.sh --clean <filename>
+./video_rename.sh -c <filename.mp4> -auto-rename
+./video_rename.sh --batch-clean <directory_to_search>
+./video_rename.sh --batch-clean \"$(pwd)\" --rename-directory --auto-rename
+./video_rename.sh -b \"$(pwd)\" -r -a
+
+Flags:
+-h | h | --help             \t Show Usage and Flags
+-i | i | --install          \t Install all install_dependencies
+-a | a | --auto-rename      \t Rename the file based on regex matching
+-r | r | --rename-directory \t Rename the directory based off the file name
+-c | c | --clean            \t Clean a single file
+-b | b | --batch-clean      \t Clean all files within a directory
+"
+
+
 }
 
 function detect_os(){
@@ -44,20 +59,38 @@ function install_dependencies() {
 function file_rename() {
   #set -x
   file=$1
-  file_type=$(echo "${file}" | sed 's/^.*\.//')
-  x="${file}"
-  #echo "File Type: ${file_type} File ${file}"
-  if [[ "${file_type}" == "mkv" ]]; then
-    y="${x%.mkv}"
-  elif [[ "${file_type}" == "mp4" ]]; then
-    y="${x%.mp4}"
-  elif [[ "${file_type}" == "webm" ]]; then
-    y="${x%.webm}"
+  file_type=$2
+  if [[ "${auto_file_rename_flag}" == "true" ]]; then
+    local_filename="$(basename "${file}")"
+    file_directory="$(dirname "${file}")"
+    # echo "Cleaning: ${file_directory} File: ${local_filename}"
+    # Filters
+    pushd "${file_directory}"
+      new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}/1080p.${file_type}/;
+                                                           s/720p.*.${file_type}/720p.${file_type}/;
+                                                           s/PROPER\.REMASTERED\.//;
+                                                           s/PROPER\.//;
+                                                           s/\[.*\]//g;
+                                                           s/\./ /g;
+                                                           s/ ${file_type}/.${file_type}/")
+      if [[ "${new_local_filename}" != "${local_filename}" ]]; then
+        mv "${file}" "${file_directory}/${new_local_filename}"
+        echo "Auto-generated Filename: ${new_local_filename}"
+        file="${file_directory}/${new_local_filename}"
+      else
+        echo "Auto-generated Filename The Same: ${new_local_filename}"
+      fi
+    popd
+    # Cleaning extraneous Files
+    rm -f ${file_directory}/*.txt
+    rm -f ${file_directory}/*.exe
   fi
+  #title=${file%.file_type##*/}
+  y="${file%.file_type}"
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
   current_track_title=$(mediainfo "${file}" | grep "Title" | head -n 1 | awk -F  ":" '{print $2}' | sed 's/^ *//')
-  echo -e "Current Title: ${current_title}\nCurrent Track Title: ${current_track_title}\nProposed Title: ${title}\n"
+  echo -e "Current Title: ${current_title}\nCurrent Track Title: ${current_track_title}\nProposed Title: ${title}\nFile: ${file}\n"
   if [[ "${title}" != "${current_title}" ]] || [[ "${title}" != "${current_track_title}" ]]; then
     if [[ "${file_type}" == "mkv" ]]; then
       #echo -e "Modifying ${file}\n\n"
@@ -81,7 +114,7 @@ function file_rename() {
   # Rename Directory of Folder
   if [[ "${rename_directory_flag}" == "true" ]]; then
     directory="$(dirname "${file}")"
-    echo echo "Renaming directory ${directory} - ${title}"
+    echo "Renaming directory ${directory} - ${title}"
     rename_directory "${directory}" "${title}"
   else
     echo "Skipping Renaming of Directory"
@@ -106,12 +139,34 @@ function find_files() {
   
   for file in "${files_list[@]}"
   do
-    echo "Filename: ${file}"
-    ((count++))
-    total_files=${#files_list[@]}
-    percent_complete=$(( (count / total_files) * 100 ))
-    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
-    file_rename "${file}"
+    file_type=$(echo "${file}" | sed 's/^.*\.//')
+    x="${file}"
+    #echo "File Type: ${file_type} File ${file}"
+    if [[ "${file_type}" == "mkv" ]]; then
+      y="${x%.mkv}"
+      echo "Filename: ${file}"
+      ((count++))
+      total_files=${#files_list[@]}
+      percent_complete=$(( (count / total_files) * 100 ))
+      echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
+      file_rename "${file}" "${file_type}"
+    elif [[ "${file_type}" == "mp4" ]]; then
+      y="${x%.mp4}"
+      echo "Filename: ${file}"
+      ((count++))
+      total_files=${#files_list[@]}
+      percent_complete=$(( (count / total_files) * 100 ))
+      echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
+      file_rename "${file}" "${file_type}"
+    elif [[ "${file_type}" == "webm" ]]; then
+      y="${x%.webm}"
+      echo "Filename: ${file}"
+      ((count++))
+      total_files=${#files_list[@]}
+      percent_complete=$(( (count / total_files) * 100 ))
+      echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
+      file_rename "${file}" "${file_type}"
+    fi
   done
 }
 
@@ -163,6 +218,7 @@ os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 rename_directory_flag="false"
+auto_file_rename_flag="false"
 file=""
 batch_clean="false"
 single_clean="false"
@@ -182,6 +238,10 @@ while test -n "$1"; do
       echo "User: ${computer_user}"
       usage
       exit 0
+      ;;
+    a | -a | --auto-rename)
+      auto_file_rename_flag="true"
+      shift
       ;;
     i | -i | --install | install)
       install_dependencies
@@ -235,3 +295,5 @@ fi
 if [[ "${single_clean}" == "true" ]]; then
   file_rename "${file}"
 fi
+
+
