@@ -101,6 +101,7 @@ function file_rename() {
       AtomicParsley "${file}" --title "${title}" --comment "" --overWrite > /dev/null 2>&1
     else
       echo "No Video File found"
+      rename_directory_flag="false"
     fi
   fi
 
@@ -151,6 +152,7 @@ function find_directories() {
       (( i++ ))
     fi
   done < <(find "${relative_directory}" -maxdepth 2 -type d -print0 | while read -d '' -r dir; do echo "${dir}"; done)
+
 }
 
 function rename_directory() {
@@ -203,7 +205,12 @@ while test -n "$1"; do
       ;;
     b | -b | --batch-clean)
       if [[ "${2}" ]]; then
-        relative_directory="${2}"
+        if [[ -d "${2}" ]]; then
+          relative_directory="${2}"
+        else
+          echo "Directory entered not found"
+          exit 0
+        fi
         batch_clean="true"
         #echo "Relative Directory passed: ${relative_directory}"
         shift
