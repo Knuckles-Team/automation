@@ -139,6 +139,7 @@ function find_files() {
     printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+10}" "${percent_complete}% (${count}/${#files_list[@]})"
     file_rename "${file}"
   done
+  echo "Complete 100.00%"
 }
 
 function find_directories() {
