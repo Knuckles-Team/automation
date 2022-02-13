@@ -66,7 +66,8 @@ function file_rename() {
     pushd "${file_directory}"
       new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}$/1080p.${file_type}/;
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
-                                                           s/PROPER\.REMASTERED\.//;
+                                                           s/REMASTERED\.//;
+                                                           s/EXTENDED\.//;
                                                            s/PROPER\.//;
                                                            s/\[.*\]//g;
                                                            s/\./ /g;
