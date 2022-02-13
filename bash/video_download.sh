@@ -48,30 +48,30 @@ function download(){
   if [[ -n $( echo "${link}" | grep 'https://rumble.com' ) ]]; then
     #echo "Downloading Rumble Video: ${link}"
     if [[ "${audio_flag}" == "true" ]]; then
-      youtube-dl -x --audio-format mp3 --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f best/bestaudio "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" >> /dev/null
+      youtube-dl -x --audio-format mp3 --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f best/bestaudio "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" >> /dev/null || youtube-dl -x --audio-format mp3 --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" -f best/bestaudio "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" >> /dev/null
     else
-      youtube-dl --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" >> /dev/null
+      youtube-dl --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" >> /dev/null || youtube-dl --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" -f mp4-1080p/mp4-720p/mp4-480p/webm-480p/mp4-360p/ "$(curl -s "${link}" | tr -d '\n'|awk -F "embedUrl" '{print $2}'|awk -F '"' '{print $3}')" >> /dev/null
     fi
   elif [[ -n $( echo "${link}" | grep 'youtube' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.youtube.com' ) ]] ; then
     #echo "Downloading YouTube Video: ${link}"
     if [[ "${audio_flag}" == "true" ]]; then
-      youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
     else
-      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -f best --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
     fi
   elif [[ -n $( echo "${link}" | grep 'bitchute' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.bitchute.com' ) ]] ; then
     #echo "Downloading YouTube Video: ${link}"
     if [[ "${audio_flag}" == "true" ]]; then
-      youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
     else
-      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -f best --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
     fi
   elif [[ -n $( echo "${link}" | grep 'twitter' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.twitter.com' ) ]] ; then
     #echo "Downloading YouTube Video: ${link}"
     if [[ "${audio_flag}" == "true" ]]; then
-      youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -x --audio-format mp3 -f best/bestaudio --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -x --audio-format mp3 -f best/bestaudio--no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
     else
-      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -f best --no-check-certificate  -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
     fi
   else
     if [[ "${title}" == "" ]]; then
@@ -82,14 +82,47 @@ function download(){
   fi
 }
 
+# initialize a semaphore with a given number of tokens
+open_sem(){
+    mkfifo pipe-$$
+    exec 3<>pipe-$$
+    rm pipe-$$
+    local i=$1
+    for((;i>0;i--)); do
+        printf %s 000 >&3
+    done
+}
+
+# run the given command asynchronously and pop/push tokens
+run_with_lock(){
+    local x
+    # this read waits until there is something to read
+    read -u 3 -n 3 x && ((0==x)) || exit $x
+    (
+     ( "$@"; )
+    # push the return code of the command to the semaphore
+    printf '%.3d' $? >&3
+    )&
+}
+
 function download_parallel(){
-  echo "Beginning to Download"
-  export -f download
-  export download_dir
-  export title
-  echo "${links[@]}" | xargs -n 1 -P 8 bash -c 'download "$@"' _
+  echo -e "\nBeginning to Download"
+  count=0
+  padlimit=$(tput cols)
+  total_links=${#links[@]}
+  line=$(printf '%*s' "$padlimit")
+  line=${line// /-}
+  N=4
+  open_sem ${N}
+  for link in "${links[@]}"; do
+    ((count++))
+    percent_complete=$(bc <<< "scale=2; ($count/$total_links)*100")
+    printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${link}" "${line:${#link}+${#percent_complete}+15}" "${percent_complete}% (${count}/${#links[@]})"
+    run_with_lock download "${link}"
+  done && wait
   echo "Download Complete!"
 }
+
 
 if [ -z "$1" ]; then
   usage
@@ -117,7 +150,6 @@ while test -n "$1"; do
       shift
       ;;
     d | -d | --download-directory)
-      echo -e "1: ${1}\n2: ${2}"
       if [ "${2}" ]; then
         download_dir="${2}"
         shift
@@ -128,7 +160,6 @@ while test -n "$1"; do
       shift
       ;;
     l | -l | --links)
-      echo -e "1: $1\n2: $2"
       if [ "${2}" ]; then
         IFS=',' read -r -a links_direct2 <<< "${2}"
         links=( "${links_direct1[@]}" "${links_direct2[@]}" )
