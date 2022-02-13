@@ -26,34 +26,22 @@ Usage:
 "
 }
 
-function detect_os(){
+function install_dependencies() {
+  printf "Installing Dependencies..."
   os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
   os_version="${os_version:1:-1}"
   echo "${os_version}"
   if [[ $os_version = "Ubuntu" ]] ; then
     echo "Installing for Ubuntu"
-    ubuntu_install
+    apt update
+    apt install -y mkvtoolnix atomicparsley mediainfo rename
   elif [[ $os_version = "CentOS Linux" ]] ; then
     echo "Installing for CentOS"
-    centos_install
-  else 
+    yum update -y
+    yum install mkvtoolnix atomicparsley mediainfo rename -y
+  else
     echo "Distribution ${os_version} not supported"
   fi
-}
-
-function ubuntu_install(){
-  apt update
-  apt install -y mkvtoolnix atomicparsley mediainfo rename
-}
-
-function centos_install(){
-  yum update -y
-  yum install mkvtoolnix atomicparsley mediainfo rename -y
-}
-
-function install_dependencies() {
-  printf "Installing Dependencies..."
-  detect_os
   printf "Successfully Installed Dependencies"
 }
 
@@ -111,7 +99,12 @@ function file_rename() {
   # Rename Directory of Folder
   if [[ "${rename_directory_flag}" == "true" ]]; then
     directory="$(dirname "${file}")"
-    rename_directory "${directory}" "${title}"
+    parent_directory="$(dirname "${directory}")"
+    proposed_directory="${parent_directory}/${title}"
+    if [[ "${directory}" != "${proposed_directory}" ]]
+    then
+      sudo mv "${directory}" "${parent_directory}/${title}"
+    fi
   fi
 }
 
@@ -156,21 +149,7 @@ function find_directories() {
       (( i++ ))
     fi
   done < <(find "${relative_directory}" -maxdepth 2 -type d -print0 | while read -d '' -r dir; do echo "${dir}"; done)
-}
 
-function rename_directory() {
-  parentdir="$(dirname "${1}")"
-  original_directory="${1}"
-  proposed_directory="${parentdir}/${2}"
-  if [[ "${original_directory}" != "${proposed_directory}" ]]
-  then    
-    sudo mv "${1}" "${parentdir}/${2}"
-  fi 
-}
-
-# Clean function clean will take the directory where this script is called from and 
-function clean_files() {  
-  find_directories
   find_files
 }
 
@@ -254,7 +233,7 @@ done
 
 echo -e ""
 if [[ "${batch_clean}" == "true" ]]; then
-  clean_files
+  find_directories
 fi
 
 if [[ "${single_clean}" == "true" ]]; then
