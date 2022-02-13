@@ -61,7 +61,6 @@ function file_rename() {
   if [[ "${auto_file_rename_flag}" == "true" ]]; then
     local_filename="$(basename "${file}")"
     file_directory="$(dirname "${file}")"
-    # echo "Cleaning: ${file_directory} File: ${local_filename}"
     # Filters
     pushd "${file_directory}" >> /dev/null
       new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}$/1080p.${file_type}/;
@@ -82,10 +81,7 @@ function file_rename() {
     rm -f ${file_directory}/*.txt >> /dev/null
     rm -f ${file_directory}/*.exe >> /dev/null
   fi
-  #title=${file%.file_type##*/}
-  #y="${file%.file_type}"
   x="${file}"
-  #echo "File Type: ${file_type} File ${file}"
   if [[ "${file_type}" == "mkv" ]]; then
     y="${x%.mkv}"
   elif [[ "${file_type}" == "mp4" ]]; then
@@ -96,22 +92,13 @@ function file_rename() {
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
   current_track_title=$(mediainfo "${file}" | grep "Title" | head -n 1 | awk -F  ":" '{print $2}' | sed 's/^ *//')
-  #echo -e "Current Title: ${current_title}\nCurrent Track Title: ${current_track_title}\nProposed Title: ${title}\n"
   if [[ "${title}" != "${current_title}" ]] || [[ "${title}" != "${current_track_title}" ]]; then
     if [[ "${file_type}" == "mkv" ]]; then
-      #echo -e "Modifying ${file}\n\n"
       mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" > /dev/null 2>&1
-      #echo "Modified ${file} with mkvpropedit"
     elif [[ "${file_type}" == "webm" ]]; then
-      #echo "Modifying ${file}"
       mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" > /dev/null 2>&1
-      #echo "Modified ${file} with mkvpropedit"
-      #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
     elif [[ "${file_type}" == "mp4" ]]; then
-      #echo "Modifying ${file}"
       AtomicParsley "${file}" --title "${title}" --comment "" --overWrite > /dev/null 2>&1
-      #echo "Modified ${file} with atomicparsley"
-      #printf "Complete!\nCleaned ${file_type} Title: ${title}\n"
     else
       echo "No Video File found"
     fi
@@ -120,7 +107,6 @@ function file_rename() {
   # Rename Directory of Folder
   if [[ "${rename_directory_flag}" == "true" ]]; then
     directory="$(dirname "${file}")"
-    #echo "Renaming directory ${directory} - ${title}"
     rename_directory "${directory}" "${title}"
   fi
 }
@@ -128,7 +114,6 @@ function file_rename() {
 function find_files() {
   count=0
   all_files_list=()
-  #echo "All Directories checked Files Found: ${directories[*]}"
   for directory in "${directories[@]}"
   do
     readarray -d '' mkv_list < <(find "${directory}" -maxdepth 2 -name "*.mkv" -print0)
@@ -136,9 +121,6 @@ function find_files() {
     readarray -d '' webm_list < <(find "${directory}" -maxdepth 2 -name "*.webm" -print0)
     all_files_list=( "${all_files_list[@]}" "${mp4_list[@]}" "${mkv_list[@]}" "${webm_list[@]}" )
   done
-  #echo "All files: ${all_files_list}"
-  # shellcheck disable=SC1036
-  # shellcheck disable=SC1072
   eval files_list=($(printf "%q\n" "${all_files_list[@]}" | sort -u))
 
   padlimit=$(tput cols)
@@ -146,13 +128,11 @@ function find_files() {
   line=${line// /-}
   for file in "${files_list[@]}"
   do
-    #echo "Filename: ${file}"
     ((count++))
     total_files=${#files_list[@]}
     percent_complete=$(bc <<< "scale=2; ($count/$total_files)*100")
     local_filename="$(basename "${file}")"
     printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+10}" "${percent_complete}% (${count}/${#files_list[@]})"
-    #printf "%s \t\t\t %30s\n" "${local_filename}" "${percent_complete}% (${count}/${#files_list[@]})"
     file_rename "${file}"
   done
 }
@@ -165,31 +145,21 @@ function find_directories() {
 
   while read line
   do
-    #printf "LINE: ${line}\n"
     if [ -d "${line}" ]
     then
       directories[ $i ]="${line}"
-      #echo "Found Valid Directory: ${directories[i]} Count: ${i}"
       (( i++ ))
-    #else
-      #echo "Did not find a directory at: ${line} Count: ${i}"
     fi
   done < <(find "${relative_directory}" -maxdepth 2 -type d -print0 | while read -d '' -r dir; do echo "${dir}"; done)
-  #printf 'Directories: %s\n' "${directories[@]}"
-
 }
 
 function rename_directory() {
   parentdir="$(dirname "${1}")"
   original_directory="${1}"
   proposed_directory="${parentdir}/${2}"
-  #printf "Original Direcotry: ${original_directory}\nNew Directory: ${proposed_directory}"
   if [[ "${original_directory}" != "${proposed_directory}" ]]
   then    
     sudo mv "${1}" "${parentdir}/${2}"
-    #echo "Renamed folder: ${parentdir}/${2}"
-  #else
-    #echo "Folder name looks good to go! No changes needed"
   fi 
 }
 
@@ -197,7 +167,6 @@ function rename_directory() {
 function clean_files() {  
   find_directories
   find_files
-  #echo && echo -e "Done Changing Titles\n"
 }
 
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
@@ -209,8 +178,6 @@ auto_file_rename_flag="false"
 file=""
 batch_clean="false"
 single_clean="false"
-# To rename multiple files with pattern:
-# rename 's/^\[MKV\] //' *
 
 if [ -z "$1" ]; then
   usage
