@@ -3,9 +3,12 @@
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
 function usage() {
   echo -e "
+Information:
+This script will rename a video file's title metadata to match the filename. The filename can also be cleaned automatically.
+
 Flags:
 -h | h | --help             \t Show Usage and Flags
--i | i | --install          \t Install all install_dependencies
+-i | i | --install          \t Install all dependencies
 -a | a | --auto-rename      \t Rename the file based on regex matching
 -r | r | --rename-directory \t Rename the directory based off the file name
 -c | c | --clean            \t Clean a single file

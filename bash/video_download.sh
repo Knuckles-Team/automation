@@ -2,24 +2,25 @@
 
 # This script will retitle all .mkv/.mp4 metadata to their file names. Will also rename directories to the file name
 function usage(){
-  echo -e "Flags:\n"
-  echo -e "-h | --help [Help]\n-i | --install [Install dependencies]\n-d | --download_directory [Set the download directory]\n-f | --file <FILE> [Read links from textfile]\n-l | --links <LINK1, LINK2, LINK3> [Read links from command prompt]\n-a | --audio [Downloads audio only]"
-  echo -e "\nUsage: \nHelp: "
-  echo "./video_download.sh -h"
-  echo "./video_download.sh --help"
-  echo -e "\nInstall:"
-  echo "sudo ./video_download.sh -i"
-  echo "sudo ./video_download.sh --install"
-  echo -e "\nDownload with file: "
-  echo "./video_download.sh -f <FILE>"
-  echo "./video_download.sh --file <FILE>"
-  echo -e "\nDownload with links: "
-  echo "./video_download.sh -l <LINK1,LINK2,LINK3>"
-  echo "./video_download.sh -l <LINK1, LINK2, LINK3>"
-  echo "./video_download.sh --links <LINK1,LINK2,LINK3>"
-  echo "./video_download.sh --links <LINK1, LINK2, LINK3>"
-  echo -e "\nSet Download Directory: "
-  echo -e "./video_download.sh -l <LINK1, LINK2> -f <FILE> -d \"~/Downloads\"\n"
+  echo -e "
+Information:
+This script will download videos from YouTube, Rumble, BitChute, Twitter, Televika, and other websites.
+
+Flags:
+-h | h | --help                           Show Usage and Flags
+-i | i | --install                        Install all dependencies
+-d | d | --download-directory <directory> Rename the file based on regex matching
+-f | f | --file <FILENAME.txt>            Read links from textfile
+-l | l | --links <LINK1,LINK2,LINK3>      Read links from command prompt
+-a | a | --audio                          Downloads audio only
+
+Usage:
+./video_download.sh -i
+./video_download.sh --install
+./video_download.sh install
+./video_download.sh --file <FILE>
+./video_download.sh --links <LINK1,LINK2,LINK3>
+./video_download.sh -l <LINK1, LINK2> -f <FILE> -d \"~/Downloads\""
 }
 
 function detect_os(){
