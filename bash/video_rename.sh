@@ -57,7 +57,7 @@ function install_dependencies() {
 function file_rename() {
   #set -x
   file=$1
-  file_type=$2
+  file_type=$(echo "${file}" | sed 's/^.*\.//')
   if [[ "${auto_file_rename_flag}" == "true" ]]; then
     local_filename="$(basename "${file}")"
     file_directory="$(dirname "${file}")"
@@ -73,10 +73,8 @@ function file_rename() {
                                                            s/ ${file_type}/.${file_type}/")
       if [[ "${new_local_filename}" != "${local_filename}" ]]; then
         mv "${file}" "${file_directory}/${new_local_filename}"
-        echo "Auto-generated Filename: ${new_local_filename}"
+        #echo "Auto-generated Filename: ${new_local_filename}"
         file="${file_directory}/${new_local_filename}"
-      else
-        echo "Auto-generated Filename The Same: ${new_local_filename}"
       fi
     popd
     # Cleaning extraneous Files
@@ -97,7 +95,7 @@ function file_rename() {
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
   current_track_title=$(mediainfo "${file}" | grep "Title" | head -n 1 | awk -F  ":" '{print $2}' | sed 's/^ *//')
-  echo -e "Current Title: ${current_title}\nCurrent Track Title: ${current_track_title}\nProposed Title: ${title}\nFile: ${file}\n"
+  #echo -e "Current Title: ${current_title}\nCurrent Track Title: ${current_track_title}\nProposed Title: ${title}\n"
   if [[ "${title}" != "${current_title}" ]] || [[ "${title}" != "${current_track_title}" ]]; then
     if [[ "${file_type}" == "mkv" ]]; then
       #echo -e "Modifying ${file}\n\n"
@@ -121,10 +119,8 @@ function file_rename() {
   # Rename Directory of Folder
   if [[ "${rename_directory_flag}" == "true" ]]; then
     directory="$(dirname "${file}")"
-    echo "Renaming directory ${directory} - ${title}"
+    #echo "Renaming directory ${directory} - ${title}"
     rename_directory "${directory}" "${title}"
-  else
-    echo "Skipping Renaming of Directory"
   fi
 }
 
@@ -139,41 +135,19 @@ function find_files() {
     readarray -d '' webm_list < <(find "${directory}" -maxdepth 2 -name "*.webm" -print0)
     all_files_list=( "${all_files_list[@]}" "${mp4_list[@]}" "${mkv_list[@]}" "${webm_list[@]}" )
   done
-  echo "All files: ${all_files_list}"
+  #echo "All files: ${all_files_list}"
   # shellcheck disable=SC1036
   # shellcheck disable=SC1072
   eval files_list=($(printf "%q\n" "${all_files_list[@]}" | sort -u))
   
   for file in "${files_list[@]}"
   do
-    file_type=$(echo "${file}" | sed 's/^.*\.//')
-    x="${file}"
-    #echo "File Type: ${file_type} File ${file}"
-    if [[ "${file_type}" == "mkv" ]]; then
-      y="${x%.mkv}"
-      echo "Filename: ${file}"
-      ((count++))
-      total_files=${#files_list[@]}
-      percent_complete=$(( (count / total_files) * 100 ))
-      echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
-      file_rename "${file}" "${file_type}"
-    elif [[ "${file_type}" == "mp4" ]]; then
-      y="${x%.mp4}"
-      echo "Filename: ${file}"
-      ((count++))
-      total_files=${#files_list[@]}
-      percent_complete=$(( (count / total_files) * 100 ))
-      echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
-      file_rename "${file}" "${file_type}"
-    elif [[ "${file_type}" == "webm" ]]; then
-      y="${x%.webm}"
-      echo "Filename: ${file}"
-      ((count++))
-      total_files=${#files_list[@]}
-      percent_complete=$(( (count / total_files) * 100 ))
-      echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
-      file_rename "${file}" "${file_type}"
-    fi
+    echo "Filename: ${file}"
+    ((count++))
+    total_files=${#files_list[@]}
+    percent_complete=$(bc <<< "scale=2; ($count/$total_files)*100")
+    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
+    file_rename "${file}"
   done
 }
 
