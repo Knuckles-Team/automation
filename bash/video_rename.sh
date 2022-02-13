@@ -63,7 +63,7 @@ function file_rename() {
     file_directory="$(dirname "${file}")"
     # echo "Cleaning: ${file_directory} File: ${local_filename}"
     # Filters
-    pushd "${file_directory}"
+    pushd "${file_directory}" >> /dev/null
       new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}$/1080p.${file_type}/;
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
                                                            s/REMASTERED\.//;
@@ -77,10 +77,10 @@ function file_rename() {
         #echo "Auto-generated Filename: ${new_local_filename}"
         file="${file_directory}/${new_local_filename}"
       fi
-    popd
+    popd >> /dev/null
     # Cleaning extraneous Files
-    rm -f ${file_directory}/*.txt
-    rm -f ${file_directory}/*.exe
+    rm -f ${file_directory}/*.txt >> /dev/null
+    rm -f ${file_directory}/*.exe >> /dev/null
   fi
   #title=${file%.file_type##*/}
   #y="${file%.file_type}"
@@ -140,14 +140,19 @@ function find_files() {
   # shellcheck disable=SC1036
   # shellcheck disable=SC1072
   eval files_list=($(printf "%q\n" "${all_files_list[@]}" | sort -u))
-  
+
+  padlimit=$(tput cols)
+  line=$(printf '%*s' "$padlimit")
+  line=${line// /-}
   for file in "${files_list[@]}"
   do
-    echo "Filename: ${file}"
+    #echo "Filename: ${file}"
     ((count++))
     total_files=${#files_list[@]}
     percent_complete=$(bc <<< "scale=2; ($count/$total_files)*100")
-    echo -e "Percent Complete: ${percent_complete} | Ratio: ${count}/${#files_list[@]} | Processing Media File: ${file}"
+    local_filename="$(basename "${file}")"
+    printf "%s %s %s\n" "${local_filename}" "${line:${#local_filename}+${#percent_complete}+9}" "${percent_complete}% (${count}/${#files_list[@]})"
+    #printf "%s \t\t\t %30s\n" "${local_filename}" "${percent_complete}% (${count}/${#files_list[@]})"
     file_rename "${file}"
   done
 }
@@ -233,7 +238,7 @@ while test -n "$1"; do
       if [[ "${2}" ]]; then
         relative_directory="${2}"
         batch_clean="true"
-        echo "Relative Directory passed: ${relative_directory}"
+        #echo "Relative Directory passed: ${relative_directory}"
         shift
       else
         echo 'ERROR: "-b | --batch-clean" requires a non-empty option argument.'
@@ -270,6 +275,7 @@ while test -n "$1"; do
   esac
 done
 
+echo -e ""
 if [[ "${batch_clean}" == "true" ]]; then
   clean_files
 fi
