@@ -106,7 +106,6 @@ run_with_lock(){
 }
 
 function download_parallel(){
-  echo -e "\nBeginning to Download"
   count=0
   padlimit=$(tput cols)
   total_links=${#links[@]}
@@ -120,7 +119,7 @@ function download_parallel(){
     printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${link}" "${line:${#link}+${#percent_complete}+15}" "${percent_complete}% (${count}/${#links[@]})"
     run_with_lock download "${link}"
   done && wait
-  echo "Download Complete!"
+  echo "Complete 100.00%"
 }
 
 
@@ -210,5 +209,6 @@ if [[ ${install_dependencies_flag} == 'true' ]]; then
   install_dependencies
 fi
 
+echo -e ""
 download_parallel
 
