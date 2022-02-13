@@ -84,7 +84,16 @@ function file_rename() {
     rm -f ${file_directory}/*.exe
   fi
   #title=${file%.file_type##*/}
-  y="${file%.file_type}"
+  #y="${file%.file_type}"
+  x="${file}"
+  #echo "File Type: ${file_type} File ${file}"
+  if [[ "${file_type}" == "mkv" ]]; then
+    y="${x%.mkv}"
+  elif [[ "${file_type}" == "mp4" ]]; then
+    y="${x%.mp4}"
+  elif [[ "${file_type}" == "webm" ]]; then
+    y="${x%.webm}"
+  fi
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
   current_track_title=$(mediainfo "${file}" | grep "Title" | head -n 1 | awk -F  ":" '{print $2}' | sed 's/^ *//')
