@@ -49,9 +49,9 @@ function file_rename() {
   #set -x
   file=$1
   file_type=$(echo "${file}" | sed 's/^.*\.//')
+  local_filename="$(basename "${file}")"
+  file_directory="$(dirname "${file}")"
   if [[ "${auto_file_rename_flag}" == "true" ]]; then
-    local_filename="$(basename "${file}")"
-    file_directory="$(dirname "${file}")"
     # Filters
     pushd "${file_directory}" >> /dev/null
       new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}$/1080p.${file_type}/;
@@ -68,10 +68,10 @@ function file_rename() {
         file="${file_directory}/${new_local_filename}"
       fi
     popd >> /dev/null
-    # Cleaning extraneous Files
-    rm -f ${file_directory}/*.txt >> /dev/null
-    rm -f ${file_directory}/*.exe >> /dev/null
   fi
+  # Cleaning extraneous Files
+  rm -f ${file_directory}/*.txt >> /dev/null
+  rm -f ${file_directory}/*.exe >> /dev/null
   x="${file}"
   if [[ "${file_type}" == "mkv" ]]; then
     y="${x%.mkv}"
@@ -129,7 +129,7 @@ function find_files() {
     ((count++))
     percent_complete=$(bc <<< "scale=2; ($count/$total_files)*100")
     local_filename="$(basename "${file}")"
-    printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+12}" "${percent_complete}% (${count}/${#files_list[@]})"
+    printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+15}" "${percent_complete}% (${count}/${#files_list[@]})"
     file_rename "${file}"
   done
   echo "Complete 100.00%"
