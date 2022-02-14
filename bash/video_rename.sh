@@ -56,6 +56,7 @@ function file_rename() {
     pushd "${file_directory}" >> /dev/null
       new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}$/1080p.${file_type}/;
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
+                                                           s/480p.*.${file_type}$/480p.${file_type}/;
                                                            s/REMASTERED\.//;
                                                            s/EXTENDED\.//;
                                                            s/PROPER\.//;
@@ -129,7 +130,7 @@ function find_files() {
     ((count++))
     percent_complete=$(bc <<< "scale=2; ($count/$total_files)*100")
     local_filename="$(basename "${file}")"
-    printf "%.$((padlimit - 18))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+15}" "${percent_complete}% (${count}/${#files_list[@]})"
+    printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
     file_rename "${file}"
   done
   echo "Complete 100.00%"
