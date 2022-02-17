@@ -54,7 +54,8 @@ function file_rename() {
   if [[ "${auto_file_rename_flag}" == "true" ]]; then
     # Filters
     pushd "${file_directory}" >> /dev/null
-      new_local_filename=$(echo "${local_filename}" | sed "s/1080p.*.${file_type}$/1080p.${file_type}/;
+      new_local_filename=$(echo "${local_filename}" | sed "s/2160p.*.${file_type}$/2160p.${file_type}/;
+                                                           s/1080p.*.${file_type}$/1080p.${file_type}/;
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
                                                            s/480p.*.${file_type}$/480p.${file_type}/;
                                                            s/REMASTERED\.//;
