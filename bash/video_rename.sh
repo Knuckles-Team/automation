@@ -115,12 +115,16 @@ function file_rename() {
     proposed_directory="${parent_directory}/${title}"
     if [[ "${directory}" != "${proposed_directory}" ]]
     then
-      sudo mv "${directory}" "${parent_directory}/${title}"
+      sudo mv "${directory}" "${proposed_directory}"
     fi
   fi
   # Move folder to directory specified
   if [[ "${move_flag}" == "true" ]]; then
-    directory="$(dirname "${file}")"
+    if [[ "${rename_directory_flag}" == "true" ]]; then
+      directory="${proposed_directory}"
+    else
+      directory="$(dirname "${file}")"
+    fi
     sudo mv "${directory}" "${move_directory}" &
   fi
   printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${title}" "${line:${#title}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
@@ -150,6 +154,7 @@ function find_files() {
     local_filename="$(basename "${file}")"
     file_rename "${file}"
   done
+  wait
   echo -e "\nComplete 100.00%"
 }
 
