@@ -13,6 +13,7 @@ Flags:
 -r | r | --rename-directory \t Rename the directory based off the file name
 -c | c | --clean            \t Clean a single file
 -b | b | --batch-clean      \t Clean all files within a directory
+-m | m | --move             \t Move the file's directory to specified directory
 
 Usage:
 ./video_rename.sh -i
@@ -22,7 +23,7 @@ Usage:
 ./video_rename.sh -c <filename.mp4> -auto-rename
 ./video_rename.sh --batch-clean <directory_to_search>
 ./video_rename.sh --batch-clean \"$(pwd)\" --rename-directory --auto-rename
-./video_rename.sh -b \"$(pwd)\" -r -a
+./video_rename.sh -b \"$(pwd)\" -r -a -m \"$HOME/Videos\"
 "
 }
 
@@ -117,6 +118,11 @@ function file_rename() {
       sudo mv "${directory}" "${parent_directory}/${title}"
     fi
   fi
+  # Move folder to directory specified
+  if [[ "${move_flag}" == "true" ]]; then
+    directory="$(dirname "${file}")"
+    sudo mv "${directory}" "${move_directory}"
+  fi
   printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${title}" "${line:${#title}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
 }
 
@@ -136,7 +142,7 @@ function find_files() {
   line=$(printf '%*s' "$padlimit")
   line=${line// /-}
   total_files=${#files_list[@]}
-  echo -e "\nProcessing files..."
+  echo -e "\nProcessing files...\n"
   for file in "${files_list[@]}"
   do
     ((count++))
@@ -144,7 +150,7 @@ function find_files() {
     local_filename="$(basename "${file}")"
     file_rename "${file}"
   done
-  echo "Complete 100.00%"
+  echo -e "\nComplete 100.00%"
 }
 
 function find_directories() {
@@ -173,6 +179,8 @@ os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 rename_directory_flag="false"
 auto_file_rename_flag="false"
+move_flag="false"
+move_directory=""
 file=""
 batch_clean="false"
 single_clean="false"
@@ -223,6 +231,22 @@ while test -n "$1"; do
         shift
       else
         echo 'ERROR: "-c | --clean" requires a non-empty option argument.'
+        exit 0
+      fi
+      shift
+      ;;
+    m | -m | --move)
+      if [[ "${2}" ]]; then
+        if [[ -d "${2}" ]]; then
+          move_directory="${2}"
+        else
+          echo "Directory entered not found: ${2}"
+          exit 0
+        fi
+        move_flag="true"
+        shift
+      else
+        echo 'ERROR: "-b | --batch-clean" requires a non-empty option argument.'
         exit 0
       fi
       shift
