@@ -61,6 +61,7 @@ function file_rename() {
                                                            s/REMASTERED\.//;
                                                            s/EXTENDED\.//;
                                                            s/PROPER\.//;
+                                                           s/THEATRICAL\.//;
                                                            s/\[.*\]//g;
                                                            s/\./ /g;
                                                            s/ ${file_type}/.${file_type}/")
