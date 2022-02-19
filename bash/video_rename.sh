@@ -62,8 +62,10 @@ function file_rename() {
                                                            s/RESTORED.//;
                                                            s/UNCUT.//;
                                                            s/GERMAN/German/;
+                                                           s/SWEDISH/Swedish/;
                                                            s/FRENCH/French/;
                                                            s/JAPANESE/Japanese/;
+                                                           s/CHINESE/Chinese/;
                                                            s/KOREAN/Korean/;
                                                            s/ITALIAN/Italian/;
                                                            s/EXTENDED.//;
