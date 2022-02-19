@@ -121,7 +121,7 @@ function file_rename() {
   # Move folder to directory specified
   if [[ "${move_flag}" == "true" ]]; then
     directory="$(dirname "${file}")"
-    sudo mv "${directory}" "${move_directory}"
+    sudo mv "${directory}" "${move_directory}" &
   fi
   printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${title}" "${line:${#title}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
 }
