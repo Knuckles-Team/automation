@@ -55,9 +55,9 @@ function download(){
   elif [[ -n $( echo "${link}" | grep 'youtube' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.youtube.com' ) ]] ; then
     #echo "Downloading YouTube Video: ${link}"
     if [[ "${audio_flag}" == "true" ]]; then
-      youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -x --audio-format mp3 -f best/bestaudio --write-description --write-info-json --write-annotations --write-sub --write-thumbnail --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null || echo "Could not download video"
     else
-      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -f best --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null
+      youtube-dl -f best --no-check-certificate -o "${download_dir}/%(title)s.%(ext)s" "${link}" >> /dev/null || youtube-dl -f best --no-check-certificate -o "${download_dir}/%(id)s.%(ext)s" "${link}" >> /dev/null || echo "Could not download video"
     fi
   elif [[ -n $( echo "${link}" | grep 'bitchute' ) ]] || [[ -n $( echo "${link}" | grep 'https://www.bitchute.com' ) ]] ; then
     #echo "Downloading YouTube Video: ${link}"
