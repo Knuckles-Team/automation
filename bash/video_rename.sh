@@ -104,12 +104,20 @@ function file_rename() {
   title=${y##*/}
   current_title=$(mediainfo "${file}" | grep -e "Movie name" | awk -F  ":" '{print $2}' | sed 's/^ *//')
   current_track_title=$(mediainfo "${file}" | grep "Title" | head -n 1 | awk -F  ":" '{print $2}' | sed 's/^ *//')
+  # MKV and WEBM Files (Will also rename the track title)
   if [[ "${title}" != "${current_title}" ]] || [[ "${title}" != "${current_track_title}" ]]; then
     if [[ "${file_type}" == "mkv" ]]; then
       mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" >> /dev/null 2>&1
     elif [[ "${file_type}" == "webm" ]]; then
       mkvpropedit "${file}" -e info -s title="${title}" -e track:1 -s name="${title}" >> /dev/null 2>&1
-    elif [[ "${file_type}" == "mp4" ]]; then
+    else
+      echo "No Video File found"
+      rename_directory_flag="false"
+    fi
+  fi
+  # MP4 Files
+  if [[ "${title}" != "${current_title}" ]]; then
+    if [[ "${file_type}" == "mp4" ]]; then
       AtomicParsley "${file}" --title "${title}" --comment "" --overWrite >> /dev/null 2>&1
     else
       echo "No Video File found"
