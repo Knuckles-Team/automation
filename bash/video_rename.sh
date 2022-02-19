@@ -60,8 +60,8 @@ function file_rename() {
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
                                                            s/480p.*.${file_type}$/480p.${file_type}/;
                                                            s/ARROW.//;
-                                                           s/REMASTER.//;
                                                            s/REMASTERED.//;
+                                                           s/REMASTER.//;
                                                            s/RESTORED.//;
                                                            s/UNCUT.//;
                                                            s/Final.Cut.//;
@@ -77,6 +77,8 @@ function file_rename() {
                                                            s/EXTENDED.//;
                                                            s/PROPER.//;
                                                            s/THEATRICAL.//;
+                                                           s/CRITERION.//;
+                                                           s/DC.//;
                                                            s/\[.*\]//g;
                                                            s/\./ /g;
                                                            s/ ${file_type}/.${file_type}/")
@@ -90,6 +92,7 @@ function file_rename() {
   # Cleaning extraneous Files
   rm -f ${file_directory}/*.txt >> /dev/null
   rm -f ${file_directory}/*.exe >> /dev/null
+  rm -f ${file_directory}/*.nfo >> /dev/null
   x="${file}"
   if [[ "${file_type}" == "mkv" ]]; then
     y="${x%.mkv}"
@@ -130,7 +133,11 @@ function file_rename() {
     else
       directory="$(dirname "${file}")"
     fi
-    sudo mv "${directory}" "${move_directory}" &
+    if [[ -d "${move_directory}/${directory}" ]]; then
+      echo "Move directory already contains file specified. Skipping..."
+    else
+      sudo mv "${directory}" "${move_directory}" &
+    fi
   fi
   printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${title}" "${line:${#title}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
 }
