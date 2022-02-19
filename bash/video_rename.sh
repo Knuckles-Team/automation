@@ -58,14 +58,17 @@ function file_rename() {
                                                            s/1080p.*.${file_type}$/1080p.${file_type}/;
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
                                                            s/480p.*.${file_type}$/480p.${file_type}/;
-                                                           s/REMASTERED\.//;
+                                                           s/REMASTERED.//;
+                                                           s/RESTORED.//;
+                                                           s/UNCUT.//;
                                                            s/GERMAN/German/;
                                                            s/FRENCH/French/;
                                                            s/JAPANESE/Japanese/;
+                                                           s/KOREAN/Korean/;
                                                            s/ITALIAN/Italian/;
-                                                           s/EXTENDED\.//;
-                                                           s/PROPER\.//;
-                                                           s/THEATRICAL\.//;
+                                                           s/EXTENDED.//;
+                                                           s/PROPER.//;
+                                                           s/THEATRICAL.//;
                                                            s/\[.*\]//g;
                                                            s/\./ /g;
                                                            s/ ${file_type}/.${file_type}/")
@@ -102,7 +105,6 @@ function file_rename() {
       rename_directory_flag="false"
     fi
   fi
-
   # Rename Directory of Folder
   if [[ "${rename_directory_flag}" == "true" ]]; then
     directory="$(dirname "${file}")"
@@ -113,6 +115,7 @@ function file_rename() {
       sudo mv "${directory}" "${parent_directory}/${title}"
     fi
   fi
+  printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${title}" "${line:${#title}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
 }
 
 function find_files() {
@@ -131,12 +134,12 @@ function find_files() {
   line=$(printf '%*s' "$padlimit")
   line=${line// /-}
   total_files=${#files_list[@]}
+  echo -e "\nProcessing files..."
   for file in "${files_list[@]}"
   do
     ((count++))
     percent_complete=$(bc <<< "scale=2; ($count/$total_files)*100")
     local_filename="$(basename "${file}")"
-    printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${local_filename}" "${line:${#local_filename}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
     file_rename "${file}"
   done
   echo "Complete 100.00%"
@@ -160,6 +163,8 @@ function find_directories() {
   find_files
 }
 
+count=0
+percent_complete=0
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
