@@ -59,6 +59,10 @@ function file_rename() {
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
                                                            s/480p.*.${file_type}$/480p.${file_type}/;
                                                            s/REMASTERED\.//;
+                                                           s/GERMAN/German/;
+                                                           s/FRENCH/French/;
+                                                           s/JAPANESE/Japanese/;
+                                                           s/ITALIAN/Italian/;
                                                            s/EXTENDED\.//;
                                                            s/PROPER\.//;
                                                            s/THEATRICAL\.//;
