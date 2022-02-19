@@ -59,9 +59,12 @@ function file_rename() {
                                                            s/1080p.*.${file_type}$/1080p.${file_type}/;
                                                            s/720p.*.${file_type}$/720p.${file_type}/;
                                                            s/480p.*.${file_type}$/480p.${file_type}/;
+                                                           s/ARROW.//;
+                                                           s/REMASTER.//;
                                                            s/REMASTERED.//;
                                                            s/RESTORED.//;
                                                            s/UNCUT.//;
+                                                           s/Final.Cut.//;
                                                            s/GERMAN/German/;
                                                            s/SWEDISH/Swedish/;
                                                            s/FRENCH/French/;
@@ -69,6 +72,8 @@ function file_rename() {
                                                            s/CHINESE/Chinese/;
                                                            s/KOREAN/Korean/;
                                                            s/ITALIAN/Italian/;
+                                                           s/RUSSIAN/Russian/;
+                                                           s/DANISH/Danish/;
                                                            s/EXTENDED.//;
                                                            s/PROPER.//;
                                                            s/THEATRICAL.//;
