@@ -66,6 +66,7 @@ function file_rename() {
                                                            s/UNCUT.//;
                                                            s/Final.Cut.//;
                                                            s/GERMAN/German/;
+                                                           s/SPANISH/Spanish/;
                                                            s/SWEDISH/Swedish/;
                                                            s/FRENCH/French/;
                                                            s/JAPANESE/Japanese/;
