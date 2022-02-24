@@ -81,6 +81,8 @@ function file_rename() {
                                                            s/CRITERION.//;
                                                            s/DC.//;
                                                            s/\[.*\]//g;
+                                                           s/(.*)//g;
+                                                           s/^ //;
                                                            s/\./ /g;
                                                            s/ ${file_type}/.${file_type}/")
       if [[ "${new_local_filename}" != "${local_filename}" ]]; then
