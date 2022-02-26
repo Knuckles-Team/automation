@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import pathlib
 import pyanime4k
 import sys
