@@ -1,9 +1,4 @@
-# python3 -m pip install pyanime4k https://github.com/TianZerL/pyanime4k
-
-# pathlib.Path path objects are recommended instead of strings
 import pathlib
-
-# import pyanime4k library
 import pyanime4k
 import sys
 import getopt
