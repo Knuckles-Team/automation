@@ -312,7 +312,7 @@ while test -n "$1"; do
   esac
 done
 
-echo -e ""
+echo -e "\n"
 if [[ "${batch_clean}" == "true" ]]; then
   find_directories
 fi
