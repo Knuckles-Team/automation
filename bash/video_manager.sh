@@ -119,6 +119,25 @@ function file_rename() {
       rename_directory_flag="false"
     fi
   fi
+  # Add English subtitles that are found in the /Sub directory
+  if [[ "${subtitle_flag}" == "true" ]]; then
+    subtitle_directory="$(dirname "${file}")/Subs"
+    if [[ -d "${subtitle_directory}" ]]; then
+      subtitle_files=()
+      while IFS=  read -r -d $'\0'; do
+          subtitle_files+=("$REPLY")
+      done < <(find "${subtitle_directory}" -regextype posix-extended -regex '^.*English.*\.srt' -print0)
+      if [[ "${file_type}" == "mp4" ]]; then
+        ffmpeg -i "${file}" -f srt -i "${subtitle_files[0]}" -c:v copy -c:a copy -c:s mov_text -metadata:s:s:0 language=eng "${file::-4}-output.${file_type}" 2> /dev/null
+      elif [[ "${file_type}" == "mkv" ]]; then
+        ffmpeg -i "${file}" -f srt -i "${subtitle_files[0]}" -c:v copy -c:a copy -c:s srt -metadata:s:s:0 language=eng "${file::-4}-output.${file_type}" 2> /dev/null
+      fi
+      if [[ -f "${file::-4}-output.${file_type}" ]]; then
+        rm -f "${file}"
+        mv "${file::-4}-output.${file_type}" "${file}"
+      fi
+    fi
+  fi
   # Rename Directory of Folder
   if [[ "${rename_directory_flag}" == "true" ]]; then
     directory="$(dirname "${file}")"
@@ -273,6 +292,10 @@ while test -n "$1"; do
       ;;
     r | -r | --rename-directory)
       rename_directory_flag="true"
+      shift
+      ;;
+    s | -s | --subtitle)
+      subtitle_flag="true"
       shift
       ;;
     --)# End of all options.
