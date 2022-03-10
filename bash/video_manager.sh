@@ -14,6 +14,7 @@ Flags:
 -c | c | --clean            \t Clean a single file
 -b | b | --batch-clean      \t Clean all files within a directory
 -m | m | --move             \t Move the file's directory to specified directory
+-s | s | --subtitle         \t Add subtitle from folders 'Sub' directory to video file
 
 Usage:
 ./video_rename.sh -i
@@ -23,7 +24,7 @@ Usage:
 ./video_rename.sh -c <filename.mp4> -auto-rename
 ./video_rename.sh --batch-clean <directory_to_search>
 ./video_rename.sh --batch-clean \"$(pwd)\" --rename-directory --auto-rename
-./video_rename.sh -b \"$(pwd)\" -r -a -m \"$HOME/Videos\"
+./video_rename.sh -b \"$(pwd)\" -r -a -s -m \"$HOME/Videos\"
 "
 }
 
@@ -145,7 +146,7 @@ function file_rename() {
     proposed_directory="${parent_directory}/${title}"
     if [[ "${directory}" != "${proposed_directory}" ]]
     then
-      sudo mv "${directory}" "${proposed_directory}"
+      mv "${directory}" "${proposed_directory}"
     fi
   fi
   # Move folder to directory specified
@@ -158,7 +159,7 @@ function file_rename() {
     if [[ -d "${move_directory}/${directory}" ]]; then
       echo "Move directory already contains file specified. Skipping..."
     else
-      sudo mv "${directory}" "${move_directory}" &
+      mv "${directory}" "${move_directory}" &
     fi
   fi
   printf "%.$((padlimit - 21))s %s %s\n" " $(echo -e '\U2714') ${title}" "${line:${#title}+${#percent_complete}+18}" "${percent_complete}% (${count}/${#files_list[@]})"
