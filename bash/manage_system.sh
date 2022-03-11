@@ -161,8 +161,6 @@ function provision(){
       gparted_install
     elif [[ "${app}" == "gramps" ]]; then
       gramps_install
-    elif [[ "${app}" == "hypnotix" ]]; then
-      hypnotix_install
     elif [[ "${app}" == "kexi" ]]; then
       kexi_install
     elif [[ "${app}" == "kvm" ]]; then
@@ -596,19 +594,6 @@ function gramps_install(){
     fi
   else
     echo -e "gramps already installed! \nSkipping..."
-  fi
-}
-
-function hypnotix_install(){
-  if [[ "${os_version}" == "Ubuntu" ]] ; then
-    hypnotix_git="https://github.com/linuxmint/hypnotix/releases/download/1.1/hypnotix_1.1_all.deb"
-    wget -O /tmp/hypnotix.deb "${hypnotix_git}"
-    sudo "${pkg_mgr}" install /tmp/hypnotix.deb -y
-    rm /tmp/hypnotix.deb
-  elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    echo "No Installation Client for ${os_version} available yet"
-  else
-    echo "Distribution ${os_version} not supported"
   fi
 }
 
@@ -1112,12 +1097,12 @@ public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
-"enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "hypnotix" "kexi" "kvm" \
+"enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openrgb" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
-"gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "hypnotix" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
+"gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "sudo" "scrcpy" "tesseract" "tmux" "transmission" \
 "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "yq" )
 config_flag='true'
