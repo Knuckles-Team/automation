@@ -419,7 +419,7 @@ function docker_install(){
       echo "Distribution ${os_version} not supported"
     fi
   else
-    echo -e "Docker already installed! \nSkipping..."
+    echo -e "Docker already installed! \nSkipping..."repo
   fi
 }
 
@@ -793,10 +793,11 @@ function mediainfo_install(){
 
 function packer_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-    sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-    sudo "${pkg_mgr}" update
-    sudo "${pkg_mgr}" install packer -y
+    echo "Packer on Ubuntu requires manual installation"
+    #curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+    #sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    #sudo "${pkg_mgr}" update
+    #sudo "${pkg_mgr}" install packer -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     sudo "${pkg_mgr}" install -y yum-utils
     sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
@@ -845,20 +846,21 @@ function powershell_install(){
   if ! command -v powershell &> /dev/null; then
     echo -e "powershell could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
+      echo "PowerShell requires Manual installation on Ubuntu"
       # Install pre-requisite packages.
-      sudo "${pkg_mgr}" install -y wget apt-transport-https software-properties-common
+      #sudo "${pkg_mgr}" install -y wget apt-transport-https software-properties-common
       # Navigate to tmp directory
-      cd /tmp || echo "Could not find /tmp directory"
+      #cd /tmp || echo "Could not find /tmp directory"
       # Download the Microsoft repository GPG keys
-      wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+      #wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
       # Register the Microsoft repository GPG keys
-      sudo dpkg -i packages-microsoft-prod.deb
+      #sudo dpkg -i packages-microsoft-prod.deb
       # Update the list of products
-      sudo "${pkg_mgr}" update
+      #sudo "${pkg_mgr}" update
       # Enable the "universe" repositories
-      sudo add-apt-repository -y universe
+      #sudo add-apt-repository -y universe
       # Install PowerShell
-      sudo "${pkg_mgr}" install -y powershell
+      #sudo "${pkg_mgr}" install -y powershell
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       sudo "${pkg_mgr}" install -y wget curl
       # Register the Microsoft RedHat repository
