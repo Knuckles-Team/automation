@@ -161,6 +161,8 @@ function provision(){
       gparted_install
     elif [[ "${app}" == "gramps" ]]; then
       gramps_install
+    elif [[ "${app}" == "jq" ]]; then
+      jq_install
     elif [[ "${app}" == "kexi" ]]; then
       kexi_install
     elif [[ "${app}" == "kvm" ]]; then
@@ -305,7 +307,6 @@ function audacity_install(){
   if ! command -v audacity &> /dev/null; then
     echo -e "Audacity could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo add-apt-repository -y ppa:ubuntuhandbook1/audacity
     sudo "${pkg_mgr}" update
     sudo "${pkg_mgr}" install -y audacity
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
@@ -587,6 +588,22 @@ function gramps_install(){
     echo -e "gramps could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
       sudo "${pkg_mgr}" install -y gramps gir1.2-goocanvas-2.0
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      echo "Distribution ${os_version} not supported"
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
+  else
+    echo -e "gramps already installed! \nSkipping..."
+  fi
+}
+
+
+function jq_install(){
+  if ! command -v gramps &> /dev/null; then
+    echo -e "gramps could not be found \nInstalling..."
+    if [[ "${os_version}" == "Ubuntu" ]] ; then
+      sudo "${pkg_mgr}" install -y jq
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       echo "Distribution ${os_version} not supported"
     else
@@ -1073,10 +1090,7 @@ function yq_install(){
   if ! command -v yq &> /dev/null; then
     echo -e "yq could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
-      sudo add-apt-repository ppa:rmescandon/yq -y
-      sudo "${pkg_mgr}" update
-      sudo "${pkg_mgr}" install yq -y
+      snap install yq
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       echo "Distribution ${os_version} not supported"
     else
@@ -1097,7 +1111,7 @@ public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
-"enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "kexi" "kvm" \
+"enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "jq" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openrgb" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "sudo" "tesseract" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "udisks2" "vlc" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
