@@ -2,6 +2,8 @@
 *.sh~
 
 .idea/
+*.mkv
+*.mp4
 
 # Prerequisites
 *.d
