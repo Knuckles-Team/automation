@@ -44,7 +44,8 @@ def shift_sub_time(time, shift_time=5, shift_operator="+"):
         end_time_seconds = round(end_time_seconds + int(shift_time), 3)
     elif shift_operator == "-":
         if start_time_seconds - int(shift_time) < 0:
-            shift_time = start_time_seconds
+            print("Cannot reduce the time anymore, the subtitle starting time will be negative...")
+            sys.exit(2)
         start_time_seconds = round(start_time_seconds - int(shift_time), 3)
         end_time_seconds = round(end_time_seconds - int(shift_time), 3)
 
@@ -74,56 +75,30 @@ def shift_sub_time(time, shift_time=5, shift_operator="+"):
 
 
 def sync_time(subtitle_file, shift_time, shift_operator):
-    subtitles = []
-    index = 0
-
     # Detect encoding of file
-    with open(subtitle_file, 'rb') as f:
-        rawdata = b''.join([f.readline() for _ in range(0, len(f.readlines()))])
+    try:
+        with open(subtitle_file, 'rb') as f:
+            rawdata = b''.join([f.readline() for _ in range(0, len(f.readlines()))])
+    except FileNotFoundError:
+        print("Subtitle file was not found, please verify the correct file was specified...")
+        sys.exit(2)
     encoding = chardet.detect(rawdata)['encoding']
+    if encoding == "None":
+        encoding = "utf-8-bom"
 
     # Read full file with correct encoding
     with codecs.open(subtitle_file, encoding=encoding) as file:
-        lines = [line.rstrip() for line in file.readlines() if line.strip()]
+        lines = file.readlines()
 
     # Iterate through all subtitle lines
-    while index < len(lines):
-        if re.match(r"[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]", lines[index]):
-            sub_index = lines[index - 1]
-            time = lines[index]
-            try:
-                if re.match(r"[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]", lines[index + 5]):
-                    text = f"{lines[index + 1]}\n{lines[index + 2]}\n{lines[index + 3]}"
-                elif re.match(r"[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]", lines[index + 4]):
-                    text = f"{lines[index + 1]}\n{lines[index + 2]}"
-                else:
-                    text = f"{lines[index + 1]}"
-            except IndexError:
-                try:
-                    if re.match(r"[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]", lines[index + 4]):
-                        text = f"{lines[index + 1]}\n{lines[index + 2]}"
-                    else:
-                        text = f"{lines[index + 1]}"
-                except IndexError:
-                    try:
-                        text = f"{lines[index + 1]}\n{lines[index + 2]}\n{lines[index + 3]}"
-                    except IndexError:
-                        try:
-                            text = f"{lines[index + 1]}\n{lines[index + 2]}"
-                        except IndexError:
-                            text = f"{lines[index + 1]}"
-
+    for line_index in range(0, len(lines)):
+        if re.match(r"[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]", lines[line_index]):
             # Acquire new time fileline
-            time = shift_sub_time(time, shift_time, shift_operator)
-            # Append to list of subtitle dictionaries
-            subtitles.append({"index": sub_index, "time": time, "text": text})
-        index += 1
+            lines[line_index] = str(shift_sub_time(lines[line_index], shift_time, shift_operator)+"\n")
 
     # Rewrite back to the same subtitle file and same encoding
     with codecs.open(subtitle_file, "w", encoding=encoding) as file:
-        for subtitle in subtitles:
-            file_entry = f"{subtitle['index']}\n{subtitle['time']}\n{subtitle['text']}\n\n"
-            file.writelines(file_entry)
+        file.writelines(lines)
 
 
 def main(argv):
