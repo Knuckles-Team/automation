@@ -3,8 +3,7 @@ import codecs
 import chardet
 import math
 
-original_subtitles = []
-shifted_subtitles = []
+subtitles = []
 shift_time = 5
 shift_operator = "+"
 
@@ -20,7 +19,7 @@ def shift_sub_time(time, shift, shift_time):
     end_hours, end_minutes, end_seconds = end_time.split(":")
     start_seconds = re.sub(",", ".", start_seconds)
     end_seconds = re.sub(",", ".", end_seconds)
-    print(f"Old Start Hours: {start_hours} Start Minutes: {start_minutes} Start Seconds: {start_seconds}")
+    #print(f"Old Start Hours: {start_hours} Start Minutes: {start_minutes} Start Seconds: {start_seconds}")
     #print(f"Old End Hours: {end_hours} End Minutes: {end_minutes} End Seconds: {end_seconds}")
     start_time_seconds = round(((int(start_hours) * 3600) + (int(start_minutes) * 60) + float(start_seconds)),3)
     end_time_seconds = round(((int(end_hours) * 3600) + (int(end_minutes) * 60) + float(end_seconds)),3)
@@ -52,12 +51,13 @@ def shift_sub_time(time, shift, shift_time):
     end_seconds = pad_time(end_seconds)
 
     # Return the comma on seconds
-    start_seconds = re.sub(".", ",", start_seconds)
-    end_seconds = re.sub(".", ",", end_seconds)
+    start_seconds = re.sub("\.", ",", start_seconds)
+    end_seconds = re.sub("\.", ",", end_seconds)
 
-    print(f"Mew Start Hours: {start_hours} Start Minutes: {start_minutes} Start Seconds: {start_seconds}")
+    #print(f"New Start Hours: {start_hours} Start Minutes: {start_minutes} Start Seconds: {start_seconds}")
     #print(f"New End Hours: {end_hours} End Minutes: {end_minutes} End Seconds: {end_seconds}")
-    time = f"{start_hours}:"
+    time = f"{start_hours}:{start_minutes}:{start_seconds} --> {end_hours}:{end_minutes}:{end_seconds}"
+    return time
 
 def sync_time(filename):
     index = 0
@@ -70,8 +70,10 @@ def sync_time(filename):
     # Read full file with correct encoding
     with codecs.open(filename, encoding=encoding) as file:
         lines = [line.rstrip() for line in file.readlines() if line.strip()]
+        f.truncate(0)
 
-    while index < 10:
+    # Iterate through all subtitle lines
+    while index < 20:
     #while index < len(lines):
         #print(f"Checking line: {index}")
         if re.match(r"[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]", lines[index]):
@@ -88,9 +90,19 @@ def sync_time(filename):
             else:
                 text = f"{lines[index + 1]}"
                 #print(f"Text: {lines[index + 1]}")
-            original_subtitles.append({sub_index, time, text})
-            shift_sub_time(lines[index], shift_operator, shift_time)
+
+            time = shift_sub_time(time, shift_operator, shift_time)
+            subtitles.append({"index": sub_index, "time": time, "text": text})
+
         index+=1
-    #print(f"Parsed Subs: {original_subtitles}")
+
+    for subtitle in subtitles:
+        print(f"{subtitle['index']}\n{subtitle['time']}\n{subtitle['text']}\n")
+
+    with codecs.open(filename, encoding=encoding) as file:
+        for subtitle in subtitles:
+            file_entry = f"{subtitle['index']}\n{subtitle['time']}\n{subtitle['text']}\n"
+            print(f"{subtitle['index']}\n{subtitle['time']}\n{subtitle['text']}\n")
+            file.writelines(file_entry)
 
 sync_time("./manosteel.srt")
