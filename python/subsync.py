@@ -12,7 +12,7 @@ def usage():
           f"-m | --mode [\"+\"/\"-\"]"
           f"-t | --time [Time in seconds to shift]"
           f"\n"
-          f"python3 subsync.py --file Engrish.srt --mode \"+\" --time 5")
+          f"python3 subsync.py --file Engrish.srt --mode + --time 5")
 
 
 def pad_time(time, seconds=False):
@@ -27,16 +27,18 @@ def pad_time(time, seconds=False):
 
 
 def shift_sub_time(time, shift_time=5, shift_operator="+"):
+    # Parse time fields
     start_time, end_time = time.split(" --> ")
     start_hours, start_minutes, start_seconds = start_time.split(":")
     end_hours, end_minutes, end_seconds = end_time.split(":")
     start_seconds = re.sub(",", ".", start_seconds)
     end_seconds = re.sub(",", ".", end_seconds)
-    # print(f"Old Start Hours: {start_hours} Start Minutes: {start_minutes} Start Seconds: {start_seconds}")
-    # print(f"Old End Hours: {end_hours} End Minutes: {end_minutes} End Seconds: {end_seconds}")
+
+    # Calculate total time in seconds
     start_time_seconds = round(((int(start_hours) * 3600) + (int(start_minutes) * 60) + float(start_seconds)), 3)
     end_time_seconds = round(((int(end_hours) * 3600) + (int(end_minutes) * 60) + float(end_seconds)), 3)
-    # print(f"Start Seconds: {start_time_seconds} End Seconds: {end_time_seconds}")
+
+    # Either add or subtract based off of operator
     if shift_operator == "+":
         start_time_seconds = round(start_time_seconds + int(shift_time), 3)
         end_time_seconds = round(end_time_seconds + int(shift_time), 3)
@@ -45,7 +47,6 @@ def shift_sub_time(time, shift_time=5, shift_operator="+"):
             shift_time = start_time_seconds
         start_time_seconds = round(start_time_seconds - int(shift_time), 3)
         end_time_seconds = round(end_time_seconds - int(shift_time), 3)
-    # print(f"New Start Seconds: {start_time_seconds} New End Seconds: {end_time_seconds}")
 
     # Convert back to hours, minutes, seconds
     start_hours = math.floor(start_time_seconds / 3600)
@@ -67,8 +68,7 @@ def shift_sub_time(time, shift_time=5, shift_operator="+"):
     start_seconds = re.sub("\.", ",", start_seconds)
     end_seconds = re.sub("\.", ",", end_seconds)
 
-    # print(f"New Start Hours: {start_hours} Start Minutes: {start_minutes} Start Seconds: {start_seconds}")
-    # print(f"New End Hours: {end_hours} End Minutes: {end_minutes} End Seconds: {end_seconds}")
+    # Reconstruct time fileline
     time = f"{start_hours}:{start_minutes}:{start_seconds} --> {end_hours}:{end_minutes}:{end_seconds}"
     return time
 
@@ -88,7 +88,6 @@ def sync_time(subtitle_file, shift_time, shift_operator):
 
     # Iterate through all subtitle lines
     while index < len(lines):
-        # print(f"Checking line: {index}")
         if re.match(r"[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]", lines[index]):
             sub_index = lines[index - 1]
             time = lines[index]
@@ -114,13 +113,13 @@ def sync_time(subtitle_file, shift_time, shift_operator):
                         except IndexError:
                             text = f"{lines[index + 1]}"
 
+            # Acquire new time fileline
             time = shift_sub_time(time, shift_time, shift_operator)
+            # Append to list of subtitle dictionaries
             subtitles.append({"index": sub_index, "time": time, "text": text})
         index += 1
 
-    # for subtitle in subtitles:
-    #     print(f"{subtitle['index']}\n{subtitle['time']}\n{subtitle['text']}\n")
-
+    # Rewrite back to the same subtitle file and same encoding
     with codecs.open(subtitle_file, "w", encoding=encoding) as file:
         for subtitle in subtitles:
             file_entry = f"{subtitle['index']}\n{subtitle['time']}\n{subtitle['text']}\n\n"
@@ -132,6 +131,7 @@ def main(argv):
     mode = "+"
     time = 5
 
+    # Parse args
     try:
         opts, args = getopt.getopt(argv, "hf:m:t:", ["help", "file=", "mode=", "time="])
     except getopt.GetoptError:
