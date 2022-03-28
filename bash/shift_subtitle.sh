@@ -1,11 +1,6 @@
 #!/bin/bash
 
 #./shift_subtitle.sh "+3.0 seconds" < bmt.srt
-#5
-#00:01:05,323 --> 00:01:08,572
-#New date
-#Hello, my frieds!
-#6
 
 set -o errexit -o noclobber -o nounset -o pipefail
 
