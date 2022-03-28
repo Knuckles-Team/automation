@@ -12,7 +12,7 @@ def usage():
           f"-m | --mode [\"+\"/\"-\"]"
           f"-t | --time [Time in seconds to shift]"
           f"\n"
-          f"python3 subsync.py --file Engrish.srt --mode + --time 5")
+          f"python3 subshift.py --file Engrish.srt --mode + --time 5")
 
 
 def pad_time(time, seconds=False):
