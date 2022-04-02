@@ -12,7 +12,7 @@ Flags:
 -a | a | --auto-rename      \t Rename the file based on regex matching
 -r | r | --rename-directory \t Rename the directory based off the file name
 -c | c | --clean            \t Clean a single file
--b | b | --batch-clean      \t Clean all files within a directory
+-b | b | --batch-process      \t Clean all files within a directory
 -m | m | --move             \t Move the file's directory to specified directory
 -s | s | --subtitle         \t Add subtitle from folders 'Sub' directory to video file
 
@@ -22,8 +22,8 @@ Usage:
 ./video_rename.sh install
 ./video_rename.sh --clean <filename>
 ./video_rename.sh -c <filename.mp4> -auto-rename
-./video_rename.sh --batch-clean <directory_to_search>
-./video_rename.sh --batch-clean \"$(pwd)\" --rename-directory --auto-rename
+./video_rename.sh --batch-process <directory_to_search>
+./video_rename.sh --batch-process \"$(pwd)\" --rename-directory --auto-rename
 ./video_rename.sh -b \"$(pwd)\" -r -a -s -m \"$HOME/Videos\"
 "
 }
@@ -94,9 +94,11 @@ function file_rename() {
     popd >> /dev/null
   fi
   # Cleaning extraneous Files
-  rm -f ${file_directory}/*.txt >> /dev/null
-  rm -f ${file_directory}/*.exe >> /dev/null
-  rm -f ${file_directory}/*.nfo >> /dev/null
+  if [[ "${clean_flag}" == "true" ]]; then
+    rm -f ${file_directory}/*.txt >> /dev/null
+    rm -f ${file_directory}/*.exe >> /dev/null
+    rm -f ${file_directory}/*.nfo >> /dev/null
+  fi
   x="${file}"
   if [[ "${file_type}" == "mkv" ]]; then
     y="${x%.mkv}"
@@ -222,8 +224,9 @@ auto_file_rename_flag="false"
 move_flag="false"
 move_directory=""
 file=""
-batch_clean="false"
-single_clean="false"
+batch_process="false"
+single_process="false"
+clean_flag="false"
 
 if [ -z "$1" ]; then
   usage
@@ -247,7 +250,7 @@ while test -n "$1"; do
       install_dependencies
       exit 0
       ;;
-    b | -b | --batch-clean)
+    b | -b | --batch-process)
       if [[ "${2}" ]]; then
         if [[ -d "${2}" ]]; then
           relative_directory="${2}"
@@ -255,7 +258,7 @@ while test -n "$1"; do
           echo "Directory entered not found: ${2}"
           exit 0
         fi
-        batch_clean="true"
+        batch_process="true"
         #echo "Relative Directory passed: ${relative_directory}"
         shift
       else
@@ -265,14 +268,7 @@ while test -n "$1"; do
       shift
       ;;
     c | -c | --clean)
-      if [[ "${2}" ]]; then
-        file="${2}"
-        single_clean="true"
-        shift
-      else
-        echo 'ERROR: "-c | --clean" requires a non-empty option argument.'
-        exit 0
-      fi
+      clean_flag="true"
       shift
       ;;
     m | -m | --move)
@@ -287,6 +283,17 @@ while test -n "$1"; do
         shift
       else
         echo 'ERROR: "-b | --batch-clean" requires a non-empty option argument.'
+        exit 0
+      fi
+      shift
+      ;;
+    p | -p | --process)
+      if [[ "${2}" ]]; then
+        file="${2}"
+        single_process="true"
+        shift
+      else
+        echo 'ERROR: "-c | --clean" requires a non-empty option argument.'
         exit 0
       fi
       shift
@@ -314,11 +321,11 @@ while test -n "$1"; do
 done
 
 echo -e "\n"
-if [[ "${batch_clean}" == "true" ]]; then
+if [[ "${batch_process}" == "true" ]]; then
   find_directories
 fi
 
-if [[ "${single_clean}" == "true" ]]; then
+if [[ "${single_process}" == "true" ]]; then
   file_rename "${file}"
 fi
 
