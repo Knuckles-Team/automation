@@ -11,8 +11,9 @@ Flags:
 -i | i | --install          \t Install all dependencies
 -a | a | --auto-rename      \t Rename the file based on regex matching
 -r | r | --rename-directory \t Rename the directory based off the file name
--c | c | --clean            \t Clean a single file
--b | b | --batch-process      \t Clean all files within a directory
+-c | c | --clean            \t Clean extraneous files
+-b | b | --batch-process    \t Clean all files within a directory
+-p | p | --process            \t Clean a single file
 -m | m | --move             \t Move the file's directory to specified directory
 -s | s | --subtitle         \t Add subtitle from folders 'Sub' directory to video file
 
@@ -20,10 +21,10 @@ Usage:
 ./video_rename.sh -i
 ./video_rename.sh --install
 ./video_rename.sh install
-./video_rename.sh --clean <filename>
-./video_rename.sh -c <filename.mp4> -auto-rename
+./video_rename.sh --process <filename>
+./video_rename.sh -p <filename.mp4> -auto-rename
 ./video_rename.sh --batch-process <directory_to_search>
-./video_rename.sh --batch-process \"$(pwd)\" --rename-directory --auto-rename
+./video_rename.sh --batch-process \"$(pwd)\" --rename-directory --auto-rename --clean
 ./video_rename.sh -b \"$(pwd)\" -r -a -s -m \"$HOME/Videos\"
 "
 }
