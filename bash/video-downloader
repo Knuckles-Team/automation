@@ -7,12 +7,12 @@ Information:
 This script will download videos from YouTube, Rumble, BitChute, Twitter, and other websites.
 
 Flags:
--h | h | --help                           Show Usage and Flags
--i | i | --install                        Install all dependencies
--d | d | --download-directory <directory> Rename the file based on regex matching
--f | f | --file <FILENAME.txt>            Read links from textfile
--l | l | --links <LINK1,LINK2,LINK3>      Read links from command prompt
--a | a | --audio                          Downloads audio only
+-h | h | --help                             Show Usage and Flags
+-i | i | --install                          Install all dependencies
+-d | d | --download-directory <directory>   Rename the file based on regex matching
+-f | f | --file <FILENAME.txt>              Read links from textfile
+-l | l | --links <LINK1,LINK2,LINK3>        Read links from command prompt
+-a | a | --audio                            Downloads audio only
 
 Usage:
 video-downloader -i

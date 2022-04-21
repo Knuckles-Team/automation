@@ -7,15 +7,15 @@ Information:
 This script will rename a video file's title metadata to match the filename. The filename can also be cleaned automatically.
 
 Flags:
--h | h | --help             \t Show Usage and Flags
--i | i | --install          \t Install all dependencies
--a | a | --auto-rename      \t Rename the file based on regex matching
--r | r | --rename-directory \t Rename the directory based off the file name
--c | c | --clean            \t Clean extraneous files
--b | b | --batch-process    \t Clean all files within a directory
--p | p | --process            \t Clean a single file
--m | m | --move             \t Move the file's directory to specified directory
--s | s | --subtitle         \t Add subtitle from folders 'Sub' directory to video file
+-h | h | --help                Show Usage and Flags
+-i | i | --install             Install all dependencies
+-a | a | --auto-rename         Rename the file based on regex matching
+-r | r | --rename-directory    Rename the directory based off the file name
+-c | c | --clean               Clean extraneous files
+-b | b | --batch-process       Clean all files within a directory
+-p | p | --process             Clean a single file
+-m | m | --move                Move the file's directory to specified directory
+-s | s | --subtitle            Add subtitle from folders 'Sub' directory to video file
 
 Usage:
 video-manager -i
