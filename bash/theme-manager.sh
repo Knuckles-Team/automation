@@ -51,32 +51,72 @@ function install_oh_my_posh(){
 }
 
 function install_gnome_theme(){
+  mkdir -p ~/.themes
   mkdir -p ~/.gnome-themes
   pushd ~/.gnome-themes
   # Download Icon Themes
+  # Flatery
   git clone https://github.com/cbrnix/Flatery.git
   pushd Flatery
   chmod +x ./*.sh
   ./install.sh -g -w
   popd
-
+  #Papirus
   git clone https://github.com/PapirusDevelopmentTeam/papirus-icon-theme.git
   pushd papirus-icon-theme
   chmod +x ./*.sh
   ./install.sh
   popd
+  # Reversal
+  git clone https://github.com/yeyushengfan258/Reversal-icon-theme.git
+  pushd Reversal-icon-theme
+  chmod +x ./*.sh
+  ./install.sh -a
+  popd
+  # Fluent
+  git clone https://github.com/vinceliuice/Fluent-icon-theme.git
+  pushd Fluent-icon-theme
+  chmod +x ./*.sh
+  ./install.sh -a
+  popd
+  # We10X
+  git clone https://github.com/yeyushengfan258/We10X-icon-theme.git
+  pushd We10X-icon-theme
+  chmod +x ./*.sh
+  ./install.sh -a
+  popd
+  # Inverse
+  git clone https://github.com/yeyushengfan258/Inverse-icon-theme.git
+  pushd Inverse-icon-theme
+  chmod +x ./*.sh
+  ./install.sh -a
+  popd
 
   # Download Shell Themes
+  #Orchis
   git clone https://github.com/vinceliuice/Orchis-theme.git
   pushd Orchis-theme
   chmod +x ./*.sh
   ./install.sh
   popd
+  # Nordic
+  git clone https://github.com/EliverLara/Nordic.git
+  cp -r Nordic ~/.themes
+  # 365os
+  git clone https://gitlab.com/1314/365os-gtk-themes.git
+  cp -r 365os-gtk-themes ~/.themes
+  # Ultimate Maia
+  git clone https://github.com/bolimage/Ultimate-Maia.git
+  cp -r Ultimate-Maia ~/.themes
+  git clone https://github.com/paullinuxthemer/Telinkrin-GTK.git
+  cp -r Telinkrin-GTK ~/.themes
+  # Cleanup
+  rm -rf ~/.gnome-themes
 }
 
-function configure_gnome_theme(){
-
-}
+#function configure_gnome_theme(){
+#
+#}
 
 function list_profiles(){
   echo "Showing gnome-terminal profiles"
