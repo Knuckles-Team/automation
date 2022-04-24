@@ -415,6 +415,7 @@ function InstallDependencies(){
   InstallSevenzip
   InstallWindowsTerminal
   InstallPowerShellCore
+  Installfzf
   InstallNeoVim
   InstallGCC
   InstallJQ
