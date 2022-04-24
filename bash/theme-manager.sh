@@ -10,9 +10,10 @@ This script will make Ubuntu sexy
 Flags:
 -h | h | --help                Show Usage and Flags
 -i | i | --install             Install all dependencies
--t | t | --terminal        Rename the file based on regex matching
--p | p | --terminal-profile        Rename the file based on regex matching
--g | g | --gnome        Rename the file based on regex matching
+-t | t | --terminal            Rename the file based on regex matching
+-p | p | --terminal-profile    Rename the file based on regex matching
+-g | g | --gnome               Rename the file based on regex matching
+-u | u | --update              Updates Themes
 
 Usage:
 theme-manager.sh -i -t -p -g
@@ -21,7 +22,7 @@ theme-manager.sh --install --terminal --terminal-profile --gnome
 }
 
 function install_dependencies(){
-  sudo apt install -y wget dconf-editor unzip snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
+  sudo apt install -y wget dconf-editor unzip snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock git
 }
 
 function install_oh_my_posh(){
@@ -50,10 +51,21 @@ function install_oh_my_posh(){
 }
 
 function configure_gnome_theme(){
-  # Download Icon packs
-  wget https://github.com/cbrnix/Flatery/archive/master.zip -O ~/Downloads/flatery.zip
+  mkdir -p ~/.gnome-themes
+  pushd ~/.gnome-themes
+  # Download Icon Themes
+  git clone https://github.com/cbrnix/Flatery.git
+  pushd Flatery
+  chmod +x ./*.sh
+  ./install.sh -g -w
+  popd
+
+  wget https://github.com/cbrnix/Flatery/archive/refs/heads/master.zip -O ~/Downloads/flatery.zip
+  unzip -o ~/Downloads/flatery.zip -d ~/.icons >> /dev/null
+  wget -qO- https://git.io/papirus-icon-theme-install | sh
   # Download Shell Themes
   wget https://github.com/vinceliuice/Orchis-theme/archive/refs/heads/master.zip -O ~/Downloads/Orchis.zip
+  unzip -o ~/.poshthemes/themes.zip -d ~/Downloads >> /dev/null
 }
 
 
@@ -219,7 +231,6 @@ if [[ "${profile_flag}" == "true" ]]; then
   profile_name="Smooth-Blues"
   id=$(create_new_profile ${profile_name})
   echo "Created Profile: ${id}"
-
   # Set default gnome-terminal profile
   set_default_profile "${id}"
 fi
