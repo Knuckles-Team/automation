@@ -276,6 +276,12 @@ if [[ "${install_flag}" == "true" ]]; then
   install_dependencies
 fi
 
+if [[ "${update_flag}" == "true" ]]; then
+  install_oh_my_posh
+  install_gnome_theme
+  exit 0
+fi
+
 if [[ "${terminal_flag}" == "true" ]]; then
   install_oh_my_posh
 fi
@@ -289,11 +295,7 @@ if [[ "${profile_flag}" == "true" ]]; then
   set_default_profile "${id}"
 fi
 
-if [[ "${update_flag}" == "true" ]]; then
-  install_oh_my_posh
-  install_gnome_theme
-fi
-
 if [[ "${gnome_flag}" == "true" ]]; then
+  install_gnome_theme
   configure_gnome_theme
 fi
