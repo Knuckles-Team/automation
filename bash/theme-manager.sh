@@ -59,37 +59,37 @@ function install_gnome_theme(){
   git clone https://github.com/cbrnix/Flatery.git
   pushd Flatery
   chmod +x ./*.sh
-  ./install.sh -g -w
+  sudo ./install.sh -g -w
   popd
   #Papirus
   git clone https://github.com/PapirusDevelopmentTeam/papirus-icon-theme.git
   pushd papirus-icon-theme
   chmod +x ./*.sh
-  ./install.sh
+  sudo ./install.sh
   popd
   # Reversal
   git clone https://github.com/yeyushengfan258/Reversal-icon-theme.git
   pushd Reversal-icon-theme
   chmod +x ./*.sh
-  ./install.sh -a
+  sudo ./install.sh -a
   popd
   # Fluent
   git clone https://github.com/vinceliuice/Fluent-icon-theme.git
   pushd Fluent-icon-theme
   chmod +x ./*.sh
-  ./install.sh -a
+  sudo ./install.sh -a
   popd
   # We10X
   git clone https://github.com/yeyushengfan258/We10X-icon-theme.git
   pushd We10X-icon-theme
   chmod +x ./*.sh
-  ./install.sh -a
+  sudo ./install.sh -a
   popd
   # Inverse
   git clone https://github.com/yeyushengfan258/Inverse-icon-theme.git
   pushd Inverse-icon-theme
   chmod +x ./*.sh
-  ./install.sh -a
+  sudo ./install.sh -a
   popd
 
   # Download Shell Themes
@@ -97,7 +97,7 @@ function install_gnome_theme(){
   git clone https://github.com/vinceliuice/Orchis-theme.git
   pushd Orchis-theme
   chmod +x ./*.sh
-  ./install.sh
+  sudo ./install.sh
   popd
   # Nordic
   git clone https://github.com/EliverLara/Nordic.git
