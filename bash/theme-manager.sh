@@ -2,8 +2,29 @@
 
 dconfdir=/org/gnome/terminal/legacy/profiles:
 
+function usage() {
+  echo -e "
+Information:
+This script will make Ubuntu sexy
+
+Flags:
+-h | h | --help                Show Usage and Flags
+-i | i | --install             Install all dependencies
+-t | t | --terminal        Rename the file based on regex matching
+-p | p | --terminal-profile        Rename the file based on regex matching
+-g | g | --gnome        Rename the file based on regex matching
+
+Usage:
+theme-manager.sh -i -t -p -g
+theme-manager.sh --install --terminal --terminal-profile --gnome
+"
+}
+
 function install_dependencies(){
-  sudo apt install -y wget dconf-editor unzip
+  sudo apt install -y wget dconf-editor unzip snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
+}
+
+function install_oh_my_posh(){
   # Install Oh my Posh
   sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
   sudo chmod +x /usr/local/bin/oh-my-posh
@@ -27,6 +48,14 @@ function install_dependencies(){
     echo 'eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/takuya.omp.json)"' | sudo tee -a ~/.bashrc
   fi
 }
+
+function configure_gnome_theme(){
+  # Download Icon packs
+  wget https://github.com/cbrnix/Flatery/archive/master.zip -O ~/Downloads/flatery.zip
+  # Download Shell Themes
+  wget https://github.com/vinceliuice/Orchis-theme/archive/refs/heads/master.zip -O ~/Downloads/Orchis.zip
+}
+
 
 function list_profiles(){
   echo "Showing gnome-terminal profiles"
@@ -132,8 +161,60 @@ function get_profile_uuid(){
 # Create a profile from an existing one
 # duplicate_profile $id TEST1
 
-function provision_theme(){
+install_flag="false"
+gnome_flag="false"
+terminal_flag="false"
+profile_flag="false"
+
+if [ -z "$1" ]; then
+  usage
+  exit 0
+fi
+
+while test -n "$1"; do
+  case "$1" in
+    h | -h | --help)
+      usage
+      exit 0
+      ;;
+    i | -i | --install | install)
+      install_flag="true"
+      ;;
+    g | -g | --gnome)
+      gnome_flag="true"
+      shift
+      ;;
+    t | -t | --terminal)
+      terminal_flag="true"
+      shift
+      ;;
+    p | -p | --terminal-profile)
+      profile_flag="true"
+      shift
+      ;;
+    --)# End of all options.
+      shift
+      break
+      ;;
+    -?*)
+      printf 'WARNING: Unknown option (ignored): %s\n' "$1"
+      ;;
+    *)
+      shift
+      break
+      ;;
+  esac
+done
+
+if [[ "${install_flag}" == "true" ]]; then
   install_dependencies
+fi
+
+if [[ "${terminal_flag}" == "true" ]]; then
+  install_oh_my_posh
+fi
+
+if [[ "${profile_flag}" == "true" ]]; then
   # Create gnome-terminal profile
   profile_name="Smooth-Blues"
   id=$(create_new_profile ${profile_name})
@@ -141,7 +222,8 @@ function provision_theme(){
 
   # Set default gnome-terminal profile
   set_default_profile "${id}"
-}
+fi
 
-provision_theme
-
+if [[ "${gnome_flag}" == "true" ]]; then
+  configure_gnome_theme
+fi
