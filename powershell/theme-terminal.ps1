@@ -41,10 +41,11 @@ function InstallJQ(){
 }
 
 function InstallPosh(){
+  Install-PackageProvider -Name NuGet -Force
   Install-Module posh-git -Scope CurrentUser -Force
   Install-Module oh-my-posh -Scope CurrentUser -Force
   Install-Module Terminal-Icons -Repository PSGallery -Force
-  Install-Module -Name z -Force
+  Install-Module -Name z -Force -AllowClobber
   Install-Module -Name PSReadLine -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck
   Install-Module -Name PSFzf -Scope CurrentUser -Force
 }
@@ -57,11 +58,11 @@ function InstallFonts(){
   $fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
   foreach ($file in Get-ChildItem *.ttf)
   {
-      $fileName = $file.Name
-      if (-not(Test-Path -Path "C:\Windows\fonts\$fileName" )) {
-          Write-Output $fileName
-          Get-ChildItem $file | ForEach-Object{ $fonts.CopyHere($_.fullname) }
-      }
+    $fileName = $file.Name
+    if (-not(Test-Path -Path "C:\Windows\fonts\$fileName" )) {
+        Write-Output $fileName
+        Get-ChildItem $file | ForEach-Object{ $fonts.CopyHere($_.fullname) }
+    }
   }
   Copy-Item *.ttf c:\windows\fonts\
   Remove-Item "$Path\Hack.zip"
@@ -71,7 +72,7 @@ function CustomizeTerminal(){
   Write-Host "Modifying Terminal Profile"
   Set-Location $env:TEMP
   git clone https://github.com/craftzdog/dotfiles-public.git
-  Set-Location $env:TEMP/dotfiles-public/.config $home
+  Copy-Item $env:TEMP/dotfiles-public/.config -Destination $home -Recurse
 }
 
 function InstallDependencies(){
