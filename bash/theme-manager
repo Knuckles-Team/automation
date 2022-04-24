@@ -47,6 +47,12 @@ function install_oh_my_posh(){
   fc-cache -fv
   popd
   rm ~/Downloads/Meslo.zip
+  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Hack.zip -O ~/Downloads/Hack.zip
+  unzip -o ~/Downloads/Hack.zip -d ~/.fonts/Hack >> /dev/null
+  pushd ~/.fonts/Hack
+  fc-cache -fv
+  popd
+  rm ~/Downloads/Hack.zip
   if grep -q 'eval "$(oh-my-posh --init --shell bash --config ' ~/.bashrc; then
     echo ".bashrc profile already modified"
   else
@@ -187,7 +193,7 @@ function create_new_profile(){
   dconf write "${dconfdir}/:${profile_id}"/cursor-blink-mode "'on'"
   dconf write "${dconfdir}/:${profile_id}"/default-size-columns 90
   dconf write "${dconfdir}/:${profile_id}"/default-size-rows 27
-  dconf write "${dconfdir}/:${profile_id}"/font "'MesloLGS NF 12'"
+  dconf write "${dconfdir}/:${profile_id}"/font "'Hack Nerd Font 12'"
   dconf write "${dconfdir}/:${profile_id}"/background-color "'rgb(0,27,38)'"
   dconf write "${dconfdir}/:${profile_id}"/foreground-color "'rgb(239,235,255)'"
   dconf write "${dconfdir}/:${profile_id}"/use-system-font false
