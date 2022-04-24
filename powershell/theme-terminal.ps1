@@ -3,7 +3,7 @@
 function InstallChocolatey(){
   Write-Host "Installing Chocolatey"
   Set-ExecutionPolicy AllSigned
-  Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString(‘https://chocolatey.org/install.ps1’))
+  Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 function InstallGit() {
   Write-Host "Installing Git"
@@ -12,32 +12,32 @@ function InstallGit() {
 
 function InstallSevenzip() {
   Write-Host "Installing 7Zip"
-  Choco Install 7zip.install
+  Choco Install 7zip.install -y
 }
 
 function InstallWindowsTerminal(){
   Write-Host "Installing Windows Terminal"
-  Choco Install microsoft-windows-terminal
+  Choco Install microsoft-windows-terminal -y
 }
 
 function InstallPowerShellCore(){
   Write-Host "Installing PowerShell Core"
-  Choco Install powershell-core
+  Choco Install powershell-core -y
 }
 
 function InstallNeoVim(){
   Write-Host "Installing Neovim"
-  Choco Install neovim
+  Choco Install neovim -y
 }
 
 function InstallGCC(){
   Write-Host "Installing GCC Libraries"
-  Choco Install msys2
+  Choco Install msys2 -y
 }
 
 function InstallJQ(){
   Write-Host "Installing JQ"
-  Choco Install jq
+  Choco Install jq -y
 }
 
 function InstallPosh(){
