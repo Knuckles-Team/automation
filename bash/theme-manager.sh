@@ -114,9 +114,19 @@ function install_gnome_theme(){
   rm -rf ~/.gnome-themes
 }
 
-#function configure_gnome_theme(){
-#
-#}
+function configure_gnome_theme(){
+  gsettings set org.gnome.shell disable-user-extensions false
+  gsettings set org.gnome.shell enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com', 'ding@rastersoft.com', 'ubuntu-appindicators@ubuntu.com', 'ubuntu-dock@ubuntu.com', 'apps-menu@gnome-shell-extensions.gcampax.github.com']"
+  gsettings set org.gnome.desktop.interface gtk-theme "'Yaru-dark'"
+  gsettings set org.gnome.desktop.interface icon-theme "'ubuntu-mono-dark'"
+  gsettings set org.gnome.desktop.interface clock-show-weekday true
+  gsettings set org.gnome.desktop.interface clock-show-date true
+  gsettings set org.gnome.desktop.interface clock-show-seconds true
+  gsettings set org.gnome.desktop.calendar show-weekdate true
+  gsettings set org.gnome.desktop.interface show-battery-percentage true
+  gsettings set org.gnome.desktop.interface enable-hot-corners true
+  gsettings set org.gnome.desktop.interface enable-animations true
+}
 
 function list_profiles(){
   echo "Showing gnome-terminal profiles"
@@ -297,5 +307,5 @@ fi
 
 if [[ "${gnome_flag}" == "true" ]]; then
   install_gnome_theme
-  configure_gnome_theme
+  #configure_gnome_theme
 fi
