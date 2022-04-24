@@ -10,14 +10,18 @@ This script will make Ubuntu sexy
 Flags:
 -h | h | --help                Show Usage and Flags
 -i | i | --install             Install all dependencies
--t | t | --terminal            Rename the file based on regex matching
--p | p | --terminal-profile    Rename the file based on regex matching
--g | g | --gnome               Rename the file based on regex matching
--u | u | --update              Updates Themes
+-t | t | --terminal            Install Oh-My-Posh terminal configuration
+-p | p | --terminal-profile    Create gnome-terminal profile
+-g | g | --gnome               Install gnome themes
+-u | u | --update              Updates themes from source
+-c | c | --change-theme        Change theme for terminal and gnome (theme and icons)
 
 Usage:
-theme-manager.sh -i -t -p -g
+theme-manager.sh -i -t -p -g -c <terminal theme> <gnome appearance theme> <gnome icon theme>
 theme-manager.sh --install --terminal --terminal-profile --gnome
+
+theme-manager.sh -u -c <terminal theme> <gnome appearance theme> <gnome icon theme>
+theme-manager.sh --update --change-theme <terminal theme> <gnome appearance theme> <gnome icon theme>
 "
 }
 
@@ -43,6 +47,15 @@ function install_oh_my_posh(){
   fc-cache -fv
   popd
   rm ~/Downloads/Meslo.zip
+  if grep -q 'eval "$(oh-my-posh --init --shell bash --config ' ~/.bashrc; then
+    echo ".bashrc profile already modified"
+  else
+    echo 'eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/takuya.omp.json)"' | sudo tee -a ~/.bashrc
+  fi
+}
+
+function change_oh_my_posh_theme(){
+  sed -i "s#--config ~/.poshthemes/takuya.omp.json#--config ~/.poshthemes/${1}.omp.json#" ~/.bashrc
   if grep -q 'eval "$(oh-my-posh --init --shell bash --config ' ~/.bashrc; then
     echo ".bashrc profile already modified"
   else
@@ -127,6 +140,14 @@ function configure_gnome_theme(){
   gsettings set org.gnome.desktop.interface show-battery-percentage true
   gsettings set org.gnome.desktop.interface enable-hot-corners true
   gsettings set org.gnome.desktop.interface enable-animations true
+}
+
+function change_gnome_appearance_theme() {
+  gsettings set org.gnome.desktop.interface gtk-theme "'${1}'"
+}
+
+function change_gnome_icon_theme() {
+  gsettings set org.gnome.desktop.interface icon-theme "'${1}'"
 }
 
 function list_profiles(){
@@ -238,6 +259,10 @@ gnome_flag="false"
 terminal_flag="false"
 profile_flag="false"
 update_flag="false"
+change_flag="false"
+oh_my_posh_theme="takuya"
+gnome_appearance_theme="Orchis"
+gnome_icon_theme="Fluent"
 
 if [ -z "$1" ]; then
   usage
@@ -267,6 +292,22 @@ while test -n "$1"; do
       ;;
     u | -u | --update)
       update_flag="true"
+      shift
+      ;;
+    c | -c | --change-theme)
+      change_flag="true"
+      if [ "${2}" && "${3}" && "${4}" ]; then
+        oh_my_posh_theme="${2}"
+        gnome_appearance_theme="${3}"
+        gnome_icon_theme="${4}"
+        shift
+        shift
+        shift
+      else
+        echo 'ERROR: "-c | --change-theme" requires 3 arguments. (e.g. --change-theme "takuya" "" "Fluent"'
+        exit 0
+      fi
+      shift
       shift
       ;;
     --)# End of all options.
@@ -308,5 +349,28 @@ fi
 
 if [[ "${gnome_flag}" == "true" ]]; then
   install_gnome_theme
-  #configure_gnome_theme
+  configure_gnome_theme
+fi
+
+if [[ "${change_flag}" == "true" ]]; then
+  if [[ "${oh_my_posh_theme}" == "" ]]; then
+    echo "Not changing Oh-My-Posh theme"
+  else
+    echo "Updating Oh-My-Posh theme to: ${oh_my_posh_theme}"
+    change_oh_my_posh_theme "${oh_my_posh_theme}"
+  fi
+
+  if [[ "${gnome_appearance_theme}" == "" ]]; then
+    echo "Not changing gnome appearance theme"
+  else
+    echo "Updating gnome appearance theme to: ${gnome_appearance_theme}"
+    change_gnome_appearance_theme "${gnome_appearance_theme}"
+  fi
+
+  if [[ "${gnome_icon_theme}" == "" ]]; then
+    echo "Not changing gnome icon theme"
+  else
+    echo "Updating gnome icon theme to: ${gnome_icon_theme}"
+    change_gnome_icon_theme "${gnome_icon_theme}"
+  fi
 fi
