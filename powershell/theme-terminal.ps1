@@ -74,13 +74,9 @@ function InstallDependencies(){
   InstallPowerShellCore
   InstallNeoVim
   InstallGCC
+  InstallJQ
   InstallFonts
   InstallPosh
-}
-
-function ProvisionTheme(){
-  Write-Host "Provisioning Theme"
-
 }
 
 function Main(){
