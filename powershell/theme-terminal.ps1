@@ -1,34 +1,42 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 function InstallChocolatey(){
+  Write-Host "Installing Chocolatey"
   Set-ExecutionPolicy AllSigned
   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString(‘https://chocolatey.org/install.ps1’))
 }
 function InstallGit() {
+  Write-Host "Installing Git"
   winget install -e --id Git.Git
 }
 
 function InstallSevenzip() {
+  Write-Host "Installing 7Zip"
   Choco Install 7zip.install
 }
 
 function InstallWindowsTerminal(){
+  Write-Host "Installing Windows Terminal"
   Choco Install microsoft-windows-terminal
 }
 
 function InstallPowerShellCore(){
+  Write-Host "Installing PowerShell Core"
   Choco Install powershell-core
 }
 
 function InstallNeoVim(){
+  Write-Host "Installing Neovim"
   Choco Install neovim
 }
 
 function InstallGCC(){
+  Write-Host "Installing GCC Libraries"
   Choco Install msys2
 }
 
 function InstallJQ(){
+  Write-Host "Installing JQ"
   Choco Install jq
 }
 
@@ -55,15 +63,15 @@ function InstallFonts(){
           Get-ChildItem $file | ForEach-Object{ $fonts.CopyHere($_.fullname) }
       }
   }
-  cp *.ttf c:\windows\fonts\
+  Copy-Item *.ttf c:\windows\fonts\
   Remove-Item "$Path\Hack.zip"
 }
 
 function CustomizeTerminal(){
   Write-Host "Modifying Terminal Profile"
-  cd $env:TEMP
+  Set-Location $env:TEMP
   git clone https://github.com/craftzdog/dotfiles-public.git
-  cp $env:TEMP/dotfiles-public/.config $home
+  Set-Location $env:TEMP/dotfiles-public/.config $home
 }
 
 function InstallDependencies(){
