@@ -50,7 +50,7 @@ function install_oh_my_posh(){
   fi
 }
 
-function configure_gnome_theme(){
+function install_gnome_theme(){
   mkdir -p ~/.gnome-themes
   pushd ~/.gnome-themes
   # Download Icon Themes
@@ -60,14 +60,23 @@ function configure_gnome_theme(){
   ./install.sh -g -w
   popd
 
-  wget https://github.com/cbrnix/Flatery/archive/refs/heads/master.zip -O ~/Downloads/flatery.zip
-  unzip -o ~/Downloads/flatery.zip -d ~/.icons >> /dev/null
-  wget -qO- https://git.io/papirus-icon-theme-install | sh
+  git clone https://github.com/PapirusDevelopmentTeam/papirus-icon-theme.git
+  pushd papirus-icon-theme
+  chmod +x ./*.sh
+  ./install.sh
+  popd
+
   # Download Shell Themes
-  wget https://github.com/vinceliuice/Orchis-theme/archive/refs/heads/master.zip -O ~/Downloads/Orchis.zip
-  unzip -o ~/.poshthemes/themes.zip -d ~/Downloads >> /dev/null
+  git clone https://github.com/vinceliuice/Orchis-theme.git
+  pushd Orchis-theme
+  chmod +x ./*.sh
+  ./install.sh
+  popd
 }
 
+function configure_gnome_theme(){
+
+}
 
 function list_profiles(){
   echo "Showing gnome-terminal profiles"
@@ -177,6 +186,7 @@ install_flag="false"
 gnome_flag="false"
 terminal_flag="false"
 profile_flag="false"
+update_flag="false"
 
 if [ -z "$1" ]; then
   usage
@@ -202,6 +212,10 @@ while test -n "$1"; do
       ;;
     p | -p | --terminal-profile)
       profile_flag="true"
+      shift
+      ;;
+    u | -u | --update)
+      update_flag="true"
       shift
       ;;
     --)# End of all options.
@@ -233,6 +247,11 @@ if [[ "${profile_flag}" == "true" ]]; then
   echo "Created Profile: ${id}"
   # Set default gnome-terminal profile
   set_default_profile "${id}"
+fi
+
+if [[ "${update_flag}" == "true" ]]; then
+  install_oh_my_posh
+  install_gnome_theme
 fi
 
 if [[ "${gnome_flag}" == "true" ]]; then
