@@ -17,7 +17,8 @@ function InstallSevenzip() {
 
 function InstallWindowsTerminal(){
   Write-Host "Installing Windows Terminal"
-  Choco Install microsoft-windows-terminal -y
+  winget install --accept-package-agreements --id Microsoft.WindowsTerminal --source winget
+  #Choco Install microsoft-windows-terminal -y
 }
 
 function InstallPowerShellCore(){
