@@ -285,6 +285,7 @@ while test -n "$1"; do
       ;;
     i | -i | --install | install)
       install_flag="true"
+      shift
       ;;
     g | -g | --gnome)
       gnome_flag="true"
