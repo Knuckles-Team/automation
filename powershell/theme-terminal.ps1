@@ -404,7 +404,7 @@ function CustomizeTerminal(){
   ],
   "theme": "dark",
   "useAcrylicInTabRow": true
-}' | Out-File -FilePath "C:\Users\knuck\AppData\Local\Packages\Microsoft.WindowsTerminal_*\LocalState\settings.json"
+}' | Out-File -FilePath "$env:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_*\LocalState\settings.json"
 
   '. $env:USERPROFILE\.config\powershell\user_profile.ps1' | Out-File -FilePath $PROFILE
 }
