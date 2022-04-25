@@ -26,10 +26,12 @@ theme-manager.sh --update --change-theme <terminal theme> <gnome appearance them
 }
 
 function install_dependencies(){
+  echo "Installing dependencies"
   sudo apt install -y wget dconf-editor unzip snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock git
 }
 
 function install_oh_my_posh(){
+  echo "Installing Oh-My-Posh and Fonts"
   # Install Oh my Posh
   sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
   sudo chmod +x /usr/local/bin/oh-my-posh
