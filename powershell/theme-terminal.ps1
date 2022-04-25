@@ -22,7 +22,8 @@ function InstallWindowsTerminal(){
 
 function InstallPowerShellCore(){
   Write-Host "Installing PowerShell Core"
-  Choco Install powershell-core -y
+  winget install --accept-package-agreements --id Microsoft.Powershell --source winget
+  #Choco Install powershell-core -y
 }
 
 function InstallNeoVim(){
