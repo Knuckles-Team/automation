@@ -302,7 +302,7 @@ while test -n "$1"; do
       ;;
     c | -c | --change-theme)
       change_flag="true"
-      if [ "${2}" && "${3}" && "${4}" ]; then
+      if [ "${2}" ] && [ "${3}" ] && [ "${4}" ]; then
         oh_my_posh_theme="${2}"
         gnome_appearance_theme="${3}"
         gnome_icon_theme="${4}"
