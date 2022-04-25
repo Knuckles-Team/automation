@@ -7,7 +7,7 @@ function InstallChocolatey(){
 }
 function InstallGit() {
   Write-Host "Installing Git"
-  winget install -e --id Git.Git
+  winget install --accept-package-agreements -e --id Git.Git
 }
 
 function InstallSevenzip() {
@@ -421,6 +421,9 @@ function InstallDependencies(){
   InstallJQ
   InstallFonts
   InstallPosh
+  $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
+  Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+  refreshenv
 }
 
 function Main(){
