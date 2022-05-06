@@ -17,8 +17,8 @@ function InstallSevenzip() {
 
 function InstallWindowsTerminal(){
   Write-Host "Installing Windows Terminal"
-  winget install --accept-package-agreements --id Microsoft.WindowsTerminal --source winget
-  #Choco Install microsoft-windows-terminal -y
+  #winget install --accept-package-agreements --id Microsoft.WindowsTerminal --source winget
+  Choco Install microsoft-windows-terminal -y
 }
 
 function InstallPowerShellCore(){
@@ -49,8 +49,7 @@ function Installfzf(){
 
 function InstallPosh(){
   Install-PackageProvider -Name NuGet -Force
-  Install-Module posh-git -Force
-  Install-Module oh-my-posh -Force
+  winget install oh-my-posh
   Install-Module Terminal-Icons -Repository PSGallery -Force
   Install-Module -Name z -Force -AllowClobber
   Install-Module -Name PSReadLine -Force -SkipPublisherCheck
@@ -78,9 +77,7 @@ function InstallFonts(){
 
 function CustomizeTerminal(){
   Write-Host "Modifying Terminal Profile"
-  Set-Location $env:TEMP
-  git clone https://github.com/craftzdog/dotfiles-public.git
-  Copy-Item $env:TEMP/dotfiles-public/.config -Destination $home -Recurse
+  Copy-Item ./.config -Destination $home -Recurse
 '{
   "$help": "https://aka.ms/terminal-documentation",
   "$schema": "https://aka.ms/terminal-profiles-schema",
