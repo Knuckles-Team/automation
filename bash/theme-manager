@@ -43,6 +43,7 @@ function install_oh_my_posh(){
   rm ~/.poshthemes/themes.zip
   # Download fonts
   mkdir ~/.fonts
+  mkdir -p ~/Downloads
   wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Meslo.zip -O ~/Downloads/Meslo.zip
   unzip -o ~/Downloads/Meslo.zip -d ~/.fonts/Meslo >> /dev/null
   pushd ~/.fonts/Meslo
