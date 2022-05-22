@@ -111,6 +111,10 @@ function SetStartupPrograms(){
   Copy-Item $TaskManagerShortcut -Destination $StartUpDirectory
 }
 
+function UpgradeApplications() {
+  choco upgrade all -y
+}
+
 function Main {
   InstallChocolatey
   EnableFeatures
@@ -118,6 +122,7 @@ function Main {
   InstallOpenSSH
   ProvisionSystem
   SetStartupPrograms
+  UpgradeApplications
 }
 
 Main
