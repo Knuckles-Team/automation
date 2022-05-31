@@ -23,6 +23,7 @@ function usage(){
   echo -e "-h | --help                         [See Usage]"
   echo -e "-l | --log                          [Specify directory to store log]"
   echo -e "-p | --provision | provision        [Provision system with all applications or those specified]"
+  echo -e "-t | --type | type                  [Specify install type. (server/desktop/pi) ]"
   echo -e "-u | --update | update              [Update system with the latest versions of OS and Apps]"
   echo -e "\nApps: \n${apps[*]} \n"
 }
@@ -341,6 +342,8 @@ function docker_install(){
       systemctl start docker
       # Enable Docker at Startup
       systemctl enable docker
+      #Hello world
+      docker run hello-world
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       "${pkg_mgr}" install -y yum-utils
       yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -1049,6 +1052,11 @@ apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dia
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
+server_apps=( "adb" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "docker" "dos2unix" \
+"enscript" "ffmpeg" "fstab" "git" "gnucobol" "ghostscript" "gparted" "history" "jq" "kexi" "kvm" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
+"python" "rygel" "scrcpy" "statlog" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" \
+"tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "history" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "scrcpy" "system-manager" "tesseract" "theme-manager" "tmux" "transmission" \
@@ -1077,12 +1085,6 @@ else
   pkg_mgr='na'
   echo "Distribution ${os_version} not supported"
   exit 0
-fi
-
-# Check if device is a Raspberry Pi, or other ARM devices
-if [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
-  echo "Selecting apps for Raspberry Pi or other ARM Devices"
-  apps=("${pi_apps[@]}")
 fi
 
 while test -n "$1"; do
@@ -1147,6 +1149,27 @@ while test -n "$1"; do
     u | -u | --update | update)
       echo "Updating System"
       update_flag='true'
+      shift
+      ;;
+    t | -t | --type | type)
+      server_apps
+      if [ ${2} == "server" ]; then
+        apps=("${server_apps[@]}")
+        shift
+      elif [ ${2} == "desktop" ]; then
+        apps=("${apps[@]}")
+        shift
+      elif [ ${2} == "pi" ]; then
+        # Check if device is a Raspberry Pi, or other ARM devices
+        if [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
+          echo "Selecting apps for Raspberry Pi or other ARM Devices"
+          apps=("${pi_apps[@]}")
+        fi
+        shift
+      else
+        echo 'ERROR: "-d | --download-directory" requires a non-empty option argument.'
+        exit 0
+      fi
       shift
       ;;
     --)# End of all options.

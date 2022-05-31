@@ -6,7 +6,7 @@ RUN apt dist-upgrade -y
 FROM base-ubuntu as upgraded-ubuntu
 COPY automation /automation
 RUN chmod +x /automation/bash/*.sh
-RUN bash /automation/bash/system-manager -u -p
+RUN bash /automation/bash/system-manager -u -p -t server
 RUN theme-manager -h
 RUN theme-manager -t
 RUN video-manager -h
