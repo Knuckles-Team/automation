@@ -953,7 +953,7 @@ function tesseract_install(){
 }
 
 function theme_manager_install(){
-  yes | cp -rf "${script_directory}${script_directory}/theme-manager" /usr/local/bin
+  yes | cp -rf "${script_directory}/theme-manager" /usr/local/bin
   chmod +x /usr/local/bin/theme-manager
   theme-manager -h
 }
