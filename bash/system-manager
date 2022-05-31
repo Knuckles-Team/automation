@@ -33,7 +33,7 @@ function clean_system(){
   trash-list
   echo "Emptying recycling bin"
   trash-empty
-  sudo apt autoremove -y
+  apt autoremove -y
 }
 
 function provision(){
@@ -179,19 +179,19 @@ function provision(){
 
 function update(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" update
-    sudo "${pkg_mgr}" autoremove -y
-    sudo "${pkg_mgr}" install update-manager-core -y
-    sudo "${pkg_mgr}" upgrade -y
-    sudo "${pkg_mgr}" dist-upgrade -y
-    sudo "${pkg_mgr}" --purge autoremove -y
-    sudo "${pkg_mgr}" clean all -y
+    "${pkg_mgr}" update
+    "${pkg_mgr}" autoremove -y
+    "${pkg_mgr}" install update-manager-core -y
+    "${pkg_mgr}" upgrade -y
+    "${pkg_mgr}" dist-upgrade -y
+    "${pkg_mgr}" --purge autoremove -y
+    "${pkg_mgr}" clean all -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" check-update
-    sudo "${pkg_mgr}" install epel-release -y
-    sudo "${pkg_mgr}" update -y
-    sudo "${pkg_mgr}" upgrade
-    sudo "${pkg_mgr}" clean all
+    "${pkg_mgr}" check-update
+    "${pkg_mgr}" install epel-release -y
+    "${pkg_mgr}" update -y
+    "${pkg_mgr}" upgrade
+    "${pkg_mgr}" clean all
   else
     echo "Cannot update. ${os_version} not supported"
   fi
@@ -201,14 +201,14 @@ function adb_install(){
   if ! command -v adb &> /dev/null; then
     echo -e "ADB could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
+      "${pkg_mgr}" install android-tools-adb android-tools-fastboot -y
       adb version
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-      sudo "${pkg_mgr}" install epel-release -y
-      sudo "${pkg_mgr}" install snapd -y
-      sudo systemctl enable --now snapd.socket
-      sudo ln -s /var/lib/snapd/snap /snap
-      sudo snap install android-adb --edge
+      "${pkg_mgr}" install epel-release -y
+      "${pkg_mgr}" install snapd -y
+      systemctl enable --now snapd.socket
+      ln -s /var/lib/snapd/snap /snap
+      snap install android-adb --edge
       adb version
     else
       echo "Distribution ${os_version} not supported"
@@ -219,19 +219,19 @@ function adb_install(){
 }
 
 function android-studio_install(){
-  sudo snap install android-studio --classic
+  snap install android-studio --classic
 }
 
 function ansible_install(){
   python_install
-  sudo python3 -m pip install ansible
+  python3 -m pip install ansible
 }
 
 function atomicparsley_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install atomicparsley -y
+    "${pkg_mgr}" install atomicparsley -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install atomicparsley -y
+    "${pkg_mgr}" install atomicparsley -y
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -241,14 +241,14 @@ function audacity_install(){
   if ! command -v audacity &> /dev/null; then
     echo -e "Audacity could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" update
-    sudo "${pkg_mgr}" install -y audacity
+    "${pkg_mgr}" update
+    "${pkg_mgr}" install -y audacity
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install epel-release
-    sudo "${pkg_mgr}" install snapd
-    sudo systemctl enable --now snapd.socket
-    sudo ln -s /var/lib/snapd/snap /snap
-    sudo snap install audacity -y
+    "${pkg_mgr}" install epel-release
+    "${pkg_mgr}" install snapd
+    systemctl enable --now snapd.socket
+    ln -s /var/lib/snapd/snap /snap
+    snap install audacity -y
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -263,23 +263,23 @@ function chrome_install(){
     if [[ "${os_version}" == "Ubuntu" ]] ; then
       if [[ "${architecture}" == "x86_64" ]]; then
         cd "${download_dir}" || echo "Directory not found or does not exist"
-        sudo "${pkg_mgr}" install curl wget -y
+        "${pkg_mgr}" install curl wget -y
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb"
+        "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb"
         rm -rf "${download_dir}/google-chrome-stable_current_amd64.deb"
       elif [[ "${architecture}" == "x86" ]]; then
         cd "${download_dir}" || echo "Directory not found or does not exist"
-        sudo "${pkg_mgr}" install curl wget -y
+        "${pkg_mgr}" install curl wget -y
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
-        sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"
+        "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"
         rm -rf "${download_dir}/google-chrome-stable_current_i386.deb"
       elif [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
-        sudo "${pkg_mgr}" install -y chromium-browser
+        "${pkg_mgr}" install -y chromium-browser
       fi
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       cd "${download_dir}" || echo "Directory not found or does not exist"
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-      sudo "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
+      "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
       rm -rf "${download_dir}/google-chrome-stable_current_amd64.rpm"
     else
       echo "Distribution ${os_version} not supported"
@@ -293,7 +293,7 @@ function chrome-remote-desktop_install(){
   if ! command -v google-chrome-remote &> /dev/null; then
     echo -e "Chrome remote desktop could not be found \nInstalling..."
     wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
-    sudo "${pkg_mgr}" install -y /tmp/chrome-remote-desktop_current_amd64.deb
+    "${pkg_mgr}" install -y /tmp/chrome-remote-desktop_current_amd64.deb
     mkdir -p ~/.config/chrome-remote-desktop
     # Chrome remote desktop has an issue with polkit not authenticating USB flash drives
     # https://askubuntu.com/questions/580329/mount-flashdrive-not-authorized-to-perform-operation
@@ -312,16 +312,16 @@ function chrome-remote-desktop_install(){
 }
 
 function cmatrix_install(){
-  sudo "${pkg_mgr}" install -y cmatrix
+  "${pkg_mgr}" install -y cmatrix
 }
 
 function dialog_install(){
-  sudo "${pkg_mgr}" install -y dialog
+  "${pkg_mgr}" install -y dialog
 }
 
 function discord_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo snap install discord
+      snap install discord
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       echo "Distribution ${os_version} not supported"
     else
@@ -333,26 +333,26 @@ function docker_install(){
   if ! command -v docker &> /dev/null; then
     echo -e "Docker could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install -y containerd docker.io docker-compose
-      sudo docker run hello-world
-      sudo groupadd docker
-      sudo usermod -aG docker ${computer_user}
+      "${pkg_mgr}" install -y containerd docker.io docker-compose
+      docker run hello-world
+      groupadd docker
+      usermod -aG docker ${computer_user}
       # Start Docker
-      sudo systemctl start docker
+      systemctl start docker
       # Enable Docker at Startup
-      sudo systemctl enable docker
+      systemctl enable docker
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-      sudo "${pkg_mgr}" install -y yum-utils
-      sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-      sudo "${pkg_mgr}" install docker-ce docker-ce-cli containerd.io -y
-      sudo groupadd docker
-      sudo usermod -aG docker ${computer_user}
+      "${pkg_mgr}" install -y yum-utils
+      yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      "${pkg_mgr}" install docker-ce docker-ce-cli containerd.io -y
+      groupadd docker
+      usermod -aG docker ${computer_user}
       # Start Docker
-      sudo systemctl start docker
+      systemctl start docker
       # Enable Docker at Startup
-      sudo systemctl enable docker
+      systemctl enable docker
       #Hello world
-      sudo docker run hello-world
+      docker run hello-world
     else
       echo "Distribution ${os_version} not supported"
     fi
@@ -362,24 +362,24 @@ function docker_install(){
 }
 
 function dos2unix_install(){
-  sudo "${pkg_mgr}" install -y dos2unix
+  "${pkg_mgr}" install -y dos2unix
 }
 
 function enscript_install(){
-  sudo "${pkg_mgr}" install -y enscript
+  "${pkg_mgr}" install -y enscript
 }
 
 function tmux_install(){
-  sudo "${pkg_mgr}" install -y tmux
+  "${pkg_mgr}" install -y tmux
 }
 
 # Rygel (DLNA)
 function rygel_install(){
   if ! command -v rygel &> /dev/null; then
     echo -e "Rygel could not be found \nInstalling..."
-    sudo "${pkg_mgr}" install -y rygel
+    "${pkg_mgr}" install -y rygel
     if [[ ${config_flag} == "true" ]]; then
-      echo "uris=/media/${computer_user}/Movies/Movies" | sudo tee -a /etc/rygel.conf
+      echo "uris=/media/${computer_user}/Movies/Movies" | tee -a /etc/rygel.conf
     fi
   else
     echo -e "Rygel already installed! \nSkipping..."
@@ -392,18 +392,18 @@ function ffmpeg_install(){
     echo -e "FFMPEG could not be found \nInstalling..."
     echo "Installing FFMPEG"
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install -y ffmpeg
+      "${pkg_mgr}" install -y ffmpeg
       echo "FFMPEG Installed!"
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-      sudo "${pkg_mgr}" -y update
+      "${pkg_mgr}" -y update
       # Install mlocate (Will be needed to locate pycharm.sh path
-      sudo "${pkg_mgr}" -y install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel
+      "${pkg_mgr}" -y install autoconf automake bzip2 bzip2-devel cmake freetype-devel gcc gcc-c++ git libtool make mercurial pkgconfig zlib-devel
       # Add Repo
-      sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-      sudo "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
-      sudo "${pkg_mgr}" -y install http://rpmfind.net/linux/epel/7/x86_64/Packages/s/SDL2-2.0.10-1.el7.x86_64.rpm
+      "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+      "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
+      "${pkg_mgr}" -y install http://rpmfind.net/linux/epel/7/x86_64/Packages/s/SDL2-2.0.10-1.el7.x86_64.rpm
       # Install FFmpeg
-      sudo "${pkg_mgr}" -y install ffmpeg ffmpeg-devel
+      "${pkg_mgr}" -y install ffmpeg ffmpeg-devel
       echo "FFMPEG Installed!"
     else
       echo "Distribution ${os_version} not supported"
@@ -418,14 +418,14 @@ function fstab_install(){
   if ! command -v ntfs-3g &> /dev/null; then
     echo -e "FSTAB could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install -y ntfs-3g
+      "${pkg_mgr}" install -y ntfs-3g
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-      sudo "${pkg_mgr}" install -y ntfs-3g
+      "${pkg_mgr}" install -y ntfs-3g
     else
       echo "Distribution ${os_version} not supported"
     fi
     if [[ ${config_flag} == "true" ]]; then
-      sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
+      lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL
 
       hdd_storage="/media/${computer_user}/hdd_storage"
       file_storage="/media/${computer_user}/file_storage"
@@ -434,50 +434,50 @@ function fstab_install(){
       photos="/media/${computer_user}/photos"
       media="/media/${computer_user}/media"
 
-      sudo mkdir -p "${hdd_storage}"
-      sudo mkdir -p "${file_storage}"
-      sudo mkdir -p "${windows}"
-      sudo mkdir -p "${games}"
-      sudo mkdir -p "${photos}"
-      sudo mkdir -p "${media}"
+      mkdir -p "${hdd_storage}"
+      mkdir -p "${file_storage}"
+      mkdir -p "${windows}"
+      mkdir -p "${games}"
+      mkdir -p "${photos}"
+      mkdir -p "${media}"
 
       # If these fstab directories exist, update them. Otherwise create an entry for them.
       if grep -q '^/dev/sdb2' /etc/fstab; then
-        sudo sed -i "s#/dev/sdb2.*#/dev/sdb2 ${media} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+        sed -i "s#/dev/sdb2.*#/dev/sdb2 ${media} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sdb2 ${media} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sdb2 ${media} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | tee -a /etc/fstab
       fi
       if grep -q '^/dev/sdc2' /etc/fstab; then
-        sudo sed -i "s#/dev/sdc2.*#/dev/sdc2 ${file_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+        sed -i "s#/dev/sdc2.*#/dev/sdc2 ${file_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sdc2 ${file_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sdc2 ${file_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | tee -a /etc/fstab
       fi
       if grep -q '^/dev/sdd2' /etc/fstab; then
-        sudo sed -i "s#/dev/sdd2.*#/dev/sdd2 ${photos} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+        sed -i "s#/dev/sdd2.*#/dev/sdd2 ${photos} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sdd2 ${photos} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sdd2 ${photos} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | tee -a /etc/fstab
       fi
       if grep -q '^/dev/sdf2' /etc/fstab; then
-        sudo sed -i "s#/dev/sdf2.*#/dev/sdf2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+        sed -i "s#/dev/sdf2.*#/dev/sdf2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sdf2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sdf2 ${games} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | tee -a /etc/fstab
       fi
       if grep -q '^/dev/sdg4' /etc/fstab; then
-        sudo sed -i "s#/dev/sdg4.*#/dev/sdg4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+        sed -i "s#/dev/sdg4.*#/dev/sdg4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sdg4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sdg4 ${windows} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | tee -a /etc/fstab
       fi
       if grep -q '^/dev/sde4' /etc/fstab; then
-        sudo sed -i "s#/dev/sde4.*#/dev/sde4 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
+        sed -i "s#/dev/sde4.*#/dev/sde4 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0#" /etc/fstab
       else
-        echo -e "/dev/sde4 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | sudo tee -a /etc/fstab
+        echo -e "/dev/sde4 ${hdd_storage} ntfs-3g rw,auto,user,permissions,uid=1000,gid=1000,umask=0000,noatime,nodiratime,nofail,nodev,nosuid,exec 0 0" | tee -a /etc/fstab
       fi
-      sudo mount -a
-      sudo systemctl daemon-reload
+      mount -a
+      systemctl daemon-reload
       # For local drives
-      sudo systemctl restart local-fs.target
+      systemctl restart local-fs.target
       # For remote NFS
-      sudo systemctl restart remote-fs.target
+      systemctl restart remote-fs.target
     fi
   else
     echo -e "FSTAB already installed! \nSkipping..."
@@ -485,23 +485,23 @@ function fstab_install(){
 }
 
 function gimp_install(){
-  sudo "${pkg_mgr}" install -y gimp
+  "${pkg_mgr}" install -y gimp
 }
 
 function git_install(){
-  sudo "${pkg_mgr}" install -y git
+  "${pkg_mgr}" install -y git
   if [[ ${config_flag} == "true" ]]; then
     git config --global credential.helper store
   fi
 }
 
 function gnome_install(){
-  sudo "${pkg_mgr}" install -y gnome-shell ubuntu-gnome-desktop
+  "${pkg_mgr}" install -y gnome-shell ubuntu-gnome-desktop
 }
 
 function gnome-theme_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
+    "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     echo "For Ubuntu Only, not compatible with CentOS"
   else
@@ -510,22 +510,22 @@ function gnome-theme_install(){
 }
 
 function gnucobol_install(){
-  sudo "${pkg_mgr}" install -y gnucobol
+  "${pkg_mgr}" install -y gnucobol
 }
 
 function ghostscript_install(){
-  sudo "${pkg_mgr}" install -y ghostscript
+  "${pkg_mgr}" install -y ghostscript
 }
 
 function gparted_install(){
-  sudo "${pkg_mgr}" install -y gparted
+  "${pkg_mgr}" install -y gparted
 }
 
 function gramps_install(){
   if ! command -v gramps &> /dev/null; then
     echo -e "gramps could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install -y gramps gir1.2-goocanvas-2.0
+      "${pkg_mgr}" install -y gramps gir1.2-goocanvas-2.0
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       echo "Distribution ${os_version} not supported"
     else
@@ -548,7 +548,7 @@ function jq_install(){
   if ! command -v gramps &> /dev/null; then
     echo -e "gramps could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install -y jq
+      "${pkg_mgr}" install -y jq
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       echo "Distribution ${os_version} not supported"
     else
@@ -560,21 +560,21 @@ function jq_install(){
 }
 
 function kexi_install(){
-  sudo "${pkg_mgr}" install -y kexi
+  "${pkg_mgr}" install -y kexi
 }
 
 function kvm_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     # Install Dependencies
-    sudo "${pkg_mgr}" install curl wget bridge-utils cpu-checker qemu-kvm virtinst libvirt-daemon virt-manager -y
+    "${pkg_mgr}" install curl wget bridge-utils cpu-checker qemu-kvm virtinst libvirt-daemon virt-manager -y
     kvm-ok
 
     # Enable libvirtd service
-    sudo systemctl enable --now libvirtd
+    systemctl enable --now libvirtd
     lsmod | grep -i kvm
 
     # create the network.xml file
-    sudo echo '<network>
+    echo '<network>
     <name>vmbr0</name>
     <forward mode="route"/>
     <bridge name="vmbr0" stp="on" delay="0"/>
@@ -583,26 +583,26 @@ function kvm_install(){
           <range start="192.168.0.2" end="192.168.255.254"/>
         </dhcp>
       </ip>
-    </network>' sudo tee -a ./network.xml
+    </network>' tee -a ./network.xml
 
-    sudo cp ./network.xml /root/
+    cp ./network.xml /root/
     cat /root/network.xml
     # will define, create, and start our new network.
-    sudo virsh net-define /root/network.xml
-    sudo virsh net-autostart vmbr0
-    sudo virsh net-start vmbr0
+    virsh net-define /root/network.xml
+    virsh net-autostart vmbr0
+    virsh net-start vmbr0
     # delete the default private network, this is not required but you can if you prefer to delete it
-    #sudo virsh net-destroy default
-    #sudo virsh net-undefine default
+    #virsh net-destroy default
+    #virsh net-undefine default
     # restart the libvirt daemon.
-    sudo systemctl restart libvirtd.service
+    systemctl restart libvirtd.service
     # Enable IPv4 and IPv6 packet forwarding!
-    sudo sed -i "/net.ipv4.ip_forward=1/ s/# *//" /etc/sysctl.conf
-    sudo sed -i "/net.ipv6.conf.all.forwarding=1/ s/# *//" /etc/sysctl.conf
+    sed -i "/net.ipv4.ip_forward=1/ s/# *//" /etc/sysctl.conf
+    sed -i "/net.ipv6.conf.all.forwarding=1/ s/# *//" /etc/sysctl.conf
     # Reload sysctl for the packet forwarding changes to be applied.
-    sudo sysctl -p
+    sysctl -p
 
-    vm=c8-02g ; time sudo virt-install --name "${vm}" \
+    vm=c8-02g ; time virt-install --name "${vm}" \
     --memory 2048 \
     --vcpus=1 \
     --os-variant=centos7.0 \
@@ -616,7 +616,7 @@ function kvm_install(){
     --console pty,target_type=serial \
     --extra-args "console=ttyS0,115200n8 serial auto=true priority=critical ks=file:/ks.cfg SERVERNAME=${vm} net.ifnames=0 biosdevname=0"
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" -y install @virt* dejavu-lgc-* xorg-x11-xauth tigervnc \ libguestfs-tools policycoreutils-python bridge-utils
+    "${pkg_mgr}" -y install @virt* dejavu-lgc-* xorg-x11-xauth tigervnc \ libguestfs-tools policycoreutils-python bridge-utils
 
     # Set Sellinux context
     semanage fcontext -a -t virt_image_t "/vm(/.*)?"; restorecon -R /vm
@@ -632,24 +632,24 @@ function kvm_install(){
 }
 
 function neofetch_install(){
-  sudo "${pkg_mgr}" install -y neofetch
+  "${pkg_mgr}" install -y neofetch
 }
 
 function nfs_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y curl wget nfs-common nfs-kernel-server net-tools
+    "${pkg_mgr}" install -y curl wget nfs-common nfs-kernel-server net-tools
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install -y nfs-utils nfs-utils-lib
+    "${pkg_mgr}" install -y nfs-utils nfs-utils-lib
   else
     echo "Distribution ${os_version} not supported"
   fi
   if [[ ${config_flag} == "true" ]]; then
     # Create directory
     nfs_directory="/mnt/nfs/"
-    sudo mkdir ${nfs_directory} -p
+    mkdir ${nfs_directory} -p
     ls -la ${nfs_directory}
-    sudo chown -R nobody:nogroup ${nfs_directory}
-    sudo chmod 777 ${nfs_directory}
+    chown -R nobody:nogroup ${nfs_directory}
+    chmod 777 ${nfs_directory}
 
     # Acquire My IP address for the NFS Server
     my_interface=$(ip route get 8.8.8.8 | awk -F"dev " 'NR==1{split($2,a," ");print a[1]}')
@@ -659,37 +659,37 @@ function nfs_install(){
     printf "${my_interface} \n${my_ip} \n${my_netmask} \n${my_ip_subnet}\n\n\n\n"
 
     # Add the directory desired to /etc/exports file
-    echo "${nfs_directory}  *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+    echo "${nfs_directory}  *(rw,sync,no_subtree_check)" | tee -a /etc/exports
 
     # Export the NFS Share Directory
-    sudo exportfs -a
+    exportfs -a
 
     # Restart NFS Kernel Server
-    sudo systemctl restart nfs-kernel-server
-    sudo systemctl enable nfs-kernel-server
+    systemctl restart nfs-kernel-server
+    systemctl enable nfs-kernel-server
 
     # Fix Firewall (IF ACTIVE)
-    #sudo ufw status
-    #sudo ufw allow from client_ip to any port nfs
-    #sudo ufw status
+    #ufw status
+    #ufw allow from client_ip to any port nfs
+    #ufw status
   fi
 }
 
 function openjdk_install(){
-  sudo "${pkg_mgr}" install -y openjdk-8-jdk
+  "${pkg_mgr}" install -y openjdk-8-jdk
 }
 
 function openssh_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y nmap openssh-server
+    "${pkg_mgr}" install -y nmap openssh-server
 
     # Start SSH
     /etc/init.d/ssh start || echo "Already Started"
 
     # Create Firewall Rule for SSH
-    sudo ufw allow ssh
+    ufw allow ssh
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" -y install openssh-server openssh-clients
+    "${pkg_mgr}" -y install openssh-server openssh-clients
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -697,9 +697,9 @@ function openssh_install(){
 
 function mkvtoolnix_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y mkvtoolnix
+    "${pkg_mgr}" install -y mkvtoolnix
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" -y install mkvtoolnix
+    "${pkg_mgr}" -y install mkvtoolnix
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -707,9 +707,9 @@ function mkvtoolnix_install(){
 
 function mediainfo_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y mediainfo
+    "${pkg_mgr}" install -y mediainfo
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" -y install mediainfo
+    "${pkg_mgr}" -y install mediainfo
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -718,14 +718,14 @@ function mediainfo_install(){
 function packer_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     echo "Packer on Ubuntu requires manual installation"
-    #curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-    #sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-    #sudo "${pkg_mgr}" update
-    #sudo "${pkg_mgr}" install packer -y
+    #curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+    #apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    #"${pkg_mgr}" update
+    #"${pkg_mgr}" install packer -y
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install -y yum-utils
-    sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-    sudo "${pkg_mgr}" -y install packer
+    "${pkg_mgr}" install -y yum-utils
+    yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+    "${pkg_mgr}" -y install packer
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -733,16 +733,16 @@ function packer_install(){
 
 function phoronix_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y phoronix-test-suite
+    "${pkg_mgr}" install -y phoronix-test-suite
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install -y wget php-cli php-xml bzip2 json php-pear php-devel gcc make php-pecl-json
+    "${pkg_mgr}" install -y wget php-cli php-xml bzip2 json php-pear php-devel gcc make php-pecl-json
     # Download Phoronix rpm
     cd /tmp || echo "Could not find /tmp directory"
     wget https://phoronix-test-suite.com/releases/phoronix-test-suite-9.8.0.tar.gz
     # Unzip in Downloads
-    sudo tar xvfz phoronix-test*.tar.gz
+    tar xvfz phoronix-test*.tar.gz
     cd phoronix-test-suite || echo "Could not find phoronix directory"
-    sudo ./install-sh
+    ./install-sh
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -751,7 +751,7 @@ function phoronix_install(){
 function preload_install(){
   if ! command -v preload &> /dev/null; then
     echo -e "preload could not be found \nInstalling..."
-    sudo "${pkg_mgr}" install -y preload
+    "${pkg_mgr}" install -y preload
   else
     echo -e "preload already installed! \nSkipping..."
   fi
@@ -760,7 +760,7 @@ function preload_install(){
 function poppler-utils_install(){
   if ! command -v pdftotext &> /dev/null; then
     echo -e "poppler-utils could not be found \nInstalling..."
-    sudo "${pkg_mgr}" install -y poppler-utils
+    "${pkg_mgr}" install -y poppler-utils
   else
     echo -e "poppler-utils already installed! \nSkipping..."
   fi
@@ -772,25 +772,25 @@ function powershell_install(){
     if [[ "${os_version}" == "Ubuntu" ]] ; then
       echo "PowerShell requires Manual installation on Ubuntu"
       # Install pre-requisite packages.
-      #sudo "${pkg_mgr}" install -y wget apt-transport-https software-properties-common
+      #"${pkg_mgr}" install -y wget apt-transport-https software-properties-common
       # Navigate to tmp directory
       #cd /tmp || echo "Could not find /tmp directory"
       # Download the Microsoft repository GPG keys
       #wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
       # Register the Microsoft repository GPG keys
-      #sudo dpkg -i packages-microsoft-prod.deb
+      #dpkg -i packages-microsoft-prod.deb
       # Update the list of products
-      #sudo "${pkg_mgr}" update
+      #"${pkg_mgr}" update
       # Enable the "universe" repositories
-      #sudo add-apt-repository -y universe
+      #add-apt-repository -y universe
       # Install PowerShell
-      #sudo "${pkg_mgr}" install -y powershell
+      #"${pkg_mgr}" install -y powershell
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-      sudo "${pkg_mgr}" install -y wget curl
+      "${pkg_mgr}" install -y wget curl
       # Register the Microsoft RedHat repository
-      curl https://packages.microsoft.com/config/rhel/7/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
+      curl https://packages.microsoft.com/config/rhel/7/prod.repo | tee /etc/yum.repos.d/microsoft.repo
       # Install PowerShell
-      sudo yum install -y powershell
+      yum install -y powershell
     else
       echo "Distribution ${os_version} not supported"
     fi
@@ -803,31 +803,31 @@ function python_install(){
   if ! command -v python3 &> /dev/null; then
     echo -e "python3 could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install -y mlocate
-      sudo updatedb
+      "${pkg_mgr}" install -y mlocate
+      updatedb
       # Install Python 3.X and 3.8
-      sudo "${pkg_mgr}" install -y python-is-python3 qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
+      "${pkg_mgr}" install -y python-is-python3 qtbase5-examples qt5-doc-html qtbase5-doc-html qt5-doc qtcreator build-essential libglu1-mesa-dev mesa-common-dev qt5-default python3 python3-pip build-essential python3-pil python3-pil.imagetk zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev python-tk python3-tk tk-dev gcc git tcl-thread snapd
       # Update PIP
-      sudo python3 -m pip install --upgrade pip
+      python3 -m pip install --upgrade pip
       # Install Python Packages
-      sudo python3 -m pip install autoconf setuptools wheel git+https://github.com/nficano/pytube regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive ffmpeg-python m3u8 aiohttp
+      python3 -m pip install autoconf setuptools wheel git+https://github.com/nficano/pytube regex requests tqdm selenium mutagen tkthread pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive ffmpeg-python m3u8 aiohttp
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       # Install mlocate (Will be needed to locate pycharm.sh path
-      sudo "${pkg_mgr}" -y install mlocate
-      sudo updatedb
+      "${pkg_mgr}" -y install mlocate
+      updatedb
       # Install Python 3.X and 3.8
-      sudo "${pkg_mgr}" install python3 -y
-      sudo "${pkg_mgr}" install python38 -y
+      "${pkg_mgr}" install python3 -y
+      "${pkg_mgr}" install python38 -y
       # Update PIP
-      sudo python3 -m pip install --upgrade pip
-      sudo python3.8 -m pip install --upgrade pip
+      python3 -m pip install --upgrade pip
+      python3.8 -m pip install --upgrade pip
       # Install Python Depedencies
-      sudo "${pkg_mgr}" install qt5-default gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
+      "${pkg_mgr}" install qt5-default gcc git python3-devel python3-pil.imagetk python38-devel openssl-devel tcl-thread xz-libs bzip2-devel libffi-devel python3-tkinter python38-tkinter -y
       # Set Git Credential Store Globally
-      sudo git config --global credential.helper store
+      git config --global credential.helper store
       # Install Python Packages
-      sudo python3 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
-      sudo python3.8 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
+      python3 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
+      python3.8 -m pip install autoconf setuptools wheel pytube3 regex requests tqdm selenium mutagen tkthread Pillow twitter_scraper matplotlib numpy pandas scikit-learn scipy seaborn statsmodels more-itertools pyglet shapely piexif webdriver-manager pandas_profiling ipython-genutils traitlets jupyter-core pyrsistent jsonschema nbformat tornado pickleshare wcwidth prompt-toolkit parso jedi backcall pygments ipython pyzmq jupyter-client ipykernel Send2Trash prometheus-client pywinpty terminado testpath mistune packaging bleach entrypoints pandocfilters nbconvert notebook widgetsnbextension ipywidgets numba phik xlsxwriter paramiko cx_oracle pypyodbc sqlalchemy pyhive cx_freeze ffmpeg-python m3u8 aiohttp
     else
       echo "Distribution ${os_version} not supported"
     fi
@@ -840,41 +840,41 @@ function pycharm_install(){
   if ! command -v pycharm-community &> /dev/null; then
     echo -e "pycharm-community could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      sudo "${pkg_mgr}" install -y mlocate
-      sudo updatedb
+      "${pkg_mgr}" install -y mlocate
+      updatedb
       # Install Python 3.X and 3.8
-      sudo "${pkg_mgr}" install snapd -y
+      "${pkg_mgr}" install snapd -y
       # Systemmd unit that managed the main snap communication sockets needs to be enabled.
-      sudo systemctl enable --now snapd.socket
+      systemctl enable --now snapd.socket
       # Sleep for 5 seconds to allow for system link creation.
       date +"%H:%M:%S"
       sleep 5
       date +"%H:%M:%S"
       # To enable classic snap support, this creates a symbolic link between /var/lib/snapd/snap and /snap
-      sudo ln -s /var/lib/snapd/snap /snap
+      ln -s /var/lib/snapd/snap /snap
       # Install PyCharm CE
-      sudo snap install pycharm-community --classic
+      snap install pycharm-community --classic
       # Locate PyCharm Installation Path
-      sudo updatedb
-      pycharm_path=$(sudo locate pycharm.sh)
+      updatedb
+      pycharm_path=$(locate pycharm.sh)
       # Launch PyCharm as Root
       echo $pycharm_path
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       # Install snapd package manager (Contains all depedencies packaged together)
-      sudo "${pkg_mgr}" install snapd -y
+      "${pkg_mgr}" install snapd -y
       # Systemmd unit that managed the main snap communication sockets needs to be enabled.
-      sudo systemctl enable --now snapd.socket
+      systemctl enable --now snapd.socket
       # Sleep for 5 seconds to allow for system link creation.
       date +"%H:%M:%S"
       sleep 5
       date +"%H:%M:%S"
       # To enable classic snap support, this creates a symbolic link between /var/lib/snapd/snap and /snap
-      sudo ln -s /var/lib/snapd/snap /snap
+      ln -s /var/lib/snapd/snap /snap
       # Install PyCharm CE
-      sudo snap install pycharm-community --classic
+      snap install pycharm-community --classic
       # Locate PyCharm Installation Path
-      sudo updatedb
-      pycharm_path=$(sudo locate pycharm.sh)
+      updatedb
+      pycharm_path=$(locate pycharm.sh)
       # Launch PyCharm as Root
       echo $pycharm_path
     else
@@ -889,12 +889,12 @@ function pycharm_install(){
 }
 
 function redshift_install(){
-  sudo "${pkg_mgr}" install -y redshift redshift-gtk
+  "${pkg_mgr}" install -y redshift redshift-gtk
 }
 
 function software-updater_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y update-manager synaptic
+    "${pkg_mgr}" install -y update-manager synaptic
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     echo "For Ubuntu Only, not compatible with CentOS"
   else
@@ -903,12 +903,12 @@ function software-updater_install(){
 }
 
 function stat_log_install(){
-  sudo "${pkg_mgr}" install -y sysstat net-tools numactl linux-tools-common
+  "${pkg_mgr}" install -y sysstat net-tools numactl linux-tools-common
 }
 
 function startup-disk-creator_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y usb-creator-gtk
+    "${pkg_mgr}" install -y usb-creator-gtk
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     echo "For Ubuntu Only, not compatible with CentOS"
   else
@@ -918,18 +918,18 @@ function startup-disk-creator_install(){
 
 function steam_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y steam
+    "${pkg_mgr}" install -y steam
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm -y
-    sudo "${pkg_mgr}" install http://download1.rpmfusion.org/free/fedora/releases/19/Everything/i386/os/libtxc_dxtn-1.0.0-3.fc19.i686.rpm -y
-    sudo "${pkg_mgr}" --enablerepo=steam_fedora19 install steam -y
+    "${pkg_mgr}" install http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm -y
+    "${pkg_mgr}" install http://download1.rpmfusion.org/free/fedora/releases/19/Everything/i386/os/libtxc_dxtn-1.0.0-3.fc19.i686.rpm -y
+    "${pkg_mgr}" --enablerepo=steam_fedora19 install steam -y
   else
     echo "Distribution ${os_version} not supported"
   fi
 }
 
 function scrcpy_install(){
-  sudo "${pkg_mgr}" install -y scrcpy
+  "${pkg_mgr}" install -y scrcpy
 }
 
 function system-manager_install(){
@@ -939,10 +939,10 @@ function system-manager_install(){
 
 function tesseract_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y tesseract-ocr libtesseract-dev tesseract-ocr-eng
+    "${pkg_mgr}" install -y tesseract-ocr libtesseract-dev tesseract-ocr-eng
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" install epel-release -y
-    sudo "${pkg_mgr}" install tesseract-devel leptonica-devel -y
+    "${pkg_mgr}" install epel-release -y
+    "${pkg_mgr}" install tesseract-devel leptonica-devel -y
   else
     echo "Distribution ${os_version} not supported"
   fi
@@ -954,31 +954,31 @@ function theme-manager_install(){
 }
 
 function tigervnc_install(){
-  sudo "${pkg_mgr}" install -y tigervnc-standalone-server
+  "${pkg_mgr}" install -y tigervnc-standalone-server
 }
 
 function transmission_install(){
-  sudo "${pkg_mgr}" install -y transmission-qt transmission-cli transmission-daemon
+  "${pkg_mgr}" install -y transmission-qt transmission-cli transmission-daemon
 }
 
 function trash-cli_install(){
-  sudo "${pkg_mgr}" install -y trash-cli
+  "${pkg_mgr}" install -y trash-cli
 }
 
 function translate-shell_install(){
-  sudo "${pkg_mgr}" install -y translate-shell
+  "${pkg_mgr}" install -y translate-shell
 }
 
 function tree_install(){
-  sudo "${pkg_mgr}" install -y tree
+  "${pkg_mgr}" install -y tree
 }
 
 function udisks2_install(){
-  sudo "${pkg_mgr}" install -y udisks2
+  "${pkg_mgr}" install -y udisks2
 }
 
 function youtube-dl_install(){
-  python3 -m pip install youtube-dl
+  python3 -m pip install --upgrade youtube-dl
 }
 
 function video-downloader_install(){
@@ -993,28 +993,28 @@ function video-manager_install(){
 
 function vlc_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
-    sudo "${pkg_mgr}" install -y vlc
+    "${pkg_mgr}" install -y vlc
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-    sudo "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-    sudo "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
-    sudo "${pkg_mgr}" -y install vlc
+    "${pkg_mgr}" -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    "${pkg_mgr}" -y install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
+    "${pkg_mgr}" -y install vlc
   else
     echo "Distribution ${os_version} not supported"
   fi
 }
 
 function wine_install(){
-  sudo "${pkg_mgr}" install -y wine
+  "${pkg_mgr}" install -y wine
 }
 
 function wireshark_install(){
   if ! command -v wireshark &> /dev/null; then
     echo -e "wireshark could not be found \nInstalling..."
     if [[ "${os_version}" == "Ubuntu" ]] ; then
-      echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
-      sudo DEBIAN_FRONTEND=noninteractive "${pkg_mgr}" install wireshark -y
+      echo "wireshark-common wireshark-common/install-setuid boolean true" | debconf-set-selections
+      DEBIAN_FRONTEND=noninteractive "${pkg_mgr}" install wireshark -y
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-      sudo "${pkg_mgr}" install -y wireshark wireshark-qt
+      "${pkg_mgr}" install -y wireshark wireshark-qt
     else
       echo "Distribution ${os_version} not supported"
     fi
@@ -1025,11 +1025,11 @@ function wireshark_install(){
 }
 
 function xdotool_install(){
-  sudo "${pkg_mgr}" install -y xdotool
+  "${pkg_mgr}" install -y xdotool
 }
 
 function xsel_install(){
-  sudo "${pkg_mgr}" install -y xsel
+  "${pkg_mgr}" install -y xsel
 }
 
 function yq_install(){
@@ -1180,7 +1180,7 @@ fi
 
 if [ ${update_flag} == "true" ]; then
   if [ ${log_flag} == "true" ]; then
-    update | sudo tee -a "${log_dir}/${log_file}"
+    update | tee -a "${log_dir}/${log_file}"
   else
     update
   fi
@@ -1188,7 +1188,7 @@ fi
 
 if [ ${provision_flag} == "true" ]; then
   if [ ${log_flag} == "true" ]; then
-    provision | sudo tee -a "${log_dir}/${log_file}"
+    provision | tee -a "${log_dir}/${log_file}"
   else
     provision
   fi
@@ -1198,7 +1198,7 @@ fi
 
 if [ ${clean_flag} == "true" ]; then
   if [ ${log_flag} == "true" ]; then
-    clean_system | sudo tee -a "${log_dir}/${log_file}"
+    clean_system | tee -a "${log_dir}/${log_file}"
   else
     clean_system
   fi
