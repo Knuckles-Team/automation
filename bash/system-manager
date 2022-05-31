@@ -40,7 +40,7 @@ function provision(){
   for app in "${apps[@]}"
   do
     echo "Installing: ${app}"
-    #"${app}_install"
+    set -x
     if [[ "${app}" == "adb" ]]; then
       adb_install
     elif [[ "${app}" == "audacity" ]]; then
@@ -265,13 +265,13 @@ function chrome_install(){
         cd "${download_dir}" || echo "Directory not found or does not exist"
         "${pkg_mgr}" install curl wget -y
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb"
+        "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_amd64.deb" -y
         rm -rf "${download_dir}/google-chrome-stable_current_amd64.deb"
       elif [[ "${architecture}" == "x86" ]]; then
         cd "${download_dir}" || echo "Directory not found or does not exist"
         "${pkg_mgr}" install curl wget -y
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
-        "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"
+        "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_i386.deb"  -y
         rm -rf "${download_dir}/google-chrome-stable_current_i386.deb"
       elif [[ "${architecture}" == "aarch64" ]] || [[ "${architecture}" == "aarch32" ]]; then
         "${pkg_mgr}" install -y chromium-browser
@@ -279,7 +279,7 @@ function chrome_install(){
     elif [[ "${os_version}" == "CentOS Linux" ]] ; then
       cd "${download_dir}" || echo "Directory not found or does not exist"
       wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-      "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"
+      "${pkg_mgr}" install "${download_dir}/google-chrome-stable_current_x86_64.rpm"  -y
       rm -rf "${download_dir}/google-chrome-stable_current_amd64.rpm"
     else
       echo "Distribution ${os_version} not supported"
@@ -1033,18 +1033,7 @@ function xsel_install(){
 }
 
 function yq_install(){
-  if ! command -v yq &> /dev/null; then
-    echo -e "yq could not be found \nInstalling..."
-    if [[ "${os_version}" == "Ubuntu" ]] ; then
-      snap install yq
-    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
-      echo "Distribution ${os_version} not supported"
-    else
-      echo "Distribution ${os_version} not supported"
-    fi
-  else
-    echo -e "yq already installed! \nSkipping..."
-  fi
+  snap install yq
 }
 
 computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
@@ -1055,12 +1044,12 @@ private_ip="$(hostname -I)"
 public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
 public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
-apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "cmatrix" "dialog" "discord" "docker" "dos2unix" \
+apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "history" "jq" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
-pi_apps=( "atomicparsley" "audacity" "chrome" "cmatrix" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
+pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "history" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "scrcpy" "system-manager" "tesseract" "theme-manager" "tmux" "transmission" \
 "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-downloader" "video-manager" "wine" "wireshark" "youtube-dl" "yq" )
