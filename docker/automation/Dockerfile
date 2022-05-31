@@ -9,8 +9,8 @@ COPY automation.tar.gz /automation/automation.tar.gz
 RUN tar -xvf /automation/automation.tar.gz -C /automation | tee -a /provision_log.txt
 RUN chmod +x /automation/bash/*.sh | tee -a /provision_log.txt
 RUN bash /automation/bash/system-manager -u -p -t server | tee -a /provision_log.txt
-FROM upgraded-ubuntu as provisioned-ubuntu
 RUN theme-manager -t | tee -a /provision_log.txt
+FROM upgraded-ubuntu as provisioned-ubuntu
 RUN theme-manager -h | tee -a /provision_log.txt
 RUN video-manager -h | tee -a /provision_log.txt
 RUN video-downloader -h | tee -a /provision_log.txt
