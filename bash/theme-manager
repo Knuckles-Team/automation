@@ -27,14 +27,14 @@ theme-manager.sh --update --change-theme <terminal theme> <gnome appearance them
 
 function install_dependencies(){
   echo "Installing dependencies"
-  sudo apt install -y wget dconf-editor unzip snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock git
+  apt install -y wget dconf-editor unzip snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock git
 }
 
 function install_oh_my_posh(){
   echo "Installing Oh-My-Posh and Fonts"
   # Install Oh my Posh
-  sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-  sudo chmod +x /usr/local/bin/oh-my-posh
+  wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+  chmod +x /usr/local/bin/oh-my-posh
   # Download the themes
   mkdir ~/.poshthemes
   wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip
@@ -59,7 +59,7 @@ function install_oh_my_posh(){
   if grep -q 'eval "$(oh-my-posh --init --shell bash --config ' ~/.bashrc; then
     echo ".bashrc profile already modified"
   else
-    echo 'eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/takuya.omp.json)"' | sudo tee -a ~/.bashrc
+    echo 'eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/takuya.omp.json)"' | tee -a ~/.bashrc
   fi
 }
 
@@ -68,7 +68,7 @@ function change_oh_my_posh_theme(){
   if grep -q 'eval "$(oh-my-posh --init --shell bash --config ' ~/.bashrc; then
     echo ".bashrc profile already modified"
   else
-    echo 'eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/takuya.omp.json)"' | sudo tee -a ~/.bashrc
+    echo 'eval "$(oh-my-posh --init --shell bash --config ~/.poshthemes/takuya.omp.json)"' | tee -a ~/.bashrc
   fi
 }
 
@@ -81,37 +81,37 @@ function install_gnome_theme(){
   git clone https://github.com/cbrnix/Flatery.git
   pushd Flatery
   chmod +x ./*.sh
-  sudo ./install.sh -g -w
+  ./install.sh -g -w
   popd
   #Papirus
   git clone https://github.com/PapirusDevelopmentTeam/papirus-icon-theme.git
   pushd papirus-icon-theme
   chmod +x ./*.sh
-  sudo ./install.sh
+  ./install.sh
   popd
   # Reversal
   git clone https://github.com/yeyushengfan258/Reversal-icon-theme.git
   pushd Reversal-icon-theme
   chmod +x ./*.sh
-  sudo ./install.sh -a
+  ./install.sh -a
   popd
   # Fluent
   git clone https://github.com/vinceliuice/Fluent-icon-theme.git
   pushd Fluent-icon-theme
   chmod +x ./*.sh
-  sudo ./install.sh -a
+  ./install.sh -a
   popd
   # We10X
   git clone https://github.com/yeyushengfan258/We10X-icon-theme.git
   pushd We10X-icon-theme
   chmod +x ./*.sh
-  sudo ./install.sh -a
+  ./install.sh -a
   popd
   # Inverse
   git clone https://github.com/yeyushengfan258/Inverse-icon-theme.git
   pushd Inverse-icon-theme
   chmod +x ./*.sh
-  sudo ./install.sh -a
+  ./install.sh -a
   popd
 
   # Download Shell Themes
@@ -119,7 +119,7 @@ function install_gnome_theme(){
   git clone https://github.com/vinceliuice/Orchis-theme.git
   pushd Orchis-theme
   chmod +x ./*.sh
-  sudo ./install.sh
+  ./install.sh
   popd
   # Nordic
   git clone https://github.com/EliverLara/Nordic.git
