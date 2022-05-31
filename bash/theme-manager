@@ -46,15 +46,15 @@ function install_oh_my_posh(){
   mkdir -p ~/Downloads
   wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Meslo.zip -O ~/Downloads/Meslo.zip
   unzip -o ~/Downloads/Meslo.zip -d ~/.fonts/Meslo >> /dev/null
-  pushd ~/.fonts/Meslo
+  pushd ~/.fonts/Meslo || echo "Meslo Directory not found"
   fc-cache -fv
-  popd
+  popd || echo "Meslo Directory not found"
   rm ~/Downloads/Meslo.zip
   wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Hack.zip -O ~/Downloads/Hack.zip
   unzip -o ~/Downloads/Hack.zip -d ~/.fonts/Hack >> /dev/null
-  pushd ~/.fonts/Hack
+  pushd ~/.fonts/Hack || echo "Hack Directory not found"
   fc-cache -fv
-  popd
+  popd || echo "Hack Directory not found"
   rm ~/Downloads/Hack.zip
   if grep -q 'eval "$(oh-my-posh --init --shell bash --config ' ~/.bashrc; then
     echo ".bashrc profile already modified"
