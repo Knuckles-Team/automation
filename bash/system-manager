@@ -47,7 +47,7 @@ function provision(){
     elif [[ "${app}" == "audacity" ]]; then
       audacity_install
     elif [[ "${app}" == "android-studio" ]]; then
-      android-studio_install
+      android_studio_install
     elif [[ "${app}" == "ansible" ]]; then
       ansible_install
     elif [[ "${app}" == "atomicparsley" ]]; then
@@ -55,7 +55,7 @@ function provision(){
     elif [[ "${app}" == "chrome" ]]; then
       chrome_install
     elif [[ "${app}" == "chrome-remote-desktop" ]]; then
-      chrome-remote-desktop_install
+      chrome_remote_desktop_install
     elif [[ "${app}" == "cmatrix" ]]; then
       cmatrix_install
     elif [[ "${app}" == "dialog" ]]; then
@@ -79,7 +79,7 @@ function provision(){
     elif [[ "${app}" == "gnome" ]]; then
       gnome_install
     elif [[ "${app}" == "gnome-theme" ]]; then
-      gnome-theme_install
+      gnome_theme_install
     elif [[ "${app}" == "gnucobol" ]]; then
       gnucobol_install
     elif [[ "${app}" == "ghostscript" ]]; then
@@ -115,7 +115,7 @@ function provision(){
     elif [[ "${app}" == "preload" ]]; then
       preload_install
     elif [[ "${app}" == "poppler-utils" ]]; then
-      poppler-utils_install
+      poppler_utils_install
     elif [[ "${app}" == "powershell" ]]; then
       powershell_install
     elif [[ "${app}" == "python" ]]; then
@@ -131,15 +131,15 @@ function provision(){
     elif [[ "${app}" == "stat_log" ]]; then
       stat_log_install
     elif [[ "${app}" == "startup-disk-creator" ]]; then
-      startup-disk-creator_install
+      startup_disk_creator_install
     elif [[ "${app}" == "system-manager" ]]; then
-      system-manager_install
+      system_manager_install
     elif [[ "${app}" == "scrcpy" ]]; then
       scrcpy_install
     elif [[ "${app}" == "tesseract" ]]; then
       tesseract_install
     elif [[ "${app}" == "theme-manager" ]]; then
-      theme-manager_install
+      theme_manager_install
     elif [[ "${app}" == "tigervnc" ]]; then
       tigervnc_install
     elif [[ "${app}" == "tmux" ]]; then
@@ -147,17 +147,17 @@ function provision(){
     elif [[ "${app}" == "transmission" ]]; then
       transmission_install
     elif [[ "${app}" == "trash-cli" ]]; then
-      trash-cli_install
+      trash_cli_install
     elif [[ "${app}" == "translate-shell" ]]; then
-      translate-shell_install
+      translate_shell_install
     elif [[ "${app}" == "tree" ]]; then
       tree_install
     elif [[ "${app}" == "udisks2" ]]; then
       udisks2_install
     elif [[ "${app}" == "video-downloader" ]]; then
-      video-downloader_install
+      video_downloader_install
     elif [[ "${app}" == "video-manager" ]]; then
-      video-manager_install
+      video_manager_install
     elif [[ "${app}" == "vlc" ]]; then
       vlc_install
     elif [[ "${app}" == "wine" ]]; then
@@ -165,7 +165,7 @@ function provision(){
     elif [[ "${app}" == "wireshark" ]]; then
       wireshark_install
     elif [[ "${app}" == "youtube-dl" ]]; then
-      youtube-dl_install
+      youtube_dl_install
     elif [[ "${app}" == "xdotool" ]]; then
       xdotool_install
     elif [[ "${app}" == "xsel" ]]; then
@@ -219,7 +219,7 @@ function adb_install(){
   fi
 }
 
-function android-studio_install(){
+function android_studio_install(){
   snap install android-studio --classic
 }
 
@@ -290,7 +290,7 @@ function chrome_install(){
   fi
 }
 
-function chrome-remote-desktop_install(){
+function chrome_remote_desktop_install(){
   if ! command -v google-chrome-remote &> /dev/null; then
     echo -e "Chrome remote desktop could not be found \nInstalling..."
     wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
@@ -502,7 +502,7 @@ function gnome_install(){
   "${pkg_mgr}" install -y gnome-shell ubuntu-gnome-desktop
 }
 
-function gnome-theme_install(){
+function gnome_theme_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     "${pkg_mgr}" install -y snapd gnome-tweaks gnome-shell-extensions gnome-shell-extension-ubuntu-dock
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
@@ -760,7 +760,7 @@ function preload_install(){
   fi
 }
 
-function poppler-utils_install(){
+function poppler_utils_install(){
   if ! command -v pdftotext &> /dev/null; then
     echo -e "poppler-utils could not be found \nInstalling..."
     "${pkg_mgr}" install -y poppler-utils
@@ -909,7 +909,7 @@ function stat_log_install(){
   "${pkg_mgr}" install -y sysstat net-tools numactl linux-tools-common
 }
 
-function startup-disk-creator_install(){
+function startup_disk_creator_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     "${pkg_mgr}" install -y usb-creator-gtk
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
@@ -935,7 +935,7 @@ function scrcpy_install(){
   "${pkg_mgr}" install -y scrcpy
 }
 
-function system-manager_install(){
+function system_manager_install(){
   yes | cp -rf $(pwd)/system-manager /usr/local/bin
   chmod +x /usr/local/bin/system-manager
 }
@@ -951,9 +951,10 @@ function tesseract_install(){
   fi
 }
 
-function theme-manager_install(){
+function theme_manager_install(){
   yes | cp -rf $(pwd)/theme-manager /usr/local/bin
   chmod +x /usr/local/bin/theme-manager
+  theme-manager -h
 }
 
 function tigervnc_install(){
@@ -964,11 +965,11 @@ function transmission_install(){
   "${pkg_mgr}" install -y transmission-qt transmission-cli transmission-daemon
 }
 
-function trash-cli_install(){
+function trash_cli_install(){
   "${pkg_mgr}" install -y trash-cli
 }
 
-function translate-shell_install(){
+function translate_shell_install(){
   "${pkg_mgr}" install -y translate-shell
 }
 
@@ -980,18 +981,20 @@ function udisks2_install(){
   "${pkg_mgr}" install -y udisks2
 }
 
-function youtube-dl_install(){
+function youtube_dl_install(){
   python3 -m pip install --upgrade youtube-dl
 }
 
-function video-downloader_install(){
+function video_downloader_install(){
   yes | cp -rf $(pwd)/video-downloader /usr/local/bin
   chmod +x /usr/local/bin/video-downloader
+  video-downloader -h
 }
 
-function video-manager_install(){
+function video_manager_install(){
   yes | cp -rf $(pwd)/video-manager /usr/local/bin
   chmod +x /usr/local/bin/video-manager
+  video-manager -h
 }
 
 function vlc_install(){
@@ -1044,8 +1047,8 @@ os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
 private_ip="$(hostname -I)"
-public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
-public_ip=${public_ip:1:-1}
+#public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
+#public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "history" "jq" "kexi" "kvm" \
@@ -1056,7 +1059,7 @@ server_apps=( "adb" "ansible" "atomicparsley" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "git" "gnucobol" "ghostscript" "gparted" "history" "jq" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "rygel" "scrcpy" "statlog" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" \
-"tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
+"tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "history" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "scrcpy" "system-manager" "tesseract" "theme-manager" "tmux" "transmission" \
