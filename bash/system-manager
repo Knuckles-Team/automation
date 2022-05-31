@@ -993,7 +993,7 @@ function youtube_dl_install(){
 }
 
 function video_downloader_install(){
-  yes | cp -rf "${script_directory}${script_directory}/video-downloader" /usr/local/bin
+  yes | cp -rf "${script_directory}/video-downloader" /usr/local/bin
   chmod +x /usr/local/bin/video-downloader
   video-downloader -h
 }
