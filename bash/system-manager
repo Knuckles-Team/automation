@@ -152,6 +152,8 @@ function provision(){
       translate_shell_install
     elif [[ "${app}" == "tree" ]]; then
       tree_install
+    elif [[ "${app}" == "unzip" ]]; then
+      unzip_install
     elif [[ "${app}" == "udisks2" ]]; then
       udisks2_install
     elif [[ "${app}" == "video-downloader" ]]; then
@@ -982,6 +984,10 @@ function udisks2_install(){
   "${pkg_mgr}" install -y udisks2
 }
 
+function unzip_install(){
+  "${pkg_mgr}" install -y unzip
+}
+
 function youtube_dl_install(){
   python3 -m pip install --upgrade youtube-dl
 }
@@ -1053,16 +1059,16 @@ apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dia
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "history" "jq" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" "tigervnc" \
-"tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
+"tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 server_apps=( "adb" "ansible" "atomicparsley" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "git" "gnucobol" "ghostscript" "gparted" "history" "jq" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "rygel" "scrcpy" "statlog" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" \
-"tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "youtube-dl" "xdotool" "xsel" "yq" )
+"tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-manager" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "history" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "scrcpy" "system-manager" "tesseract" "theme-manager" "tmux" "transmission" \
-"translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-downloader" "video-manager" "wine" "wireshark" "youtube-dl" "yq" )
+"translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-downloader" "video-manager" "wine" "wireshark" "youtube-dl" "yq" )
 config_flag='true'
 clean_flag='false'
 provision_flag='false'
