@@ -936,8 +936,9 @@ function scrcpy_install(){
 }
 
 function system_manager_install(){
-  yes | cp -rf $(pwd)/system-manager /usr/local/bin
+  yes | cp -rf "$(pwd)/system-manager" /usr/local/bin
   chmod +x /usr/local/bin/system-manager
+  system-manager -h
 }
 
 function tesseract_install(){
@@ -952,7 +953,7 @@ function tesseract_install(){
 }
 
 function theme_manager_install(){
-  yes | cp -rf $(pwd)/theme-manager /usr/local/bin
+  yes | cp -rf "$(pwd)/theme-manager" /usr/local/bin
   chmod +x /usr/local/bin/theme-manager
   theme-manager -h
 }
@@ -986,13 +987,13 @@ function youtube_dl_install(){
 }
 
 function video_downloader_install(){
-  yes | cp -rf $(pwd)/video-downloader /usr/local/bin
+  yes | cp -rf "$(pwd)/video-downloader" /usr/local/bin
   chmod +x /usr/local/bin/video-downloader
   video-downloader -h
 }
 
 function video_manager_install(){
-  yes | cp -rf $(pwd)/video-manager /usr/local/bin
+  yes | cp -rf "$(pwd)/video-manager" /usr/local/bin
   chmod +x /usr/local/bin/video-manager
   video-manager -h
 }
@@ -1046,9 +1047,6 @@ computer_user=$(getent passwd {1000..6000} | awk -F: '{ print $1}')
 os_version=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
 os_version="${os_version:1:-1}"
 architecture="$(uname -m)"
-private_ip="$(hostname -I)"
-#public_ip=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com)
-#public_ip=${public_ip:1:-1}
 date=$(date +"%m-%d-%Y_%I-%M")
 apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "history" "jq" "kexi" "kvm" \
@@ -1096,8 +1094,6 @@ while test -n "$1"; do
       echo -e "\n\nOperating System: ${os_version}"
       echo "Architecture: ${architecture}"
       echo "User: ${computer_user}"
-      echo "Private IP: ${private_ip}"
-      echo "Public IP: ${public_ip}"
       usage
       exit 0
       ;;

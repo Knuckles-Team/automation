@@ -100,7 +100,7 @@ function ProvisionSystem() {
   Install-Module -Name z -Force -AllowClobber
   Install-Module -Name PSReadLine -Force -SkipPublisherCheck
   Install-Module -Name PSFzf -Force
-  Choco Install 7zip.install audacity audacity-lame audacity-ffmpeg battle.net curl discord docker-desktop fzf epicgameslauncher gimp git.install goggalaxy googlechrome jq k-litecodecpackfull libreoffice-fresh powershell-core msys2 neovim notepadplusplus.install microsoft-windows-terminal mpc-be nuget.commandline oh-my-posh openssl.light origin putty pycharm-edu python steam-client terminal-icons.powershell transmission virtualbox vlc vscode vcredist140 winscp.install wireshark wget wsl-ubuntu-2004 zoom -y
+  Choco Install 7zip.install audacity audacity-lame audacity-ffmpeg battle.net curl discord docker-desktop firefox fzf epicgameslauncher gimp git.install goggalaxy googlechrome jq k-litecodecpackfull libreoffice-fresh powershell-core msys2 neovim notepadplusplus.install microsoft-windows-terminal mpc-be nuget.commandline oh-my-posh openssl.light origin putty pycharm-edu python steam-client terminal-icons.powershell transmission virtualbox vlc vscode vcredist140 winscp.install wireshark wget wsl-ubuntu-2004 zoom -y
   New-Item -ItemType SymbolicLink -Path (Join-Path -Path $Env:USERPROFILE -ChildPath Documents) -Name PowerShell -Target (Join-Path -Path $Env:USERPROFILE -ChildPath Documents\WindowsPowerShell)
   Remove-Item -r $env:TEMP;
 }
