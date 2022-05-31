@@ -1052,7 +1052,7 @@ apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dia
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "tree" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
-server_apps=( "adb" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "docker" "dos2unix" \
+server_apps=( "adb" "ansible" "atomicparsley" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "git" "gnucobol" "ghostscript" "gparted" "history" "jq" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "rygel" "scrcpy" "statlog" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" \
