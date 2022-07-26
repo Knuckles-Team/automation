@@ -27,11 +27,12 @@ def firewall_check(ip_info_list):
     sock.close()
 
 
-print("Checking Addresses with Port\n")
-t = time.time()
-pool = Pool(processes=4)
-results = pool.map(firewall_check, firewall_ips)
-elapsed_time = time.time() - t
-format_time = time.strftime("%H:%M:%S", time.gmtime(elapsed_time))
-print(f"Execution time: {format_time}")
+if __name__ == "__main__":
+    print("Checking Addresses with Port\n")
+    t = time.time()
+    pool = Pool(processes=4)
+    results = pool.map(firewall_check, firewall_ips)
+    elapsed_time = time.time() - t
+    format_time = time.strftime("%H:%M:%S", time.gmtime(elapsed_time))
+    print(f"Execution time: {format_time}")
 
