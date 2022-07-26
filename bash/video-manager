@@ -78,6 +78,7 @@ function file_rename() {
                                                            s/RUSSIAN/Russian/;
                                                            s/DANISH/Danish/;
                                                            s/EXTENDED.//;
+                                                           s/UNRATED.//;
                                                            s/PROPER.//;
                                                            s/THEATRICAL.//;
                                                            s/CRITERION.//;
