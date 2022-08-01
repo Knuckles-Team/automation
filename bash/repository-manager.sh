@@ -72,7 +72,7 @@ default_branch_flag="false"
 merge_flag="false"
 prune_flag="true"
 git_directory="$HOME/Downloads"
-project_slugs=("media-manager" "media-downloader" "webarchiver" "genius-bot" "subshift" "automation")
+project_slugs=("media-manager" "media-downloader" "webarchiver" "genius-bot" "subshift" "automation" "report-manager" "crypto-trader")
 
 if [ -z "$1" ]; then
   usage
