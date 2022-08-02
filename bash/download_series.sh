@@ -29,36 +29,23 @@ function clean_series(){
   while IFS=, read -r title video_link subtitle_link
   do
     echo -e "Reading: \nTitle: ${title}\nVideo Link: ${video_link}\nSubtitle Link: ${subtitle_link}"
-    subtitle_files+=("${download_dir}/${title}.srt")
+    subtitle_files+=("${download_dir}/Subs/${title}/${title} English.srt")
     video_files+=("${download_dir}/${title}.mp4")
     (
     if [[ ! -f "${video_files[${index}]}" ]]; then
       echo "Downloading Subtitle: ${subtitle_files[${index}]} ..."
-      wget --output-document "${subtitle_files[${index}]}" "${subtitle_link}"
+      mkdir -p "${download_dir}/Subs/${title}"
+      wget -O "${subtitle_files[${index}]}" "${subtitle_link}"
       echo "Downloading Video: ${video_files[${index}]} ..."
-      "${script_dir}/video_download.sh" --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
+      "${script_dir}/video-downloader" --links "${video_link}" --title "${title}" --download-directory "${download_dir}"
       sed -i 's/WEBVTT//' "${subtitle_files[${index}]}"
       sed -i 's/^.*FILIMO.*$/./g' "${subtitle_files[${index}]}"
+      sed -i 's/^.*Filimo.*$/./g' "${subtitle_files[${index}]}"
+      sed -i 's/^Filimo.*$/./g' "${subtitle_files[${index}]}"
       sed -i 's/^.*the most exciting movies.*$//g' "${subtitle_files[${index}]}"
       sed -i 's/^.*Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
-      # Trim the beginning of the video
-      if [[ "${trim_video}" == "0" ]]; then
-        echo "Skipping trimming video for ${video_files[${index}]}"
-      else
-        ffmpeg -nostdin -i "${video_files[${index}]}" -ss "${trim_video}" -vcodec copy -acodec copy "${video_files[${index}]::-4}-output.mp4"
-        rm -f "${video_files[${index}]}"
-        mv "${video_files[${index}]::-4}-output.mp4" "${video_files[${index}]}"
-      fi
-      # Shift subtitles
-      if [[ "${trim_subtitle}" == "" ]]; then
-        echo "Skipping trimming subtitle for ${video_files[${index}]}"
-      else
-        "${script_dir}/shift_subtitle.sh" -f "${subtitle_files[${index}]}" -s "${trim_subtitle}"
-      fi
-      # Add subtitles to video
-      "${script_dir}/add_subtitles.sh" -s "${subtitle_files[${index}]}" -v "${video_files[${index}]}"
-      # Set Title for Video
-      "${script_dir}/video_rename.sh" -c "${video_files[${index}]}"
+      sed -i 's/^Supervisor of Translators:.*$/./g' "${subtitle_files[${index}]}"
+      "${script_dir}/video-manager" -c "${video_files[${index}]}"
     else
       echo "Skipping ${video_files[${index}]}, already downloaded..."
     fi
@@ -77,8 +64,6 @@ file=""
 download_dir="."
 subtitle_files=()
 video_files=()
-trim_video="0"
-trim_subtitle=""
 install_flag="false"
 while test -n "$1"; do
   case "$1" in
@@ -108,26 +93,6 @@ while test -n "$1"; do
       ;;
     i | -i | --install)
       install_flag="true"
-      shift
-      ;;
-    ts | -ts | --trim-subtitle)
-      if [ "${2}" ]; then
-        trim_subtitle="${2}"
-        shift
-      else
-        echo 'ERROR: "-v | --video-file" requires a non-empty option argument.'
-        exit 0
-      fi
-      shift
-      ;;
-    tv | -tv | --trim-video)
-      if [ "${2}" ]; then
-        trim_video="${2}"
-        shift
-      else
-        echo 'ERROR: "-v | --video-file" requires a non-empty option argument.'
-        exit 0
-      fi
       shift
       ;;
     --)# End of all options.
