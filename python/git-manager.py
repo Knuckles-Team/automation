@@ -44,7 +44,7 @@ class Git:
 
     def pull_projects(self, set_to_default_branch=False):
         for project_directory in os.listdir(self.repository_directory):
-            print(f'Scanning: {self.repository_directory}/{project_directory}'
+            print(f'Scanning: {self.repository_directory}/{project_directory}\n'
                   f'Pulling latest changes for {project_directory}\n'
                   f'{self.git_action(command="git pull", directory=f"{self.repository_directory}/{project_directory}")}')
             if set_to_default_branch:
