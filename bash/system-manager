@@ -136,6 +136,8 @@ function provision(){
       system_manager_install
     elif [[ "${app}" == "scrcpy" ]]; then
       scrcpy_install
+    elif [[ "${app}" == "telegram" ]]; then
+      telegram_install
     elif [[ "${app}" == "tesseract" ]]; then
       tesseract_install
     elif [[ "${app}" == "theme-manager" ]]; then
@@ -943,6 +945,16 @@ function system_manager_install(){
   system-manager -h
 }
 
+function telegram_install(){
+  if [[ "${os_version}" == "Ubuntu" ]] ; then
+      snap install telegram-desktop
+    elif [[ "${os_version}" == "CentOS Linux" ]] ; then
+      echo "Distribution ${os_version} not supported"
+    else
+      echo "Distribution ${os_version} not supported"
+    fi
+}
+
 function tesseract_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     "${pkg_mgr}" install -y tesseract-ocr libtesseract-dev tesseract-ocr-eng
@@ -1058,7 +1070,7 @@ script_directory="$(dirname ${0})"
 apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "history" "jq" "kexi" "kvm" \
 "mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
-"python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" "tigervnc" \
+"python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "telegram" "tesseract" "theme-manager" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 server_apps=( "adb" "ansible" "atomicparsley" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "git" "gnucobol" "ghostscript" "gparted" "history" "jq" "kexi" "kvm" \
