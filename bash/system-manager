@@ -98,6 +98,8 @@ function provision(){
       kexi_install
     elif [[ "${app}" == "kvm" ]]; then
       kvm_install
+    elif [[ "${app}" == "nordvpn" ]]; then
+      nordvpn_install
     elif [[ "${app}" == "nfs" ]]; then
       nfs_install
     elif [[ "${app}" == "neofetch" ]]; then
@@ -649,6 +651,12 @@ function neofetch_install(){
   "${pkg_mgr}" install -y neofetch
 }
 
+function nordvpn_install(){
+  echo "Installing NordVPN"
+  sh <(curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh)
+  echo "NordVPN installation complete"
+}
+
 function nfs_install(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
     "${pkg_mgr}" install -y curl wget nfs-common nfs-kernel-server net-tools
@@ -1076,16 +1084,16 @@ date=$(date +"%m-%d-%Y_%I-%M")
 script_directory="$(dirname ${0})"
 apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "geniusbot" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "history" "jq" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "nordvpn" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "telegram" "tesseract" "theme-manager" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 server_apps=( "adb" "ansible" "atomicparsley" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "geniusbot" "git" "gnucobol" "ghostscript" "gparted" "history" "jq" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "nordvpn" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
 "python" "rygel" "scrcpy" "statlog" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" \
 "tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-manager" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
-"gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "history" "kvm" "mediainfo" "mkvtoolnix" "nfs" "openjdk" "geniusbot" \
+"gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "history" "kvm" "mediainfo" "mkvtoolnix" "nfs" "nordvpn" "openjdk" "geniusbot" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "scrcpy" "system-manager" "tesseract" "theme-manager" "tmux" "transmission" \
 "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-downloader" "video-manager" "wine" "wireshark" "youtube-dl" "yq" )
 config_flag='true'
