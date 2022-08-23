@@ -1,7 +1,7 @@
 https://github.com/Knucklessg1/media-manager.git
 https://github.com/Knucklessg1/media-downloader.git
 https://github.com/Knucklessg1/webarchiver.git
-https://github.com/Knucklessg1/genius-bot.git
+https://github.com/Knucklessg1/geniusbot.git
 https://github.com/Knucklessg1/subshift.git
 https://github.com/Knucklessg1/automation.git
 https://github.com/Knucklessg1/report-manager.git
