@@ -188,6 +188,7 @@ function provision(){
 
 function update(){
   if [[ "${os_version}" == "Ubuntu" ]] ; then
+    killall snap-store
     "${pkg_mgr}" update
     "${pkg_mgr}" autoremove -y
     "${pkg_mgr}" install update-manager-core -y
@@ -195,6 +196,7 @@ function update(){
     "${pkg_mgr}" dist-upgrade -y
     "${pkg_mgr}" --purge autoremove -y
     "${pkg_mgr}" clean all -y
+    snap refresh
   elif [[ "${os_version}" == "CentOS Linux" ]] ; then
     "${pkg_mgr}" check-update
     "${pkg_mgr}" install epel-release -y
