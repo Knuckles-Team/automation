@@ -37,9 +37,10 @@ class Sender:
 
 
 class Receiver:
-    def __init__(self, port=12345):
+    def __init__(self, sender_ip_address, port=12345):
         self.port = port
         self.external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+        self.sender_ip_address = sender_ip_address
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             self.socket.connect((self.external_ip, self.port)) # here you must past the public external ipaddress of the server machine, not that local address
@@ -71,6 +72,12 @@ class Receiver:
     def set_port(self, port):
         self.port = port
 
+    def get_sender_ip_address(self):
+        return self.sender_ip_address
+
+    def set_sender_ip_address(self, sender_ip_address):
+        self.sender_ip_address = sender_ip_address
+
 
 def usage():
     print("Usage:\npyftp --action '<send/receive>' --file '/home/user/Downloads/document.txt' --port '65456'")
@@ -80,9 +87,10 @@ def pyftp(argv):
     action = ""
     file = ""
     port = 59630
+    sender_ip_address = ""
 
     try:
-        opts, args = getopt.getopt(argv, "ha:f:p:", ["help", "action=", "file=", "port="])
+        opts, args = getopt.getopt(argv, "ha:f:i:p:", ["help", "action=", "file=", "ip-address=", "port="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -94,6 +102,8 @@ def pyftp(argv):
             action = arg
         elif opt in ("-f", "--file"):
             file = arg
+        elif opt in ("-i", "--ip-address"):
+            sender_ip_address = arg
         elif opt in ("-p", "--port"):
             try:
                 port = int(arg)
@@ -116,7 +126,11 @@ def pyftp(argv):
         sender.send(file)
 
     elif action == "receive":
-        receiver = Receiver(port=port)
+        if sender_ip_address == "":
+            print(f"Did not enter a valid IP Address: {sender_ip_address}")
+            usage()
+            sys.exit(2)
+        receiver = Receiver(sender_ip_address=sender_ip_address, port=port)
         print(f"Reciever IP Address: {receiver.get_external_ip()}")
         receiver.receive(file)
 
