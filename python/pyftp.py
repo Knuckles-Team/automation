@@ -10,7 +10,7 @@ import time
 
 
 class FTP:
-    def __init__(self, sender_ip_address=None, type="local", port=12345, buffer_size=1024):
+    def __init__(self, sender_ip_address=None, type="local", port=9879, buffer_size=1024):
         self.sender_ip_address = sender_ip_address
         self.type = type
         self.port = port
@@ -25,14 +25,14 @@ class FTP:
             self.socket.bind((self.internal_ip, self.port))  # if the clients/server are on different network you shall bind to ('', port)
         else:
             self.socket.bind(("", self.port))
-        self.socket.listen(10)
+        self.socket.listen(5)
         print("Initiating file sending")
-        connection, address = self.socket.accept()
-        print(f'{address} connected.')
+        (connection, (ip,port)) = self.socket.accept()
+        print(f'{ip} connected.')
         open_file = open(file, "rb")
         file_size = os.path.getsize(file)
         file_bytes = open_file.read(file_size)
-        connection.send_all(file_bytes)
+        connection.sendall(file_bytes)
         open_file.close()
         print("Done sending!")
 
@@ -40,7 +40,8 @@ class FTP:
         attempts = 1
         while attempts <= 3:
             try:
-                self.socket.connect((self.external_ip, self.port))  # here you must past the public external ipaddress of the server machine, not that local address
+                self.socket.connect((self.sender_ip_address, self.port))  # here you must past the public external ipaddress of the server machine, not that local address
+                attempts = 4
             except Exception as e:
                 if attempts == 3:
                     print(
@@ -50,8 +51,8 @@ class FTP:
                     print(f"Unable to connect to Sender. Trying again... \n\tError: {e} \n\tAttempt: ({attempts})")
             time.sleep(6)
             attempts = attempts + 1
-        open_file = open(file, "wb")
         print(f"Initiating file download from: {self.sender_ip_address}")
+        open_file = open(file, "wb")
         while True:
             file_bytes = self.socket.recv(self.buffer_size)
             data = file_bytes
@@ -100,9 +101,10 @@ def pyftp(argv):
     file = ""
     port = 59630
     sender_ip_address = ""
+    type = "local"
 
     try:
-        opts, args = getopt.getopt(argv, "ha:f:i:p:", ["help", "action=", "file=", "ip-address=", "port="])
+        opts, args = getopt.getopt(argv, "ha:f:i:p:t:", ["help", "action=", "file=", "ip-address=", "port=", "type="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -127,13 +129,19 @@ def pyftp(argv):
                 print("Port must be between 0-65356")
                 usage()
                 sys.exit(2)
+        elif opt in ("-t", "--type"):
+            type = arg
+            if type != "local" and type != "internet":
+                print("Type must be local or internet")
+                usage()
+                sys.exit(2)
 
     if action == "send":
         if not os.path.exists(file):
             print("File not found")
             usage()
             sys.exit(2)
-        sender = FTP(type="local", port=port)
+        sender = FTP(type=type, port=port)
         print(f"Sender Internal IP Address: {sender.get_internal_ip()}\n"
               f"Sender External IP Address: {sender.get_external_ip()}")
         sender.send(file)
