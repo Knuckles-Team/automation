@@ -22,7 +22,7 @@ class FTP:
 
     def send(self, file):
         if self.type == "local":
-            self.socket.bind((self.sender_ip_address, self.port))  # if the clients/server are on different network you shall bind to ('', port)
+            self.socket.bind((self.internal_ip, self.port))  # if the clients/server are on different network you shall bind to ('', port)
         else:
             self.socket.bind(("", self.port))
         self.socket.listen(10)
@@ -40,8 +40,7 @@ class FTP:
         attempts = 1
         while attempts <= 3:
             try:
-                self.socket.connect((self.external_ip,
-                                     self.port))  # here you must past the public external ipaddress of the server machine, not that local address
+                self.socket.connect((self.external_ip, self.port))  # here you must past the public external ipaddress of the server machine, not that local address
             except Exception as e:
                 if attempts == 3:
                     print(
