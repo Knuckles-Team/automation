@@ -94,10 +94,6 @@ def pyftp(argv):
             action = arg
         elif opt in ("-f", "--file"):
             file = arg
-            if not os.path.exists(file):
-                print("File not found")
-                usage()
-                sys.exit(2)
         elif opt in ("-p", "--port"):
             try:
                 port = int(arg)
@@ -111,6 +107,10 @@ def pyftp(argv):
                 sys.exit(2)
 
     if action == "send":
+        if not os.path.exists(file):
+            print("File not found")
+            usage()
+            sys.exit(2)
         sender = Sender(port=port)
         print(f"Sender IP Address: {sender.get_external_ip()}")
         sender.send(file)
