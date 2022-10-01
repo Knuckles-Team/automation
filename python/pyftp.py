@@ -6,16 +6,22 @@ import os
 import urllib.request
 import sys
 import getopt
+import time
 
-class Sender:
-    def __init__(self, port=12345):
+
+class FTP:
+    def __init__(self, sender_ip_address=None, port=12345):
+        self.action = action
+        self.sender_ip_address = sender_ip_address
         self.port = port
-        self.external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+        self.internal_ip = ""
+        self.external_ip = ""
+        self.generate_ips()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.bind(("", self.port)) #if the clients/server are on different network you shall bind to ('', port)
-        self.socket.listen(10)
 
     def send(self, file):
+        self.socket.bind(("", self.port))  # if the clients/server are on different network you shall bind to ('', port)
+        self.socket.listen(10)
         print("Initiating file sending")
         connection, address = self.socket.accept()
         print(f'{address} connected.')
@@ -26,30 +32,23 @@ class Sender:
         open_file.close()
         print("Done sending!")
 
-    def get_external_ip(self):
-        return self.external_ip
-
-    def get_port(self):
-        return self.port
-
-    def set_port(self, port):
-        self.port = port
-
-
-class Receiver:
-    def __init__(self, sender_ip_address, port=12345):
-        self.port = port
-        self.external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-        self.sender_ip_address = sender_ip_address
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            self.socket.connect((self.external_ip, self.port)) # here you must past the public external ipaddress of the server machine, not that local address
-        except Exception as e:
-            print(f"Unable to connect to Sender. \nError: {e}")
-
     def receive(self, file):
+        attempts = 1
+        while attempts <= 3:
+            try:
+                self.socket.connect((self.external_ip,
+                                     self.port))  # here you must past the public external ipaddress of the server machine, not that local address
+            except Exception as e:
+                if attempts == 3:
+                    print(
+                        f"Unable to connect to Sender. Max Attempts Reached. \n\tError: {e} \n\tAttempts: ({attempts})")
+                    sys.exit(2)
+                else:
+                    print(f"Unable to connect to Sender. Trying again... \n\tError: {e} \n\tAttempt: ({attempts})")
+            time.sleep(6)
+            attempts = attempts + 1
         open_file = open(file, "wb")
-        print("Initiating file download")
+        print(f"Initiating file download from: {self.sender_ip_address}")
         while True:
             file_bytes = self.socket.recv(1024)
             data = file_bytes
@@ -63,6 +62,9 @@ class Receiver:
         open_file.close()
         print("Done receiving!")
 
+    def get_internal_ip(self):
+        return self.internal_ip
+
     def get_external_ip(self):
         return self.external_ip
 
@@ -72,11 +74,18 @@ class Receiver:
     def set_port(self, port):
         self.port = port
 
-    def get_sender_ip_address(self):
-        return self.sender_ip_address
-
-    def set_sender_ip_address(self, sender_ip_address):
-        self.sender_ip_address = sender_ip_address
+    def generate_ips(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0)
+        try:
+            s.connect(('10.254.254.254', 1))
+            ip = s.getsockname()[0]
+        except Exception:
+            ip = '127.0.0.1'
+        finally:
+            s.close()
+        self.internal_ip = ip
+        self.external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
 
 
 def usage():
@@ -121,8 +130,9 @@ def pyftp(argv):
             print("File not found")
             usage()
             sys.exit(2)
-        sender = Sender(port=port)
-        print(f"Sender IP Address: {sender.get_external_ip()}")
+        sender = FTP(port=port)
+        print(f"Sender Internal IP Address: {sender.get_internal_ip()}\n"
+              f"Sender External IP Address: {sender.get_external_ip()}")
         sender.send(file)
 
     elif action == "receive":
@@ -130,8 +140,9 @@ def pyftp(argv):
             print(f"Did not enter a valid IP Address: {sender_ip_address}")
             usage()
             sys.exit(2)
-        receiver = Receiver(sender_ip_address=sender_ip_address, port=port)
-        print(f"Reciever IP Address: {receiver.get_external_ip()}")
+        receiver = FTP(sender_ip_address=sender_ip_address, port=port)
+        print(f"Reciever Internal IP Address: {receiver.get_internal_ip()}\n"
+              f"Reciever External IP Address: {receiver.get_external_ip()}")
         receiver.receive(file)
 
 
