@@ -10,16 +10,21 @@ import time
 
 
 class FTP:
-    def __init__(self, sender_ip_address=None, port=12345):
+    def __init__(self, sender_ip_address=None, type="local", port=12345, buffer_size=1024):
         self.sender_ip_address = sender_ip_address
+        self.type = type
         self.port = port
         self.internal_ip = ""
         self.external_ip = ""
         self.generate_ips()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.buffer_size = buffer_size
 
     def send(self, file):
-        self.socket.bind(("", self.port))  # if the clients/server are on different network you shall bind to ('', port)
+        if self.type == "local":
+            self.socket.bind((self.sender_ip_address, self.port))  # if the clients/server are on different network you shall bind to ('', port)
+        else:
+            self.socket.bind(("", self.port))
         self.socket.listen(10)
         print("Initiating file sending")
         connection, address = self.socket.accept()
@@ -49,11 +54,11 @@ class FTP:
         open_file = open(file, "wb")
         print(f"Initiating file download from: {self.sender_ip_address}")
         while True:
-            file_bytes = self.socket.recv(1024)
+            file_bytes = self.socket.recv(self.buffer_size)
             data = file_bytes
             if file_bytes:
                 while file_bytes:
-                    file_bytes = self.socket.recv(1024)
+                    file_bytes = self.socket.recv(self.buffer_size)
                     data += file_bytes
                 else:
                     break
@@ -129,7 +134,7 @@ def pyftp(argv):
             print("File not found")
             usage()
             sys.exit(2)
-        sender = FTP(port=port)
+        sender = FTP(type="local", port=port)
         print(f"Sender Internal IP Address: {sender.get_internal_ip()}\n"
               f"Sender External IP Address: {sender.get_external_ip()}")
         sender.send(file)
