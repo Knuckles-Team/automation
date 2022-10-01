@@ -10,8 +10,7 @@ import time
 
 
 class FTP:
-    def __init__(self, sender_ip_address=None, port=12345):
-        self.action = action
+    def __init__(self, sender_ip_address=None, port=12345):\
         self.sender_ip_address = sender_ip_address
         self.port = port
         self.internal_ip = ""
