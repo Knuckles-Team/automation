@@ -99,7 +99,12 @@ def pyftp(argv):
                 usage()
                 sys.exit(2)
         elif opt in ("-p", "--port"):
-            port = arg
+            try:
+                port = int(arg)
+            except Exception as e:
+                print(f"Port should be an integer value in the range of 0-65356\nError: {e}")
+                usage()
+                sys.exit(2)
             if 0 > port > 65356:
                 print("Port must be between 0-65356")
                 usage()
