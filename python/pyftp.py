@@ -7,6 +7,7 @@ import urllib.request
 import sys
 import getopt
 import time
+import requests
 
 
 class FTP:
@@ -15,7 +16,8 @@ class FTP:
         self.type = type
         self.port = port
         self.internal_ip = ""
-        self.external_ip = ""
+        self.external_ipv4 = ""
+        self.external_ipv6 = ""
         self.generate_ips()
         self.socket = None #socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.buffer_size = buffer_size
@@ -116,7 +118,7 @@ class FTP:
         return self.internal_ip
 
     def get_external_ip(self):
-        return self.external_ip
+        return [self.external_ipv4, self.external_ipv6]
 
     def get_port(self):
         return self.port
@@ -135,7 +137,9 @@ class FTP:
         finally:
             s.close()
         self.internal_ip = ip
-        self.external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+        self.external_ipv4 = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+        self.external_ipv6 = requests.get("https://ident.me", timeout=5).text
+        #self.external_ipv6 = result[0][4][0]
 
 
 def usage():
@@ -195,7 +199,7 @@ def pyftp(argv):
             sys.exit(2)
         sender = FTP(type=type, port=port)
         print(f"Sender Internal IP Address: {sender.get_internal_ip()}\n"
-              f"Sender External IP Address: {sender.get_external_ip()}")
+              f"Sender External IP Address: {sender.get_external_ip()[1]}")
         sender.send_number_of_files(files)
         file_index = 0
         for file in files:
