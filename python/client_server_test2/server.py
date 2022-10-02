@@ -1,6 +1,6 @@
 import socket
 import sys
-socket.setdefaulttimeout(20.0)
+socket.setdefaulttimeout(60.0)
 
 def Main():
     host = sys.argv[1]
