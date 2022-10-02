@@ -10,7 +10,7 @@ def Main():
     #check_socket(host, port)
 
     print("Creating Server Socket")
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print(f"Binding Host: {host} Port: {port}")
     s.bind((host, port))
 
