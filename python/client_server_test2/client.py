@@ -9,7 +9,7 @@ def Main():
     print("Creating Socket")
     s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM, 0)
     print(f"Connecting to host: {host} on port: {port}")
-    s.connect((host, port, 0, 0))
+    s.connect((host, port))
     print("Sending Message")
     message = b"TEST MESSAGE SENDING"#.encode('utf-8')
     while message != b"q":
