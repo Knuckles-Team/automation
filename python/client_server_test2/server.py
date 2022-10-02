@@ -8,6 +8,14 @@ def Main():
     port = 80
     print("Creating Server Socket")
     s = socket.socket()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex((host,port))
+    if result == 0:
+        print("Port is open")
+    else:
+        print(f"Port is not open: {str(result)}")
+        sys.exit(2)
+    sock.close()
     print(f"Binding Host: {host} Port: {port}")
     s.bind((host, port))
 
