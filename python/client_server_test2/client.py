@@ -11,11 +11,12 @@ def Main():
     print(f"Connecting to host: {host} on port: {port}")
     s.connect((host,port))
     print("Sending Message")
-    message = raw_input("->")
-    while message != 'q':
+    message = b"TEST MESSAGE SENDING"#.encode('utf-8')
+    while message != b"q":
         s.send(message)
         data = s.recv(1024)
-        message = raw_input("->")
+        message = b"q"
+        print(f"Data: {data}")
     s.close()
     print("Closed socket")
 

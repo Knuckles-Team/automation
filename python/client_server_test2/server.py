@@ -15,12 +15,14 @@ def Main():
     s.listen(1)
     print("Accepting Connections")
     c, addr = s.accept()
+    print(f"Accepted: {c} from {addr}")
     while True:
         data = c.recv(1024)
         if not data:
             break
-        data = str(data).upper()
+        #data = str(data).upper()
         c.send(data)
+        print(f"DATA: {data}")
     c.close()
     print("Closing Server Socket")
 
