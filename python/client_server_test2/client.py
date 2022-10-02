@@ -5,10 +5,10 @@ import sys
 def Main():
     #host = '10.0.0.140' #The host on your client needs to be the external-facing IP address of your router. Obtain it from here https://www.whatismyip.com/
     host = sys.argv[1]
-    port = 42424
+    port = 5021
     print("Creating Socket")
     s = socket.socket()
-    print("Connecting to host")
+    print(f"Connecting to host: {host} on port: {port}")
     s.connect((host,port))
     print("Sending Message")
     message = raw_input("->")

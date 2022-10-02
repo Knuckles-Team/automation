@@ -5,10 +5,10 @@ import sys
 def Main():
     host = sys.argv[1]
     #host = '10.0.0.140'
-    port = 42424
+    port = 5021
     print("Creating Server Socket")
     s = socket.socket()
-    print("Binding Host to Socket")
+    print(f"Binding Host: {host} Port: {port}")
     s.bind((host, port))
 
     print("Listening")
