@@ -7,7 +7,7 @@ def Main():
     #host = '10.0.0.140'
     port = 5353
     print("Checking Ports")
-    check_socket(host, port)
+    #check_socket(host, port)
 
     print("Creating Server Socket")
     s = socket.socket()
