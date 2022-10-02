@@ -7,7 +7,7 @@ def Main():
     host = sys.argv[1]
     port = 5353
     print("Creating Socket")
-    s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM, 0)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
     print(f"Connecting to host: {host} on port: {port}")
     s.connect((host, port))
     print("Sending Message")
