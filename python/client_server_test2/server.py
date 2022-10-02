@@ -1,21 +1,16 @@
 import socket
 import sys
-
+socket.setdefaulttimeout(20.0)
 
 def Main():
     host = sys.argv[1]
     #host = '10.0.0.140'
-    port = 80
+    port = 5353
+    print("Checking Ports")
+    check_socket(host, port)
+
     print("Creating Server Socket")
     s = socket.socket()
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    result = sock.connect_ex((host,port))
-    if result == 0:
-        print("Port is open")
-    else:
-        print(f"Port is not open: {str(result)}")
-        sys.exit(2)
-    sock.close()
     print(f"Binding Host: {host} Port: {port}")
     s.bind((host, port))
 
@@ -33,6 +28,14 @@ def Main():
         print(f"DATA: {data}")
     c.close()
     print("Closing Server Socket")
+
+
+def check_socket(host, port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        if sock.connect_ex((host, port)) == 0:
+            print("Port is open")
+        else:
+            print("Port is not open")
 
 
 if __name__ == '__main__':
