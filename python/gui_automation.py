@@ -46,20 +46,21 @@ def aim_booster():
     pixel_margin_of_error = 10
     while True:
         pic = pyautogui.screenshot(region=(game_coordinates[0], game_coordinates[1], game_coordinates[0] + 596, game_coordinates[1] + 418))
+        print("New Pic Taken")
         width, height = pic.size
         previous_point = [0, 0]
         for x in range(0, width, 5):
             for y in range(0, height, 5):
                 r, g, b = pic.getpixel((x, y))
                 if b == 195 and r == 255 and g == 219:
-                    print(f"FOUND AT: X {x + game_coordinates[0]} Y {y + game_coordinates[1]}")
+                    #print(f"FOUND AT: X {x + game_coordinates[0]} Y {y + game_coordinates[1]}")
                     point = [x + game_coordinates[0], y + game_coordinates[1]]
 
                     if (point[0] - pixel_margin_of_error) > previous_point[0] or previous_point[0] > (point[0] + pixel_margin_of_error)\
                             and (point[1] - pixel_margin_of_error) > previous_point[1] or previous_point[1] > (point[1] + pixel_margin_of_error):
-                        print(f"Clicking Point: {point}")
-                        pyautogui.click(point[0], point[1], duration=0.02)
-                    previous_point = point
+                        print(f"Clicking Point: {point} Previous Point: {previous_point}")
+                        pyautogui.click(point[0], point[1], duration=0.05)
+                        previous_point = point
 
 def open_paint():
     print("Opening paint")
@@ -127,6 +128,6 @@ release = platform.release()
 version = platform.version()
 
 print(f"System: {system}\nRelease: {release}\nVersion: {version}\nScreen Size: {pyautogui.size()}")
-aim_booster()
-#open_paint()
+#aim_booster()
+open_paint()
 
