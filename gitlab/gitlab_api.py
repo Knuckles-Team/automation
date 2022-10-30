@@ -46,7 +46,9 @@ class Api(object):
         elif r.status_code == 404:
             raise ParameterError
 
-    # Branches API
+    ####################################################################################################################
+    #                                                 Branches API                                                     #
+    ####################################################################################################################
     @require_auth
     def get_branches(self, project_id=None):
         if project_id is None:
@@ -88,7 +90,9 @@ class Api(object):
                                  headers=self.headers, verify=self.verify)
         return r
 
-    # Commits API
+    ####################################################################################################################
+    #                                                 Commits API                                                      #
+    ####################################################################################################################
     @require_auth
     def get_commits(self, project_id=None):
         if project_id is None:
@@ -206,7 +210,9 @@ class Api(object):
                               headers=self.headers, verify=self.verify)
         return r
 
-    # Deploy Tokens API
+    ####################################################################################################################
+    #                                                Deploy Tokens API                                                 #
+    ####################################################################################################################
     @require_auth
     def get_deploy_tokens(self):
         r = self._session.get(f'{self.url}/deploy_tokens', headers=self.headers, verify=self.verify)
@@ -278,26 +284,23 @@ class Api(object):
                               headers=self.headers, verify=self.verify)
         return r
 
+    ####################################################################################################################
+    #                                                Users API                                                         #
+    ####################################################################################################################
     @require_auth
-    def get_total_user_pages(self):
-        r = self._session.get(f'{self.url}/users?per_page=100&x-total-pages',
+    def get_users(self, max_pages=0, per_page=100, order="updated"):
+        r = self._session.get(f'{self.url}/users?per_page={per_page}&x-total-pages',
                               headers=self.headers, verify=self.verify)
-        return int(r.headers['X-Total-Pages'])
-
-    @require_auth
-    def get_users(self, max=0, order="updated"):
+        total_pages = int(r.headers['X-Total-Pages'])
         r = []
-        pages = self.get_total_user_pages()
         if order == "updated":
             order_by = "updated_at"
         else:
             order_by = "updated_at"
-        if max == 0:
-            max = len(pages)
-        else:
-            max = (max / 100) + 1
-        for page in range(0, max):
-            r_page = self._session.get(f'{self.url}/users?per_page=100&page={page}&order_by={order_by}',
+        if max_pages == 0 or max_pages > total_pages:
+            max_pages = total_pages
+        for page in range(0, max_pages):
+            r_page = self._session.get(f'{self.url}/users?per_page={per_page}&page={page}&order_by={order_by}',
                                        headers=self.headers, verify=self.verify)
             r = r + r_page
         return r
@@ -310,62 +313,201 @@ class Api(object):
             user_url = f"?sudo={user_id}"
         else:
             user_url = f"/{user_id}"
-        r = self._session.get(f'{self.url}/users{user_url}',
-                              headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/users{user_url}', headers=self.headers, verify=self.verify)
         return r
 
+    ####################################################################################################################
+    #                                                Runners API                                                       #
+    ####################################################################################################################
     @require_auth
-    def get_total_runner_pages(self):
-        r = self._session.get(f'{self.url}/runners?per_page=100&x-total-pages',
-                              headers=self.headers, verify=self.verify)
-        return int(r.headers['X-Total-Pages'])
-
-    @require_auth
-    def get_runners(self, max=0, order="updated"):
-        r = []
-        pages = self.get_total_runner_pages()
-        if order == "updated":
-            order_by = "updated_at"
-        else:
-            order_by = "updated_at"
-        if max == 0:
-            max = len(pages)
-        else:
-            max = (max / 100) + 1
-        for page in range(0, max):
-            r_page = self._session.get(f'{self.url}/runners?per_page=100&page={page}&order_by={order_by}',
-                                       headers=self.headers, verify=self.verify)
-            r = r + r_page
+    def get_runners(self, type=None, status=None, paused=None, tag_list=None, all_runners=False):
+        runner_filter = None
+        if all_runners:
+            runner_filter = "/all"
+        if type:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&type={type}'
+            else:
+                runner_filter = f'?type={type}'
+        if status:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&status={status}'
+            else:
+                runner_filter = f'?status={status}'
+        if paused:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&paused={paused}'
+            else:
+                runner_filter = f'?paused={paused}'
+        if tag_list:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&tag_list={tag_list}'
+            else:
+                runner_filter = f'?tag_list={tag_list}'
+        r = self._session.get(f'{self.url}/runners{runner_filter}', headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
     def get_runner(self, runner_id=None):
         if runner_id is None:
             raise MissingParameterError
-        r = self._session.get(f'{self.url}/runners/{runner_id}',
-                              headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/runners/{runner_id}', headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
-    def get_total_project_pages(self):
-        r = self._session.get(f'{self.url}/projects?per_page=100&x-total-pages',
-                              headers=self.headers, verify=self.verify)
-        return int(r.headers['X-Total-Pages'])
+    def update_runner_details(self, runner_id=None, data=None):
+        if runner_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.put(f'{self.url}/runners/{runner_id}', headers=self.headers, data=data, verify=self.verify)
+        return r
 
     @require_auth
-    def get_projects(self, max=0, order="updated"):
+    def pause_runner(self, runner_id=None, data=None):
+        if runner_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.put(f'{self.url}/runners/{runner_id}', headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_runner_jobs(self, runner_id=None):
+        if runner_id is None:
+            raise MissingParameterError
+        r = self._session.put(f'{self.url}/runners/{runner_id}/jobs', headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_project_runners(self, project_id=None, type=None, status=None, paused=None, tag_list=None, all_runners=False):
+        if project_id is None:
+            raise MissingParameterError
+        runner_filter = None
+        if all_runners:
+            runner_filter = "/all"
+        if type:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&type={type}'
+            else:
+                runner_filter = f'?type={type}'
+        if status:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&status={status}'
+            else:
+                runner_filter = f'?status={status}'
+        if paused:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&paused={paused}'
+            else:
+                runner_filter = f'?paused={paused}'
+        if tag_list:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&tag_list={tag_list}'
+            else:
+                runner_filter = f'?tag_list={tag_list}'
+        r = self._session.get(f'{self.url}/projects/{project_id}/runners{runner_filter}',
+                              headers=self.headers, verify=self.verify)
+        return r
+    @require_auth
+    def enable_project_runner(self, project_id=None, runner_id=None):
+        if project_id is None or runner_id is None:
+            raise MissingParameterError
+        data = json.dumps({'runner_id': runner_id}, indent=4)
+        r = self._session.put(f'{self.url}/projects/{project_id}/runners', headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def delete_project_runner(self, project_id=None, runner_id=None):
+        if project_id is None or runner_id is None:
+            raise MissingParameterError
+        r = self._session.delete(f'{self.url}/projects/{project_id}/runners/{runner_id}', headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_group_runners(self, group_id=None, type=None, status=None, paused=None, tag_list=None, all_runners=False):
+        if group_id is None:
+            raise MissingParameterError
+        runner_filter = None
+        if all_runners:
+            runner_filter = "/all"
+        if type:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&type={type}'
+            else:
+                runner_filter = f'?type={type}'
+        if status:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&status={status}'
+            else:
+                runner_filter = f'?status={status}'
+        if paused:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&paused={paused}'
+            else:
+                runner_filter = f'?paused={paused}'
+        if tag_list:
+            if runner_filter:
+                runner_filter = f'{runner_filter}&tag_list={tag_list}'
+            else:
+                runner_filter = f'?tag_list={tag_list}'
+        r = self._session.get(f'{self.url}/groups/{group_id}/runners{runner_filter}',
+                              headers=self.headers, verify=self.verify)
+        return r
+    @require_auth
+    def register_new_runner(self, token=None, description=None, info=None, paused=None, locked=None, run_untagged=None,
+                            tag_list=None, access_level=None, maximum_timeout=None, maintenance_note=None):
+        if token is None:
+            raise MissingParameterError
+        data = {}
+        if description:
+            data['description'] = description
+        if info:
+            data['info'] = info
+        if paused:
+            data['paused'] = paused
+        if locked:
+            data['locked'] = locked
+        if run_untagged:
+            data['run_untagged'] = run_untagged
+        if tag_list:
+            data['tag_list'] = tag_list
+        if access_level:
+            data['access_level'] = access_level
+        if maximum_timeout:
+            data['maximum_timeout'] = maximum_timeout
+        if maintenance_note:
+            data['maintenance_note'] = maintenance_note
+        data = json.dumps(data, indent=4)
+        r = self._session.put(f'{self.url}/runners', headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def delete_runner(self, runner_id=None, token=None):
+        if runner_id is None and token is None:
+            raise MissingParameterError
+        if runner_id:
+            r = self._session.delete(f'{self.url}/runners/{runner_id}', headers=self.headers, verify=self.verify)
+        else:
+            data = {'token': token}
+            data = json.dumps(data, indent=4)
+            r = self._session.delete(f'{self.url}/runners', headers=self.headers, data=data,
+                                     verify=self.verify)
+        return r
+
+    ####################################################################################################################
+    #                                                Projects API                                                      #
+    ####################################################################################################################
+    @require_auth
+    def get_projects(self, max_pages=0, per_page=100, order="updated"):
+        r = self._session.get(f'{self.url}/projects?per_page={per_page}&x-total-pages',
+                              headers=self.headers, verify=self.verify)
+        total_pages = int(r.headers['X-Total-Pages'])
         r = []
-        pages = self.get_total_runner_pages()
         if order == "updated":
             order_by = "updated_at"
         else:
             order_by = "updated_at"
-        if max == 0:
-            max = len(pages)
-        else:
-            max = (max / 100) + 1
-        for page in range(0, max):
-            r_page = self._session.get(f'{self.url}/projects?per_page=100&page={page}&order_by={order_by}',
+        if max_pages == 0 or max_pages > total_pages:
+            max_pages = total_pages
+        for page in range(0, max_pages):
+            r_page = self._session.get(f'{self.url}/projects?per_page={per_page}&page={page}&order_by={order_by}',
                                        headers=self.headers, verify=self.verify)
             r = r + r_page
         return r
