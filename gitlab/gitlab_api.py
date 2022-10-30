@@ -526,11 +526,11 @@ class Api(object):
             print(f'Paginating results {page + 1}/{pages + 1}')
             if r:
                 r_page = self._session.get(f'{self.url}/merge_requests?{argument}&per_page=100&page={page}',
-                                           headers=self.headers, verify=self.verify).json()
+                                           headers=self.headers, verify=self.verify)
                 r = r + r_page
             else:
                 r = self._session.get(f'{self.url}/merge_requests?{argument}&per_page=100&page={page}',
-                                      headers=self.headers, verify=self.verify).json()
+                                      headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
@@ -697,25 +697,24 @@ class Api(object):
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}', headers=self.headers, verify=self.verify)
         return r
-    
+
     @require_auth
-    def get_projects_by_group(self, group_id=None, projects=None):
+    def get_projects_by_group(self, group_id=None, max_pages=0, per_page=100):
         if group_id is None:
             raise MissingParameterError
-
-        pages = self.get_total_project_pages(group_id)
-        for page in range(0, pages):
-            if projects:
-                projects = projects + self._session.get(f'{self.url}/groups/{group_id}/projects?per_page=100&page={page}', headers=self.headers, verify=self.verify).json()
-            else:
-                projects = self._session.get(f'{self.url}/groups/{group_id}/projects?per_page=100&page={page}', headers=self.headers, verify=self.verify).json()
-        
-        subgroups = self.get_group_subgroups(group_id)
-        for subgroup in subgroups:
-            projects = self.get_projects_by_group(subgroup['id'], projects)
-
+        projects = []
+        groups = self.get_group_subgroups(group_id)
+        for group in groups:
+            r = self._session.get(f'{self.url}/groups/{group["id"]}/projects?per_page={per_page}&x-total-pages',
+                                  headers=self.headers, verify=self.verify)
+            total_pages = int(r.headers['X-Total-Pages'])
+            if max_pages == 0 or max_pages > total_pages:
+                max_pages = total_pages
+            for page in range(0, max_pages):
+                projects.append(self._session.get(f'{self.url}/groups/{group["id"]}/projects?per_page={per_page}&page={page}',
+                                                  headers=self.headers, verify=self.verify))
         return projects
-    
+
     @require_auth
     def get_project_contributors(self, project_id=None):
         if project_id is None:
