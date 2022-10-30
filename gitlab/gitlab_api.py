@@ -91,6 +91,53 @@ class Api(object):
         return r
 
     ####################################################################################################################
+    #                                       Protected Branches API                                                     #
+    ####################################################################################################################
+    @require_auth
+    def get_protected_branches(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/protected_branches",
+                              headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_protected_branch(self, project_id=None, branch_name=None):
+        if project_id is None or branch_name is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/protected_branches/{branch_name}",
+                              headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def protect_repository_branches(self, project_id=None, branch_name=None, allow_force_push=None,
+                                    code_owner_approval_required=None, data=None):
+        if project_id is None or branch_name is None or allow_force_push is None \
+                or code_owner_approval_required is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/protected_branches?name={branch_name}&"
+                                              f"allow_force_push={allow_force_push}&"
+                                              f"code_owner_approval_required={code_owner_approval_required}&",
+                               data=data,
+                               headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def unprotect_repository_branches(self, project_id=None, branch_name=None):
+        if project_id is None or branch_name is None:
+            raise MissingParameterError
+        self._session.delete(self.api_url + f"/projects/{project_id}/protected_branches/{branch_name}",
+                             headers=self.headers, verify=False)
+
+    @require_auth
+    def require_code_owner_approvals_single_branch(self, project_id=None, branch_name=None):
+        if project_id is None or branch_name is None:
+            raise MissingParameterError
+        r = self._session.patch(self.api_url + f"/projects/{project_id}/protected_branches/{branch_name}",
+                                headers=self.headers, verify=False)
+        return r.json()
+    
+    ####################################################################################################################
     #                                                 Commits API                                                      #
     ####################################################################################################################
     @require_auth
@@ -758,3 +805,303 @@ class Api(object):
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}', headers=self.headers, verify=self.verify)
         return r
+    
+    @require_auth
+    def get_projects_by_group(self, group_id=None, projects=None):
+        if group_id is None:
+            raise MissingParameterError
+
+        pages = self.get_total_project_pages(group_id)
+        for page in range(0, pages):
+            if projects:
+                projects = projects + self._session.get(self.api_url + f"/groups/{group_id}/projects?per_page=100&page={page}", headers=self.headers, verify=self.verify).json()
+            else:
+                projects = self._session.get(self.api_url + f"/groups/{group_id}/projects?per_page=100&page={page}", headers=self.headers, verify=self.verify).json()
+        
+        subgroups = self.get_group_subgroups(group_id)
+        for subgroup in subgroups:
+            projects = self.get_projects_by_group(subgroup["id"], projects)
+
+        return projects
+    
+    @require_auth
+    def get_project_contributors(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/contributors', headers=self.headers, verify=self.verify)
+        return r 
+    
+    @require_auth
+    def get_project_statistics(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}?statistics=true', headers=self.headers, verify=self.verify)
+        return r 
+    
+    @require_auth
+    def edit_project(self, project_id=None, data=None):
+        if project_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.put(self.api_url + f"/projects/{project_id}", data=data, headers=self.headers, verify=self.verify)
+        return r.json()
+    
+    @require_auth
+    def get_project_groups(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/groups", headers=self.headers, verify=self.verify)
+        return r.json()
+    
+    @require_auth
+    def archive_project(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/archive", headers=self.headers, verify=self.verify)
+        return r.json()
+    
+    @require_auth
+    def unarchive_project(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/unarchive", headers=self.headers, verify=self.verify)
+        return r.json()
+    
+    @require_auth
+    def delete_project(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.delete(self.api_url + f"/projects/{project_id}", headers=self.headers, verify=self.verify)
+        return r.json()
+
+    @require_auth
+    def share_project(self, project_id=None, group_id=None, group_access=None):
+        if project_id is None or group_id is None or group_access is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/share?group_id={group_id}&group_access={group_access}", headers=self.headers, verify=self.verify)
+        return r.json()
+
+    ####################################################################################################################
+    #                                                Groups API                                                        #
+    ####################################################################################################################
+    @require_auth
+    def get_groups(self):
+        r = self._session.get(self.api_url + f"/groups?per_page=200", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_group(self, group_id):
+        if group_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/groups/{group_id}", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_group_subgroups(self, group_id=None):
+        if group_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/groups/{group_id}/subgroups", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_group_descendant_groups(self, group_id=None):
+        if group_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/groups/{group_id}/descendant_groups", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_group_projects(self, group_id=None):
+        if group_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/groups/{group_id}/projects?per_page=100", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_group_merge_requests(self, group_id=None, argument="state=opened"):
+        if group_id is None or argument is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/groups/{group_id}/merge_requests?{argument}&per_page=100", headers=self.headers, verify=False)
+        return r.json()
+
+    ####################################################################################################################
+    #                                                Pipeline API                                                      #
+    ####################################################################################################################
+    @require_auth
+    def get_pipelines(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{id}/pipelines?per_page=100", headers=self.headers, verify=False)
+        return r.json()
+    
+    @require_auth
+    def get_pipeline(self, project_id=None, pipeline_id=None):
+        if project_id is None or pipeline_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/pipelines/{pipeline_id}", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def run_pipeline(self, id=None, ref=None, variables=None):
+        if id is None or ref is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{id}/pipeline?ref={ref}", headers=self.headers,
+                              verify=False)
+        return r.json()
+    
+    ####################################################################################################################
+    #                                            Merge Requst API                                                      #
+    ####################################################################################################################
+    @require_auth
+    def create_merge_request(self, project_id=None, data=None):
+        if project_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/merge_requests", headers=self.headers,
+                              verify=False)
+        return r.json()
+    
+    @require_auth
+    def get_total_merge_pages(self):
+        r = self._session.get(self.api_url + f"/merge_requests?per_page=100&x-total-pages", headers=self.headers, verify=False)
+        return int(r.headers['X-Total-Pages'])
+
+    @require_auth
+    def get_merge_requests(self, argument="state=all"):
+        r = None
+        pages = self.get_total_merge_pages()
+        for page in range(0, pages + 1):
+            print(f"Paginating results {page + 1}/{pages + 1}")
+            if r:
+                r_page = self._session.get(self.api_url + f"/merge_requests?{argument}&per_page=100&page={page}",
+                                           headers=self.headers, verify=False).json()
+                r = r + r_page
+            else:
+                r = self._session.get(self.api_url + f"/merge_requests?{argument}&per_page=100&page={page}",
+                                      headers=self.headers, verify=False).json()
+        return r
+
+        # r = self._session.get(self.api_url + f"/merge_requests?{argument}&per_page=100", headers=self.headers)
+        # return r.json()
+
+    @require_auth
+    def get_merge_requests(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/merge_requests",
+                              headers=self.headers, verify=False)
+        return r.json()
+    
+    @require_auth
+    def get_merge_request(self, project_id=None, merge_id=None):
+        if project_id is None or merge_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/merge_requests/{merge_id}", headers=self.headers, verify=False)
+        return r.json()
+    
+    ####################################################################################################################
+    #                                            Merge Rules API                                                       #
+    ####################################################################################################################
+    @require_auth
+    def get_project_level_rules(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/approval_rules", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_project_level_rule(self, project_id=None, approval_rule_id=None):
+        if project_id is None or approval_rule_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/approval_rules/{approval_rule_id}",
+                              headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def create_project_level_rule(self, project_id=None, data=None):
+        if project_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/approval_rules", data=data, headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def update_project_level_rule(self, project_id=None, approval_rule_id=None, data=None):
+        if project_id is None or approval_rule_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.put(self.api_url + f"/projects/{project_id}/approval_rules/{approval_rule_id}", data=data,
+                              headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def delete_project_level_rule(self, project_id=None, approval_rule_id=None):
+        if project_id is None or approval_rule_id is None:
+            raise MissingParameterError
+        r = self._session.delete(self.api_url + f"/projects/{project_id}/approval_rules/{approval_rule_id}",
+                                 headers=self.headers, verify=False)
+        return r
+
+    @require_auth
+    def merge_request_level_approvals(self, project_id=None, merge_request_iid=None):
+        if project_id is None or merge_request_iid is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/merge_requests/{merge_request_iid}/approvals",
+                              headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_approval_state_merge_requests(self, project_id=None, merge_request_iid=None):
+        if project_id is None or merge_request_iid is None:
+            raise MissingParameterError
+        r = self._session.get(
+            self.api_url + f"/projects/{project_id}/merge_requests/{merge_request_iid}/approval_state",
+            headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_merge_request_level_rules(self, project_id=None, merge_request_iid=None):
+        if project_id is None or merge_request_iid is None:
+            raise MissingParameterError
+        r = self._session.get(
+            self.api_url + f"/projects/{project_id}/merge_requests/{merge_request_iid}/approval_rules",
+            headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def approve_merge_request(self, project_id=None, merge_request_iid=None):
+        if project_id is None or merge_request_iid is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/merge_requests/{merge_request_iid}/approve",
+                               headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def unapprove_merge_request(self, project_id=None, merge_request_iid=None):
+        if project_id is None or merge_request_iid is None:
+            raise MissingParameterError
+        r = self._session.post(self.api_url + f"/projects/{project_id}/merge_requests/{merge_request_iid}/unapprove",
+                               headers=self.headers, verify=False)
+        return r.json()
+    
+    ####################################################################################################################
+    #                                               Packages API                                                       #
+    ####################################################################################################################
+    def get_repository_packages(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/packages", headers=self.headers, verify=False)
+        return r.json()
+    
+    ####################################################################################################################
+    #                                               Members API                                                        #
+    ####################################################################################################################
+    @require_auth
+    def get_group_members(self, group_id=None):
+        if group_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/groups/{group_id}/members?per_page=100", headers=self.headers, verify=False)
+        return r.json()
+
+    @require_auth
+    def get_project_members(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(self.api_url + f"/projects/{project_id}/members?per_page=100", headers=self.headers, verify=False)
+        return r.json()
