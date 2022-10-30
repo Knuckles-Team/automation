@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
+import json
 import requests
 import urllib3
 from base64 import b64encode
-from decorators import require_auth
+from decorators import require_auth, validate_data
 from exceptions import (AuthError, UnauthorizedError, ParameterError, MissingParameterError)
 
 
@@ -45,7 +46,7 @@ class Api(object):
         elif r.status_code == 404:
             raise ParameterError
 
-    # Branch API
+    # Branches API
     @require_auth
     def get_branches(self, project_id=None):
         if project_id is None:
@@ -77,6 +78,204 @@ class Api(object):
             raise MissingParameterError
         r = self._session.delete(f'{self.url}/projects/{project_id}/repository/branches?branch={branch_name}',
                                  headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def delete_merged_branches(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.delete(f'{self.url}/projects/{project_id}/repository/merged_branches',
+                                 headers=self.headers, verify=self.verify)
+        return r
+
+    # Commits API
+    @require_auth
+    def get_commits(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit_references(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/refs',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    @validate_data
+    def cherry_pick_commit(self, project_id=None, commit_hash=None, data=None):
+        if project_id is None or commit_hash is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/cherry_pick',
+                              headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    @validate_data
+    def create_commit(self, project_id=None, data=None):
+        if project_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits',
+                               headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    @validate_data
+    def revert_commit(self, project_id=None, commit_hash=None, data=None):
+        if project_id is None or commit_hash is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/revert',
+                              headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit_diff(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/diff',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit_comments(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/comments',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    @validate_data
+    def create_commit_comment(self, project_id=None, commit_hash=None, data=None):
+        if project_id is None or commit_hash is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/comments',
+                               headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit_discussions(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/discussions',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit_statuses(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/statuses',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    @validate_data
+    def post_build_status_to_commit(self, project_id=None, commit_hash=None, data=None):
+        if project_id is None or commit_hash is None or data is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/projects/{project_id}/statuses/{commit_hash}/',
+                               headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit_merge_requests(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/merge_requests',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_commit_gpg_signature(self, project_id=None, commit_hash=None):
+        if project_id is None or commit_hash is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/merge_requests',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    # Deploy Tokens API
+    @require_auth
+    def get_deploy_tokens(self):
+        r = self._session.get(f'{self.url}/deploy_tokens', headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_project_deploy_tokens(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/deploy_tokens',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_project_deploy_token(self, project_id=None, token=None):
+        if project_id is None or token is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/deploy_tokens/{token}',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    @validate_data
+    def create_project_deploy_token(self, project_id=None, data=None):
+        if project_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/deploy_tokens',
+                              headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def delete_project_deploy_token(self, project_id=None, token=None):
+        if project_id is None or token is None:
+            raise MissingParameterError
+        r = self._session.delete(f'{self.url}/projects/{project_id}/deploy_tokens/{token}',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_group_deploy_tokens(self, group_id=None):
+        if group_id is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/groups/{group_id}/deploy_tokens',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_group_deploy_token(self, group_id=None, token=None):
+        if group_id is None or token is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/groups/{group_id}/deploy_tokens/{token}',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    @validate_data
+    def create_group_deploy_token(self, group_id=None, data=None):
+        if group_id is None or data is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/groups/{group_id}/deploy_tokens',
+                              headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def delete_group_deploy_token(self, group_id=None, token=None):
+        if group_id is None or token is None:
+            raise MissingParameterError
+        r = self._session.delete(f'{self.url}/groups/{group_id}/deploy_tokens/{token}',
+                              headers=self.headers, verify=self.verify)
         return r
 
     @require_auth

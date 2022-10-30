@@ -33,3 +33,10 @@ class LoginRequiredError(Exception):
     Authentication error
     """
     pass
+
+
+class DataError(Exception):
+    """
+    Data error
+    """
+    pass
