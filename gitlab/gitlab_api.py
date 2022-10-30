@@ -136,7 +136,7 @@ class Api(object):
             data['message'] = message
         data = json.dumps(data, indent=4)
         r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/cherry_pick',
-                              headers=self.headers, data=data, verify=self.verify)
+                               headers=self.headers, data=data, verify=self.verify)
         return r
 
     @require_auth
@@ -205,7 +205,7 @@ class Api(object):
             data['dry_run'] = dry_run
         data = json.dumps(data, indent=4)
         r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/revert',
-                              headers=self.headers, data=data, verify=self.verify)
+                               headers=self.headers, data=data, verify=self.verify)
         return r
 
     @require_auth
@@ -384,7 +384,7 @@ class Api(object):
         if project_id is None or token is None:
             raise MissingParameterError
         r = self._session.delete(f'{self.url}/projects/{project_id}/deploy_tokens/{token}',
-                              headers=self.headers, verify=self.verify)
+                                 headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
@@ -666,11 +666,16 @@ class Api(object):
         return r
 
     @require_auth
-    def run_pipeline(self, id=None, ref=None, variables=None):
-        if id is None or ref is None:
+    def run_pipeline(self, project_id=None, reference=None, variables=None):
+        if project_id is None or reference is None:
             raise MissingParameterError
-        r = self._session.post(f'{self.url}/projects/{id}/pipeline?ref={ref}', headers=self.headers,
-                               verify=self.verify)
+        if variables:
+            data = json.dumps(variables, indent=4)
+            r = self._session.post(f'{self.url}/projects/{project_id}/pipeline?ref={reference}', headers=self.headers,
+                                   data=data, verify=self.verify)
+        else:
+            r = self._session.post(f'{self.url}/projects/{project_id}/pipeline?ref={reference}', headers=self.headers,
+                                   verify=self.verify)
         return r
 
     ####################################################################################################################
@@ -859,6 +864,10 @@ class Api(object):
             if not isinstance(allowed_to_unprotect, list):
                 raise ParameterError
             data['allowed_to_unprotect'] = allowed_to_unprotect
+        if code_owner_approval_required:
+            if not isinstance(code_owner_approval_required, bool):
+                raise ParameterError
+            data['code_owner_approval_required'] = code_owner_approval_required
 
         if len(data) > 0:
             data = json.dumps(data, indent=4)
@@ -888,17 +897,17 @@ class Api(object):
     #                                                Runners API                                                       #
     ####################################################################################################################
     @require_auth
-    def get_runners(self, type=None, status=None, paused=None, tag_list=None, all_runners=False):
+    def get_runners(self, runner_type=None, status=None, paused=None, tag_list=None, all_runners=False):
         runner_filter = None
         if all_runners:
             runner_filter = '/all'
-        if type:
-            if type not in ['instance_type', 'group_type', 'project_type']:
+        if runner_type:
+            if runner_type not in ['instance_type', 'group_type', 'project_type']:
                 raise ParameterError
             if runner_filter:
-                runner_filter = f'{runner_filter}&type={type}'
+                runner_filter = f'{runner_filter}&type={runner_type}'
             else:
-                runner_filter = f'?type={type}'
+                runner_filter = f'?type={runner_type}'
         if status:
             if status not in ['online', 'offline', 'stale', 'never_contacted', 'active', 'paused']:
                 raise ParameterError
@@ -989,20 +998,20 @@ class Api(object):
         return r
 
     @require_auth
-    def get_project_runners(self, project_id=None, type=None, status=None, paused=None, tag_list=None,
+    def get_project_runners(self, project_id=None, runner_type=None, status=None, paused=None, tag_list=None,
                             all_runners=False):
         if project_id is None:
             raise MissingParameterError
         runner_filter = None
         if all_runners:
             runner_filter = '/all'
-        if type:
-            if type not in ['instance_type', 'group_type', 'project_type']:
+        if runner_type:
+            if runner_type not in ['instance_type', 'group_type', 'project_type']:
                 raise ParameterError
             if runner_filter:
-                runner_filter = f'{runner_filter}&type={type}'
+                runner_filter = f'{runner_filter}&type={runner_type}'
             else:
-                runner_filter = f'?type={type}'
+                runner_filter = f'?type={runner_type}'
         if status:
             if status not in ['online', 'offline', 'stale', 'never_contacted', 'active', 'paused']:
                 raise ParameterError
@@ -1046,19 +1055,20 @@ class Api(object):
         return r
 
     @require_auth
-    def get_group_runners(self, group_id=None, type=None, status=None, paused=None, tag_list=None, all_runners=False):
+    def get_group_runners(self, group_id=None, runner_type=None, status=None, paused=None, tag_list=None,
+                          all_runners=False):
         if group_id is None:
             raise MissingParameterError
         runner_filter = None
         if all_runners:
             runner_filter = '/all'
-        if type:
-            if type not in ['instance_type', 'group_type', 'project_type']:
+        if runner_type:
+            if runner_type not in ['instance_type', 'group_type', 'project_type']:
                 raise ParameterError
             if runner_filter:
-                runner_filter = f'{runner_filter}&type={type}'
+                runner_filter = f'{runner_filter}&type={runner_type}'
             else:
-                runner_filter = f'?type={type}'
+                runner_filter = f'?type={runner_type}'
         if status:
             if status not in ['online', 'offline', 'stale', 'never_contacted', 'active', 'paused']:
                 raise ParameterError
