@@ -10,7 +10,7 @@ from exceptions import (AuthError, UnauthorizedError, ParameterError, MissingPar
 class Api(object):
 
     def __init__(self, url=None, username=None, password=None, token=None, verify=True):
-        if url == None:
+        if url is None:
             raise MissingParameterError
 
         self._session = requests.Session()
@@ -36,7 +36,7 @@ class Api(object):
         else:
             raise MissingParameterError
 
-        r = self._session.get(self.url + "/me/", headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/me/', headers=self.headers, verify=self.verify)
 
         if r.status_code == 403:
             raise UnauthorizedError
@@ -45,9 +45,44 @@ class Api(object):
         elif r.status_code == 404:
             raise ParameterError
 
+    # Branch API
+    @require_auth
+    def get_branches(self, project_id=None):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/branches',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def get_branch(self, project_id=None, branch=None):
+        if project_id is None or branch is None:
+            raise MissingParameterError
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/branches/{branch}',
+                              headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def create_branch(self, project_id=None, branch_name=None, reference=None):
+        if project_id is None or branch_name is None or reference is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/projects/{project_id}/repository/'
+                               f'branches?branch={branch_name}&ref={reference}',
+                               headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def delete_branch(self, project_id=None, branch_name=None):
+        if project_id is None or branch_name is None:
+            raise MissingParameterError
+        r = self._session.delete(f'{self.url}/projects/{project_id}/repository/branches?branch={branch_name}',
+                                 headers=self.headers, verify=self.verify)
+        return r
+
     @require_auth
     def get_total_user_pages(self):
-        r = self._session.get(self.url + f'/users?per_page=100&x-total-pages', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/users?per_page=100&x-total-pages',
+                              headers=self.headers, verify=self.verify)
         return int(r.headers['X-Total-Pages'])
 
     @require_auth
@@ -63,7 +98,7 @@ class Api(object):
         else:
             max = (max / 100) + 1
         for page in range(0, max):
-            r_page = self._session.get(self.url + f'/users?per_page=100&page={page}&order_by={order_by}',
+            r_page = self._session.get(f'{self.url}/users?per_page=100&page={page}&order_by={order_by}',
                                        headers=self.headers, verify=self.verify)
             r = r + r_page
         return r
@@ -76,12 +111,14 @@ class Api(object):
             user_url = f"?sudo={user_id}"
         else:
             user_url = f"/{user_id}"
-        r = self._session.get(self.url + f'/users{user_url}', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/users{user_url}',
+                              headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
     def get_total_runner_pages(self):
-        r = self._session.get(self.url + f'/runners?per_page=100&x-total-pages', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/runners?per_page=100&x-total-pages',
+                              headers=self.headers, verify=self.verify)
         return int(r.headers['X-Total-Pages'])
 
     @require_auth
@@ -97,7 +134,7 @@ class Api(object):
         else:
             max = (max / 100) + 1
         for page in range(0, max):
-            r_page = self._session.get(self.url + f'/runners?per_page=100&page={page}&order_by={order_by}',
+            r_page = self._session.get(f'{self.url}/runners?per_page=100&page={page}&order_by={order_by}',
                                        headers=self.headers, verify=self.verify)
             r = r + r_page
         return r
@@ -106,12 +143,14 @@ class Api(object):
     def get_runner(self, runner_id=None):
         if runner_id is None:
             raise MissingParameterError
-        r = self._session.get(self.url + f'/runners/{runner_id}', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/runners/{runner_id}',
+                              headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
     def get_total_project_pages(self):
-        r = self._session.get(self.url + f'/projects?per_page=100&x-total-pages', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/projects?per_page=100&x-total-pages',
+                              headers=self.headers, verify=self.verify)
         return int(r.headers['X-Total-Pages'])
 
     @require_auth
@@ -127,7 +166,7 @@ class Api(object):
         else:
             max = (max / 100) + 1
         for page in range(0, max):
-            r_page = self._session.get(self.url + f'/projects?per_page=100&page={page}&order_by={order_by}',
+            r_page = self._session.get(f'{self.url}/projects?per_page=100&page={page}&order_by={order_by}',
                                        headers=self.headers, verify=self.verify)
             r = r + r_page
         return r
@@ -136,7 +175,7 @@ class Api(object):
     def get_project(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
-        r = self._session.get(self.url + f'/projects/{project_id}', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/projects/{project_id}', headers=self.headers, verify=self.verify)
         return r
 
 
