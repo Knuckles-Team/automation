@@ -436,7 +436,7 @@ class Api(object):
         if group_id is None or token is None:
             raise MissingParameterError
         r = self._session.delete(f'{self.url}/groups/{group_id}/deploy_tokens/{token}',
-                              headers=self.headers, verify=self.verify)
+                                 headers=self.headers, verify=self.verify)
         return r
 
     ####################################################################################################################
@@ -465,21 +465,24 @@ class Api(object):
     def get_group_descendant_groups(self, group_id=None):
         if group_id is None:
             raise MissingParameterError
-        r = self._session.get(f'{self.url}/groups/{group_id}/descendant_groups', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/groups/{group_id}/descendant_groups',
+                              headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
     def get_group_projects(self, group_id=None):
         if group_id is None:
             raise MissingParameterError
-        r = self._session.get(f'{self.url}/groups/{group_id}/projects?per_page=100', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/groups/{group_id}/projects?per_page=100',
+                              headers=self.headers, verify=self.verify)
         return r
 
     @require_auth
     def get_group_merge_requests(self, group_id=None, argument='state=opened'):
         if group_id is None or argument is None:
             raise MissingParameterError
-        r = self._session.get(f'{self.url}/groups/{group_id}/merge_requests?{argument}&per_page=100', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/groups/{group_id}/merge_requests?{argument}&per_page=100',
+                              headers=self.headers, verify=self.verify)
         return r
 
     ####################################################################################################################
@@ -711,7 +714,8 @@ class Api(object):
             if max_pages == 0 or max_pages > total_pages:
                 max_pages = total_pages
             for page in range(0, max_pages):
-                projects.append(self._session.get(f'{self.url}/groups/{group["id"]}/projects?per_page={per_page}&page={page}',
+                projects.append(self._session.get(f'{self.url}/groups/{group["id"]}/'
+                                                  f'projects?per_page={per_page}&page={page}',
                                                   headers=self.headers, verify=self.verify))
         return projects
 
@@ -719,14 +723,16 @@ class Api(object):
     def get_project_contributors(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
-        r = self._session.get(f'{self.url}/projects/{project_id}/repository/contributors', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/projects/{project_id}/repository/contributors',
+                              headers=self.headers, verify=self.verify)
         return r 
     
     @require_auth
     def get_project_statistics(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
-        r = self._session.get(f'{self.url}/projects/{project_id}?statistics=true', headers=self.headers, verify=self.verify)
+        r = self._session.get(f'{self.url}/projects/{project_id}?statistics=true',
+                              headers=self.headers, verify=self.verify)
         return r 
     
     @require_auth
@@ -765,10 +771,33 @@ class Api(object):
         return r
 
     @require_auth
-    def share_project(self, project_id=None, group_id=None, group_access=None):
+    def share_project(self, project_id=None, group_id=None, group_access=None, expires_at=None):
         if project_id is None or group_id is None or group_access is None:
             raise MissingParameterError
-        r = self._session.post(f'{self.url}/projects/{project_id}/share?group_id={group_id}&group_access={group_access}', headers=self.headers, verify=self.verify)
+        share_filter = None
+        if group_id:
+            if not isinstance(group_id, int):
+                raise ParameterError
+            if share_filter:
+                share_filter = f'{share_filter}&group_id={group_id}'
+            else:
+                share_filter = f'?group_id={group_id}'
+        if group_access:
+            if not isinstance(group_access, int):
+                raise ParameterError
+            if share_filter:
+                share_filter = f'{share_filter}&group_access={group_access}'
+            else:
+                share_filter = f'?group_access={group_access}'
+        if expires_at:
+            if not isinstance(expires_at, str):
+                raise ParameterError
+            if share_filter:
+                share_filter = f'{share_filter}&expires_at={expires_at}'
+            else:
+                share_filter = f'?expires_at={expires_at}'
+        r = self._session.post(f'{self.url}/projects/{project_id}/share{share_filter}',
+                               headers=self.headers, verify=self.verify)
         return r
 
     ####################################################################################################################
