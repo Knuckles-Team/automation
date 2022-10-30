@@ -699,7 +699,7 @@ class Api(object):
         return r
 
     @require_auth
-    def get_projects_by_group(self, group_id=None, max_pages=0, per_page=100):
+    def get_nested_projects_by_group(self, group_id=None, max_pages=0, per_page=100):
         if group_id is None:
             raise MissingParameterError
         projects = []
