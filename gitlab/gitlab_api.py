@@ -4,7 +4,7 @@ import json
 import requests
 import urllib3
 from base64 import b64encode
-from decorators import require_auth, validate_data
+from decorators import require_auth
 from exceptions import (AuthError, UnauthorizedError, ParameterError, MissingParameterError)
 
 
@@ -118,28 +118,92 @@ class Api(object):
         return r
 
     @require_auth
-    @validate_data
-    def cherry_pick_commit(self, project_id=None, commit_hash=None, data=None):
-        if project_id is None or commit_hash is None or data is None:
+    def cherry_pick_commit(self, project_id=None, commit_hash=None, branch=None, dry_run=None, message=None):
+        if project_id is None or commit_hash is None or branch is None:
             raise MissingParameterError
+        data = {}
+        if branch:
+            if not isinstance(branch, str):
+                raise ParameterError
+            data['branch'] = branch
+        if dry_run:
+            if not isinstance(dry_run, bool):
+                raise ParameterError
+            data['dry_run'] = dry_run
+        if message:
+            if not isinstance(message, str):
+                raise ParameterError
+            data['message'] = message
+        data = json.dumps(data, indent=4)
         r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/cherry_pick',
                               headers=self.headers, data=data, verify=self.verify)
         return r
 
     @require_auth
-    @validate_data
-    def create_commit(self, project_id=None, data=None):
-        if project_id is None or data is None:
+    def create_commit(self, project_id=None, branch=None, commit_message=None, start_branch=None, start_sha=None,
+                      start_project=None, actions=None, author_email=None, author_name=None, stats=None, force=None):
+        if project_id is None or branch is None or commit_message is None or actions is None:
             raise MissingParameterError
+        data = {}
+        if branch:
+            if not isinstance(branch, str):
+                raise ParameterError
+            data['branch'] = branch
+        if commit_message:
+            if not isinstance(commit_message, str):
+                raise ParameterError
+            data['commit_message'] = commit_message
+        if start_branch:
+            if not isinstance(start_branch, str):
+                raise ParameterError
+            data['start_branch'] = start_branch
+        if start_sha:
+            if not isinstance(start_sha, str):
+                raise ParameterError
+            data['start_sha'] = start_sha
+        if start_project:
+            if not isinstance(start_project, str) and not isinstance(start_project, int):
+                raise ParameterError
+            data['start_project'] = start_project
+        if actions:
+            if not isinstance(actions, list):
+                raise ParameterError
+            data['actions'] = actions
+        if author_email:
+            if not isinstance(author_email, str):
+                raise ParameterError
+            data['author_email'] = author_email
+        if author_name:
+            if not isinstance(author_name, str):
+                raise ParameterError
+            data['author_name'] = author_name
+        if stats:
+            if not isinstance(stats, bool):
+                raise ParameterError
+            data['stats'] = stats
+        if force:
+            if not isinstance(force, bool):
+                raise ParameterError
+            data['force'] = force
+        data = json.dumps(data, indent=4)
         r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits',
                                headers=self.headers, data=data, verify=self.verify)
         return r
 
     @require_auth
-    @validate_data
-    def revert_commit(self, project_id=None, commit_hash=None, data=None):
-        if project_id is None or commit_hash is None or data is None:
+    def revert_commit(self, project_id=None, commit_hash=None, branch=None, dry_run=None):
+        if project_id is None or commit_hash is None or branch is None:
             raise MissingParameterError
+        data = {}
+        if branch:
+            if not isinstance(branch, str):
+                raise ParameterError
+            data['branch'] = branch
+        if dry_run:
+            if not isinstance(dry_run, bool):
+                raise ParameterError
+            data['dry_run'] = dry_run
+        data = json.dumps(data, indent=4)
         r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/revert',
                               headers=self.headers, data=data, verify=self.verify)
         return r
@@ -161,10 +225,28 @@ class Api(object):
         return r
 
     @require_auth
-    @validate_data
-    def create_commit_comment(self, project_id=None, commit_hash=None, data=None):
-        if project_id is None or commit_hash is None or data is None:
+    def create_commit_comment(self, project_id=None, commit_hash=None, note=None, path=None, line=None, line_type=None):
+        if project_id is None or commit_hash is None or note is None:
             raise MissingParameterError
+        data = {}
+        if note:
+            if not isinstance(note, str):
+                raise ParameterError
+            data['note'] = note
+        if path:
+            if not isinstance(path, str):
+                raise ParameterError
+            data['path'] = path
+        if line:
+            if not isinstance(line, int):
+                raise ParameterError
+            data['line'] = line
+        if line_type:
+            if line_type != "new" or line_type != "old":
+                raise ParameterError
+            else:
+                data['line_type'] = line_type
+        data = json.dumps(data, indent=4)
         r = self._session.post(f'{self.url}/projects/{project_id}/repository/commits/{commit_hash}/comments',
                                headers=self.headers, data=data, verify=self.verify)
         return r
@@ -186,10 +268,45 @@ class Api(object):
         return r
 
     @require_auth
-    @validate_data
-    def post_build_status_to_commit(self, project_id=None, commit_hash=None, data=None):
-        if project_id is None or commit_hash is None or data is None:
+    def post_build_status_to_commit(self, project_id=None, commit_hash=None, state=None, reference=None, name=None,
+                                    context=None, target_url=None, description=None, coverage=None, pipeline_id=None):
+        if project_id is None or commit_hash is None or state is None:
             raise MissingParameterError
+        data = {}
+        if state:
+            if state not in ["pending", "running", "success", "failed", "canceled"]:
+                raise ParameterError
+            else:
+                data['state'] = state
+        if reference:
+            if not isinstance(reference, str):
+                raise ParameterError
+            data['ref'] = reference
+        if name:
+            if not isinstance(name, str):
+                raise ParameterError
+            data['name'] = name
+        if context:
+            if not isinstance(context, str):
+                raise ParameterError
+            data['context'] = context
+        if target_url:
+            if not isinstance(target_url, str):
+                raise ParameterError
+            data['target_url'] = target_url
+        if description:
+            if not isinstance(description, str):
+                raise ParameterError
+            data['description'] = description
+        if coverage:
+            if not isinstance(coverage, float):
+                raise ParameterError
+            data['coverage'] = coverage
+        if pipeline_id:
+            if not isinstance(pipeline_id, int):
+                raise ParameterError
+            data['pipeline_id'] = pipeline_id
+        data = json.dumps(data, indent=4)
         r = self._session.post(f'{self.url}/projects/{project_id}/statuses/{commit_hash}/',
                                headers=self.headers, data=data, verify=self.verify)
         return r
@@ -235,10 +352,29 @@ class Api(object):
         return r
 
     @require_auth
-    @validate_data
-    def create_project_deploy_token(self, project_id=None, data=None):
-        if project_id is None or data is None:
+    def create_project_deploy_token(self, project_id=None, name=None, expires_at=None, username=None, scopes=None):
+        if project_id is None or name is None or scopes is None:
             raise MissingParameterError
+        data = {}
+        if name:
+            if not isinstance(name, str):
+                raise ParameterError
+            data['name'] = name
+        if expires_at:
+            if not isinstance(expires_at, str):
+                raise ParameterError
+            data['expires_at'] = expires_at
+        if username:
+            if not isinstance(username, str):
+                raise ParameterError
+            data['username'] = username
+        if scopes:
+            if scopes not in ["read_repository", "read_registry", "write_registry", "read_package_registry",
+                              "write_package_registry"]:
+                raise ParameterError
+            else:
+                data['scopes'] = scopes
+        data = json.dumps(data, indent=4)
         r = self._session.get(f'{self.url}/projects/{project_id}/deploy_tokens',
                               headers=self.headers, data=data, verify=self.verify)
         return r
@@ -268,10 +404,29 @@ class Api(object):
         return r
 
     @require_auth
-    @validate_data
-    def create_group_deploy_token(self, group_id=None, data=None):
-        if group_id is None or data is None:
+    def create_group_deploy_token(self, group_id=None, name=None, expires_at=None, username=None, scopes=None):
+        if group_id is None or name is None or scopes is None:
             raise MissingParameterError
+        data = {}
+        if name:
+            if not isinstance(name, str):
+                raise ParameterError
+            data['name'] = name
+        if expires_at:
+            if not isinstance(expires_at, str):
+                raise ParameterError
+            data['expires_at'] = expires_at
+        if username:
+            if not isinstance(username, str):
+                raise ParameterError
+            data['username'] = username
+        if scopes:
+            if scopes not in ["read_repository", "read_registry", "write_registry", "read_package_registry",
+                              "write_package_registry"]:
+                raise ParameterError
+            else:
+                data['scopes'] = scopes
+        data = json.dumps(data, indent=4)
         r = self._session.get(f'{self.url}/groups/{group_id}/deploy_tokens',
                               headers=self.headers, data=data, verify=self.verify)
         return r
@@ -325,21 +480,29 @@ class Api(object):
         if all_runners:
             runner_filter = "/all"
         if type:
+            if type not in ['instance_type', 'group_type', 'project_type']:
+                raise ParameterError
             if runner_filter:
                 runner_filter = f'{runner_filter}&type={type}'
             else:
                 runner_filter = f'?type={type}'
         if status:
+            if status not in ['online', 'offline', 'stale', 'never_contacted', 'active', 'paused']:
+                raise ParameterError
             if runner_filter:
                 runner_filter = f'{runner_filter}&status={status}'
             else:
                 runner_filter = f'?status={status}'
         if paused:
+            if not isinstance(paused, str):
+                raise ParameterError
             if runner_filter:
                 runner_filter = f'{runner_filter}&paused={paused}'
             else:
                 runner_filter = f'?paused={paused}'
         if tag_list:
+            if not isinstance(tag_list, list):
+                raise ParameterError
             if runner_filter:
                 runner_filter = f'{runner_filter}&tag_list={tag_list}'
             else:
@@ -355,16 +518,53 @@ class Api(object):
         return r
 
     @require_auth
-    def update_runner_details(self, runner_id=None, data=None):
-        if runner_id is None or data is None:
+    def update_runner_details(self, runner_id=None, description=None, active=None, paused=None, tag_list=None,
+                              run_untagged=None, locked=None, access_level=None, maximum_timeout=None):
+        if runner_id is None:
             raise MissingParameterError
+        data = {}
+        if description:
+            if not isinstance(active, str):
+                raise ParameterError
+            data['description'] = description
+        if active:
+            if not isinstance(active, bool):
+                raise ParameterError
+            data['active'] = active
+        if paused:
+            if not isinstance(paused, bool):
+                raise ParameterError
+            data['paused'] = paused
+        if tag_list:
+            if not isinstance(tag_list, list):
+                raise ParameterError
+            data['tag_list'] = tag_list
+        if run_untagged:
+            if not isinstance(run_untagged, bool):
+                raise ParameterError
+            data['run_untagged'] = run_untagged
+        if locked:
+            if not isinstance(locked, bool):
+                raise ParameterError
+            data['locked'] = locked
+        if access_level:
+            if access_level not in ['not_protected', 'ref_protected']:
+                raise ParameterError
+            data['access_level'] = access_level
+        if maximum_timeout:
+            if not isinstance(maximum_timeout, int):
+                raise ParameterError
+            data['maximum_timeout'] = maximum_timeout
+        data = json.dumps(data, indent=4)
         r = self._session.put(f'{self.url}/runners/{runner_id}', headers=self.headers, data=data, verify=self.verify)
         return r
 
     @require_auth
-    def pause_runner(self, runner_id=None, data=None):
-        if runner_id is None or data is None:
+    def pause_runner(self, runner_id=None, active=None):
+        if runner_id is None or active is None:
             raise MissingParameterError
+        data = {'active': active}
+        data = json.dumps(data, indent=4)
         r = self._session.put(f'{self.url}/runners/{runner_id}', headers=self.headers, data=data, verify=self.verify)
         return r
 
@@ -491,6 +691,46 @@ class Api(object):
                                      verify=self.verify)
         return r
 
+    @require_auth
+    def verify_runner_authentication(self, token=None):
+        if token is None:
+            raise MissingParameterError
+        data = {'token': token}
+        data = json.dumps(data, indent=4)
+        r = self._session.post(f'{self.url}/runners/verify', headers=self.headers, data=data, verify=self.verify)
+        return r
+
+    @require_auth
+    def reset_gitlab_runner_token(self):
+        r = self._session.post(f'{self.url}/runners/reset_registration_token', headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def reset_project_runner_token(self, project_id):
+        if project_id is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/projects/{project_id}/runners/reset_registration_token',
+                               headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def reset_group_runner_token(self, group_id):
+        if group_id is None:
+            raise MissingParameterError
+        r = self._session.post(f'{self.url}/groups/{group_id}/runners/reset_registration_token',
+                               headers=self.headers, verify=self.verify)
+        return r
+
+    @require_auth
+    def reset_token(self, runner_id, token=None):
+        if runner_id is None or token is None:
+            raise MissingParameterError
+        data = {'token': token}
+        data = json.dumps(data, indent=4)
+        r = self._session.post(f'{self.url}/runners/{runner_id}/reset_authentication_token',
+                               headers=self.headers, data=data, verify=self.verify)
+        return r
+
     ####################################################################################################################
     #                                                Projects API                                                      #
     ####################################################################################################################
@@ -518,106 +758,3 @@ class Api(object):
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}', headers=self.headers, verify=self.verify)
         return r
-
-
-"""MERGE RULES
-https://docs.gitlab.com/ee/api/merge_request_approvals.html
-
-Get project-level rules
-GET /projects/:id/approval_rules
-
-Get a single project-level rule
-GET /projects/:id/approval_rules/:approval_rule_id
-
-Create project-level rule
-POST /projects/:id/approval_rules
-
-Update project-level rule
-PUT /projects/:id/approval_rules/:approval_rule_id
-
-Delete project-level rule
-DELETE /projects/:id/approval_rules/:approval_rule_id
-
-Merge request-level MR approvals
-GET /projects/:id/merge_requests/:merge_request_iid/approvals
-
-Get the approval state of merge requests
-GET /projects/:id/merge_requests/:merge_request_iid/approval_state
-
-Get merge request level rules
-GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
-
-Approve merge request
-POST /projects/:id/merge_requests/:merge_request_iid/approve
-
-Approve merge request
-POST /projects/:id/merge_requests/:merge_request_iid/unapprove
-
-
-BRANCHES
-https://docs.gitlab.com/ee/api/branches.html
-
-List repository branches
-GET /projects/:id/repository/branches
-
-Get single repository branch
-GET /projects/:id/repository/branches/:branch
-
-Create repository branch
-POST /projects/:id/repository/branches
-
-Delete repository branch
-DELETE /projects/:id/repository/branches/:branch
-
-PROTECTED BRANCHES
-https://docs.gitlab.com/ee/api/protected_branches.html#protect-repository-branches
-
-List protected branches
-GET /projects/:id/protected_branches
-
-Get a single protected branch or wildcard protected branch
-GET /projects/:id/protected_branches/:name
-
-Protect repository branches
-POST /projects/:id/protected_branches
-
-Unprotect repository branches
-DELETE /projects/:id/protected_branches/:name
-
-Require code owner approvals for a single branch
-PATCH /projects/:id/protected_branches/:name
-
-PROJECTS
-https://docs.gitlab.com/ee/api/projects.html
-
-List a project’s groups
-GET /projects/:id/groups
-
-Archive a project
-POST /projects/:id/archive
-
-Unarchive a project
-POST /projects/:id/unarchive
-
-Delete project
-DELETE /projects/:id
-
-List all projects
-GET /projects
-
-GROUPS
-https://docs.gitlab.com/ee/api/groups.html
-
-List groups
-GET /groups
-
-List a group’s subgroups
-GET /groups/:id/subgroups
-
-List a group’s descendant groups
-GET /groups/:id/descendant_groups
-
-List a group’s projects
-GET /groups/:id/projects
-
-"""
