@@ -8,3 +8,4 @@ https://github.com/Knucklessg1/report-manager.git
 https://github.com/Knucklessg1/crypto-trader.git
 https://github.com/Knucklessg1/repository-manager.git
 https://github.com/Knucklessg1/system-manager.git
+https://github.com/Knucklessg1/gitlab-api.git
