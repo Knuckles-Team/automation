@@ -2,9 +2,9 @@
 
 import gitlab_api
 
-token = ";aslkdfj;alskjdf;alksjdf;alksjd"
-gitlab_url = "<GITLAB_URL>"
+token = "glpat-JMKXyGxqzn3BFjrgrfsc"
+gitlab_url = "http://localhost:8080/"
 client = gitlab_api.Api(url=gitlab_url, token=token)
 
-print(client.get_users())
+#print(client.get_users())
 
