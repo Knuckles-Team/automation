@@ -516,28 +516,240 @@ class Api(object):
         return r
 
     @require_auth
-    def get_total_merge_pages(self):
-        r = self._session.get(f'{self.url}/merge_requests?per_page=100&x-total-pages', headers=self.headers,
+    def get_merge_requests(self, approved_by_ids=None, approver_ids=None, assignee_id=None, author_id=None,
+                           author_username=None, created_after=None, created_before=None, deployed_after=None,
+                           deployed_before=None, environment=None, search_in=None, labels=None, milestone=None,
+                           my_reaction_emoji=None, search_exclude=None, order_by=None, reviewer_id=None,
+                           reviewer_username=None,
+                           scope=None, search=None, sort=None, source_branch=None, state=None, target_branch=None,
+                           updated_after=None, updated_before=None, view=None, with_labels_details=None,
+                           with_merge_status_recheck=None, wip=None, max_pages=0, per_page=100):
+        r = self._session.get(f'{self.url}/merge_requests?per_page={per_page}&x-total-pages', headers=self.headers,
                               verify=self.verify)
-        return int(r.headers['X-Total-Pages'])
-
-    @require_auth
-    def get_merge_requests(self, argument='state=all'):
-        r = None
-        pages = self.get_total_merge_pages()
-        for page in range(0, pages + 1):
-            print(f'Paginating results {page + 1}/{pages + 1}')
-            if r:
-                r_page = self._session.get(f'{self.url}/merge_requests?{argument}&per_page=100&page={page}',
-                                           headers=self.headers, verify=self.verify)
-                r = r + r_page
+        total_pages = int(r.headers['X-Total-Pages'])
+        r = []
+        merge_filter = None
+        if approved_by_ids:
+            if not isinstance(approved_by_ids, list):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&approved_by_ids={approved_by_ids}'
             else:
-                r = self._session.get(f'{self.url}/merge_requests?{argument}&per_page=100&page={page}',
-                                      headers=self.headers, verify=self.verify)
+                merge_filter = f'?approved_by_ids={approved_by_ids}'
+        if approver_ids:
+            if not isinstance(approver_ids, list):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&approver_ids={approver_ids}'
+            else:
+                merge_filter = f'?approver_ids={approver_ids}'
+        if assignee_id:
+            if not isinstance(assignee_id, int):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&assignee_id={assignee_id}'
+            else:
+                merge_filter = f'?assignee_id={assignee_id}'
+        if author_id:
+            if not isinstance(author_id, int):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&author_id={author_id}'
+            else:
+                merge_filter = f'?author_id={author_id}'
+        if author_username:
+            if not isinstance(author_username, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&author_username={author_username}'
+            else:
+                merge_filter = f'?author_username={author_username}'
+        if created_after:
+            if not isinstance(created_after, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&created_after={created_after}'
+            else:
+                merge_filter = f'?created_after={created_after}'
+        if created_before:
+            if not isinstance(created_before, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&created_before={created_before}'
+            else:
+                merge_filter = f'?created_before={created_before}'
+        if deployed_after:
+            if not isinstance(deployed_after, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&deployed_after={deployed_after}'
+            else:
+                merge_filter = f'?deployed_after={deployed_after}'
+        if deployed_before:
+            if not isinstance(deployed_before, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&deployed_before={deployed_before}'
+            else:
+                merge_filter = f'?deployed_before={deployed_before}'
+        if environment:
+            if not isinstance(environment, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&environment={environment}'
+            else:
+                merge_filter = f'?environment={environment}'
+        if search_in:
+            if search_in not in ['title', 'description', 'title,description']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&in={search_in}'
+            else:
+                merge_filter = f'?in={search_in}'
+        if labels:
+            if not isinstance(labels, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&labels={labels}'
+            else:
+                merge_filter = f'?labels={labels}'
+        if milestone:
+            if not isinstance(milestone, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&milestone={milestone}'
+            else:
+                merge_filter = f'?milestone={milestone}'
+        if my_reaction_emoji:
+            if not isinstance(my_reaction_emoji, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&my_reaction_emoji={my_reaction_emoji}'
+            else:
+                merge_filter = f'?my_reaction_emoji={my_reaction_emoji}'
+        if search_exclude:
+            if search_exclude not in ['labels', 'milestone', 'author_id', 'assignee_id', 'author_username',
+                                      'reviewer_id', 'reviewer_username', 'my_reaction_emoji']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&not={search_exclude}'
+            else:
+                merge_filter = f'?not={search_exclude}'
+        if order_by:
+            if order_by not in ['created_at', 'title', 'updated_at']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&order_by={order_by}'
+            else:
+                merge_filter = f'?order_by={order_by}'
+        if reviewer_id:
+            if not isinstance(reviewer_username, int) and not isinstance(reviewer_username, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&reviewer_id={reviewer_id}'
+            else:
+                merge_filter = f'?reviewer_id={reviewer_id}'
+        if reviewer_username:
+            if not isinstance(reviewer_username, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&reviewer_username={reviewer_username}'
+            else:
+                merge_filter = f'?reviewer_username={reviewer_username}'
+        if scope:
+            if scope not in ['created_by_me', 'assigned_to_me', 'all']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&scope={scope}'
+            else:
+                merge_filter = f'?scope={scope}'
+        if search:
+            if search not in ['title', 'description']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&search={search}'
+            else:
+                merge_filter = f'?search={search}'
+        if sort:
+            if sort not in ['asc', 'desc']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&sort={sort}'
+            else:
+                merge_filter = f'?sort={sort}'
+        if source_branch:
+            if not isinstance(source_branch, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&source_branch={source_branch}'
+            else:
+                merge_filter = f'?source_branch={source_branch}'
+        if state:
+            if sort not in ['opened', 'closed', 'locked', 'merged']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&state={state}'
+            else:
+                merge_filter = f'?state={state}'
+        if target_branch:
+            if not isinstance(target_branch, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&target_branch={target_branch}'
+            else:
+                merge_filter = f'?target_branch={target_branch}'
+        if updated_after:
+            if not isinstance(updated_after, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&updated_after={updated_after}'
+            else:
+                merge_filter = f'?updated_after={updated_after}'
+        if updated_before:
+            if not isinstance(updated_before, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&updated_before={updated_before}'
+            else:
+                merge_filter = f'?updated_before={updated_before}'
+        if view:
+            if not isinstance(view, str):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&view={view}'
+            else:
+                merge_filter = f'?view={view}'
+        if with_labels_details:
+            if not isinstance(with_labels_details, bool):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&with_labels_details={str(with_labels_details).lower()}'
+            else:
+                merge_filter = f'?with_labels_details={str(with_labels_details).lower()}'
+        if with_merge_status_recheck:
+            if not isinstance(with_merge_status_recheck, bool):
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&with_merge_status_recheck={str(with_merge_status_recheck).lower()}'
+            else:
+                merge_filter = f'?with_merge_status_recheck={str(with_merge_status_recheck).lower()}'
+        if wip:
+            if wip not in ['yes', 'no']:
+                raise ParameterError
+            if merge_filter:
+                merge_filter = f'{merge_filter}&wip={wip}'
+            else:
+                merge_filter = f'?wip={wip}'
+        if max_pages == 0 or max_pages > total_pages:
+            max_pages = total_pages
+        for page in range(0, max_pages):
+            r_page = self._session.get(f'{self.url}/merge_requests{merge_filter}&per_page={per_page}&page={page}',
+                                       headers=self.headers, verify=self.verify)
+            r = r + r_page
         return r
 
     @require_auth
-    def get_merge_requests(self, project_id=None):
+    def get_project_merge_requests(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}/merge_requests',
@@ -545,7 +757,7 @@ class Api(object):
         return r
 
     @require_auth
-    def get_merge_request(self, project_id=None, merge_id=None):
+    def get_project_merge_request(self, project_id=None, merge_id=None):
         if project_id is None or merge_id is None:
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}/merge_requests/{merge_id}', headers=self.headers,
@@ -730,44 +942,353 @@ class Api(object):
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}/repository/contributors',
                               headers=self.headers, verify=self.verify)
-        return r 
-    
+        return r
+
     @require_auth
     def get_project_statistics(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}?statistics=true',
                               headers=self.headers, verify=self.verify)
-        return r 
-    
-    @require_auth
-    def edit_project(self, project_id=None, data=None):
-        if project_id is None or data is None:
-            raise MissingParameterError
-        r = self._session.put(f'{self.url}/projects/{project_id}', data=data, headers=self.headers, verify=self.verify)
         return r
-    
+
+    @require_auth
+    def edit_project(self, project_id=None, allow_merge_on_skipped_pipeline=None,
+                     only_allow_merge_if_all_status_checks_passed=None, analytics_access_level=None,
+                     approvals_before_merge=None, auto_cancel_pending_pipelines=None, auto_devops_deploy_strategy=None,
+                     auto_devops_enabled=None, autoclose_referenced_issues=None, avatar=None, build_git_strategy=None,
+                     build_timeout=None, builds_access_level=None, ci_config_path=None, ci_default_git_depth=None,
+                     ci_forward_deployment_enabled=None, ci_allow_fork_pipelines_to_run_in_parent_project=None,
+                     ci_separated_caches=None, container_expiration_policy_attributes=None,
+                     container_registry_access_level=None, default_branch=None, description=None, emails_disabled=None,
+                     enforce_auth_checks_on_uploads=None,
+                     external_authorization_classification_label=None, forking_access_level=None, import_url=None,
+                     issues_access_level=None, issues_template=None, keep_latest_artifact=None,  lfs_enabled=None,
+                     merge_commit_template=None, merge_method=None, merge_pipelines_enabled=None,
+                     merge_requests_access_level=None, merge_requests_template=None,
+                     merge_trains_enabled=None, mirror_overwrites_diverged_branches=None, mirror_trigger_builds=None,
+                     mirror_user_id=None, mirror=None, mr_default_target_self=None, name=None,
+                     only_allow_merge_if_all_discussions_are_resolved=None, only_allow_merge_if_pipeline_succeeds=None,
+                     only_mirror_protected_branches=None, operations_access_level=None, packages_enabled=None,
+                     pages_access_level=None, path=None, printing_merge_request_link_enabled=None, public_builds=None,
+                     releases_access_level=None, remove_source_branch_after_merge=None, repository_access_level=None,
+                     repository_storage=None, request_access_enabled=None, requirements_access_level=None,
+                     resolve_outdated_diff_discussions=None, restrict_user_defined_variables=None,
+                     security_and_compliance_access_level=None, service_desk_enabled=None, shared_runners_enabled=None,
+                     snippets_access_level=None, squash_commit_template=None, squash_option=None,
+                     suggestion_commit_message=None, tag_list=None, topics=None, visibility=None, wiki_access_level=None):
+        if project_id is None:
+            raise MissingParameterError
+
+        data = {}
+        if allow_merge_on_skipped_pipeline:
+            if not isinstance(allow_merge_on_skipped_pipeline, bool):
+                raise ParameterError
+            data['allow_merge_on_skipped_pipeline'] = allow_merge_on_skipped_pipeline
+        if only_allow_merge_if_all_status_checks_passed:
+            if not isinstance(only_allow_merge_if_all_status_checks_passed, bool):
+                raise ParameterError
+            data['only_allow_merge_if_all_status_checks_passed'] = only_allow_merge_if_all_status_checks_passed
+        if analytics_access_level:
+            if analytics_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['analytics_access_level'] = analytics_access_level
+        if approvals_before_merge:
+            if not isinstance(approvals_before_merge, int):
+                raise ParameterError
+            data['approvals_before_merge'] = approvals_before_merge
+        if auto_cancel_pending_pipelines:
+            if auto_cancel_pending_pipelines not in ['disabled', 'enabled']:
+                raise ParameterError
+            data['auto_cancel_pending_pipelines'] = auto_cancel_pending_pipelines
+        if auto_devops_deploy_strategy:
+            if auto_devops_deploy_strategy not in ['continuous', 'manual', 'timed_incremental']:
+                raise ParameterError
+            data['auto_devops_deploy_strategy'] = auto_devops_deploy_strategy
+        if auto_devops_enabled:
+            if not isinstance(auto_devops_enabled, bool):
+                raise ParameterError
+            data['auto_devops_enabled'] = auto_devops_enabled
+        if autoclose_referenced_issues:
+            if not isinstance(autoclose_referenced_issues, bool):
+                raise ParameterError
+            data['autoclose_referenced_issues'] = autoclose_referenced_issues
+        if avatar:
+            if not isinstance(avatar, str):
+                raise ParameterError
+            data['avatar'] = avatar
+        if build_git_strategy:
+            if not isinstance(build_git_strategy, str):
+                raise ParameterError
+            data['build_git_strategy'] = build_git_strategy
+        if build_timeout:
+            if not isinstance(build_timeout, int):
+                raise ParameterError
+            data['build_timeout'] = build_timeout
+        if builds_access_level:
+            if builds_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['builds_access_level'] = builds_access_level
+        if ci_config_path:
+            if not isinstance(ci_config_path, str):
+                raise ParameterError
+            data['ci_config_path'] = ci_config_path
+        if ci_default_git_depth:
+            if not isinstance(ci_default_git_depth, int):
+                raise ParameterError
+            data['ci_default_git_depth'] = ci_default_git_depth
+        if ci_forward_deployment_enabled:
+            if not isinstance(ci_forward_deployment_enabled, bool):
+                raise ParameterError
+            data['ci_forward_deployment_enabled'] = ci_forward_deployment_enabled
+        if ci_allow_fork_pipelines_to_run_in_parent_project:
+            if not isinstance(ci_allow_fork_pipelines_to_run_in_parent_project, bool):
+                raise ParameterError
+            data['ci_allow_fork_pipelines_to_run_in_parent_project'] = ci_allow_fork_pipelines_to_run_in_parent_project
+        if ci_separated_caches:
+            if not isinstance(ci_separated_caches, bool):
+                raise ParameterError
+            data['ci_separated_caches'] = ci_separated_caches
+        if container_expiration_policy_attributes:
+            if not isinstance(container_expiration_policy_attributes, str):
+                raise ParameterError
+            data['container_expiration_policy_attributes'] = container_expiration_policy_attributes
+        if container_registry_access_level:
+            if not isinstance(container_registry_access_level, str):
+                raise ParameterError
+            data['container_registry_access_level'] = container_registry_access_level
+        if default_branch:
+            if not isinstance(default_branch, str):
+                raise ParameterError
+            data['default_branch'] = default_branch
+        if description:
+            if not isinstance(description, str):
+                raise ParameterError
+            data['description'] = description
+        if emails_disabled:
+            if not isinstance(emails_disabled, bool):
+                raise ParameterError
+            data['emails_disabled'] = emails_disabled
+        if enforce_auth_checks_on_uploads:
+            if not isinstance(enforce_auth_checks_on_uploads, bool):
+                raise ParameterError
+            data['enforce_auth_checks_on_uploads'] = enforce_auth_checks_on_uploads
+        if external_authorization_classification_label:
+            if not isinstance(external_authorization_classification_label, str):
+                raise ParameterError
+            data['external_authorization_classification_label'] = external_authorization_classification_label
+        if forking_access_level:
+            if forking_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['forking_access_level'] = forking_access_level
+        if import_url:
+            if not isinstance(import_url, str):
+                raise ParameterError
+            data['import_url'] = import_url
+        if issues_access_level:
+            if issues_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['issues_access_level'] = issues_access_level
+        if issues_template:
+            if not isinstance(issues_template, str):
+                raise ParameterError
+            data['issues_template'] = issues_template
+        if keep_latest_artifact:
+            if not isinstance(keep_latest_artifact, bool):
+                raise ParameterError
+            data['keep_latest_artifact'] = keep_latest_artifact
+        if lfs_enabled:
+            if not isinstance(lfs_enabled, bool):
+                raise ParameterError
+            data['lfs_enabled'] = lfs_enabled
+        if merge_commit_template:
+            if not isinstance(merge_commit_template, str):
+                raise ParameterError
+            data['merge_commit_template'] = merge_commit_template
+        if merge_method:
+            if not isinstance(merge_method, str):
+                raise ParameterError
+            data['merge_method'] = merge_method
+        if merge_pipelines_enabled:
+            if not isinstance(merge_pipelines_enabled, bool):
+                raise ParameterError
+            data['merge_pipelines_enabled'] = merge_pipelines_enabled
+        if merge_requests_access_level:
+            if merge_requests_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['merge_requests_access_level'] = merge_requests_access_level
+        if merge_requests_template:
+            if not isinstance(merge_requests_template, str):
+                raise ParameterError
+            data['merge_requests_template'] = merge_requests_template
+        if merge_trains_enabled:
+            if not isinstance(merge_trains_enabled, bool):
+                raise ParameterError
+            data['merge_trains_enabled'] = merge_trains_enabled
+        if mirror_overwrites_diverged_branches:
+            if not isinstance(mirror_overwrites_diverged_branches, bool):
+                raise ParameterError
+            data['mirror_overwrites_diverged_branches'] = mirror_overwrites_diverged_branches
+        if mirror_trigger_builds:
+            if not isinstance(mirror_trigger_builds, bool):
+                raise ParameterError
+            data['mirror_trigger_builds'] = mirror_trigger_builds
+        if mirror_user_id:
+            if not isinstance(mirror_user_id, int):
+                raise ParameterError
+            data['mirror_user_id'] = mirror_user_id
+        if mirror:
+            if not isinstance(mirror, bool):
+                raise ParameterError
+            data['mirror'] = mirror
+        if mr_default_target_self:
+            if not isinstance(mr_default_target_self, bool):
+                raise ParameterError
+            data['mr_default_target_self'] = mr_default_target_self
+        if name:
+            if not isinstance(name, str):
+                raise ParameterError
+            data['name'] = name
+        if only_allow_merge_if_all_discussions_are_resolved:
+            if not isinstance(only_allow_merge_if_all_discussions_are_resolved, bool):
+                raise ParameterError
+            data['only_allow_merge_if_all_discussions_are_resolved'] = only_allow_merge_if_all_discussions_are_resolved
+        if only_allow_merge_if_pipeline_succeeds:
+            if not isinstance(only_allow_merge_if_pipeline_succeeds, bool):
+                raise ParameterError
+            data['only_allow_merge_if_pipeline_succeeds'] = only_allow_merge_if_pipeline_succeeds
+        if only_mirror_protected_branches:
+            if not isinstance(only_mirror_protected_branches, bool):
+                raise ParameterError
+            data['only_mirror_protected_branches'] = only_mirror_protected_branches
+        if operations_access_level:
+            if operations_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['operations_access_level'] = operations_access_level
+        if packages_enabled:
+            if not isinstance(packages_enabled, bool):
+                raise ParameterError
+            data['packages_enabled'] = packages_enabled
+        if pages_access_level:
+            if pages_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['pages_access_level'] = pages_access_level
+        if path:
+            if not isinstance(path, str):
+                raise ParameterError
+            data['path'] = path
+        if printing_merge_request_link_enabled:
+            if not isinstance(printing_merge_request_link_enabled, bool):
+                raise ParameterError
+            data['printing_merge_request_link_enabled'] = printing_merge_request_link_enabled
+        if public_builds:
+            if not isinstance(public_builds, bool):
+                raise ParameterError
+            data['public_builds'] = public_builds
+        if releases_access_level:
+            if releases_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['releases_access_level'] = releases_access_level
+        if remove_source_branch_after_merge:
+            if not isinstance(remove_source_branch_after_merge, bool):
+                raise ParameterError
+            data['remove_source_branch_after_merge'] = remove_source_branch_after_merge
+        if repository_access_level:
+            if repository_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['repository_access_level'] = repository_access_level
+        if repository_storage:
+            if not isinstance(repository_storage, str):
+                raise ParameterError
+            data['repository_storage'] = repository_storage
+        if request_access_enabled:
+            if not isinstance(request_access_enabled, bool):
+                raise ParameterError
+            data['request_access_enabled'] = request_access_enabled
+        if requirements_access_level:
+            if requirements_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['requirements_access_level'] = requirements_access_level
+        if resolve_outdated_diff_discussions:
+            if not isinstance(resolve_outdated_diff_discussions, bool):
+                raise ParameterError
+            data['resolve_outdated_diff_discussions'] = resolve_outdated_diff_discussions
+        if restrict_user_defined_variables:
+            if not isinstance(restrict_user_defined_variables, bool):
+                raise ParameterError
+            data['restrict_user_defined_variables'] = restrict_user_defined_variables
+        if security_and_compliance_access_level:
+            if security_and_compliance_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['security_and_compliance_access_level'] = security_and_compliance_access_level
+        if service_desk_enabled:
+            if not isinstance(service_desk_enabled, bool):
+                raise ParameterError
+            data['service_desk_enabled'] = service_desk_enabled
+        if shared_runners_enabled:
+            if not isinstance(shared_runners_enabled, bool):
+                raise ParameterError
+            data['shared_runners_enabled'] = shared_runners_enabled
+        if snippets_access_level:
+            if snippets_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['snippets_access_level'] = snippets_access_level
+        if squash_commit_template:
+            if not isinstance(squash_commit_template, str):
+                raise ParameterError
+            data['squash_commit_template'] = squash_commit_template
+        if squash_option:
+            if snippets_access_level not in ['never', 'always', 'default_on', 'default_off']:
+                raise ParameterError
+            data['squash_option'] = squash_option
+        if suggestion_commit_message:
+            if not isinstance(suggestion_commit_message, str):
+                raise ParameterError
+            data['suggestion_commit_message'] = suggestion_commit_message
+        if tag_list:
+            if not isinstance(tag_list, list):
+                raise ParameterError
+            data['tag_list'] = tag_list
+        if topics:
+            if not isinstance(topics, list):
+                raise ParameterError
+            data['topics'] = topics
+        if visibility:
+            if not isinstance(visibility, str):
+                raise ParameterError
+            data['visibility'] = visibility
+        if wiki_access_level:
+            if wiki_access_level not in ['disabled', 'private', 'enabled']:
+                raise ParameterError
+            data['wiki_access_level'] = wiki_access_level
+        if len(data) > 0:
+            data = json.dumps(data, indent=4)
+            r = self._session.put(f'{self.url}/projects/{project_id}', data=data, headers=self.headers, verify=self.verify)
+            return r
+        else:
+            raise MissingParameterError
+
     @require_auth
     def get_project_groups(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
         r = self._session.get(f'{self.url}/projects/{project_id}/groups', headers=self.headers, verify=self.verify)
         return r
-    
+
     @require_auth
     def archive_project(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
         r = self._session.post(f'{self.url}/projects/{project_id}/archive', headers=self.headers, verify=self.verify)
         return r
-    
+
     @require_auth
     def unarchive_project(self, project_id=None):
         if project_id is None:
             raise MissingParameterError
         r = self._session.post(f'{self.url}/projects/{project_id}/unarchive', headers=self.headers, verify=self.verify)
         return r
-    
+
     @require_auth
     def delete_project(self, project_id=None):
         if project_id is None:
@@ -1197,8 +1718,8 @@ class Api(object):
     @require_auth
     def get_users(self, username=None, active=None, blocked=None, external=None, exclude_internal=None,
                   exclude_external=None, without_project_bots=None, extern_uid=None, provider=None, created_before=None,
-                  created_after=None, with_custom_attributes=None, max_pages=0, per_page=100, sort=None,
-                  order_by=None, two_factor=None, without_projects=None, admins=None, saml_provider_id=None):
+                  created_after=None, with_custom_attributes=None, sort=None, order_by=None, two_factor=None,
+                  without_projects=None, admins=None, saml_provider_id=None, max_pages=0, per_page=100):
         r = self._session.get(f'{self.url}/users?per_page={per_page}&x-total-pages',
                               headers=self.headers, verify=self.verify)
         total_pages = int(r.headers['X-Total-Pages'])
