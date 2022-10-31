@@ -508,22 +508,87 @@ class Api(object):
     #                                            Merge Request API                                                     #
     ####################################################################################################################
     @require_auth
-    def create_merge_request(self, project_id=None, data=None):
-        if project_id is None or data is None:
+    def create_merge_request(self, project_id=None, source_branch=None, target_branch=None, title=None,
+                             allow_collaboration=None, allow_maintainer_to_push=None, approvals_before_merge=None,
+                             assignee_id=None, assignee_ids=None, description=None, labels=None, milestone_id=None,
+                             remove_source_branch=None, reviewer_ids=None, squash=None, target_project_id=None):
+        if project_id is None or source_branch is None or target_branch is None or title is None:
             raise MissingParameterError
-        r = self._session.post(f'{self.url}/projects/{project_id}/merge_requests', headers=self.headers,
-                               verify=self.verify)
-        return r
+        data = {}
+        if source_branch:
+            if not isinstance(source_branch, str):
+                raise ParameterError
+            data['source_branch'] = source_branch
+        if target_branch:
+            if not isinstance(target_branch, str):
+                raise ParameterError
+            data['target_branch'] = target_branch
+        if title:
+            if not isinstance(title, str):
+                raise ParameterError
+            data['title'] = title
+        if allow_collaboration:
+            if not isinstance(allow_collaboration, bool):
+                raise ParameterError
+            data['allow_collaboration'] = allow_collaboration
+        if allow_maintainer_to_push:
+            if not isinstance(allow_maintainer_to_push, bool):
+                raise ParameterError
+            data['allow_maintainer_to_push'] = allow_maintainer_to_push
+        if approvals_before_merge:
+            if not isinstance(approvals_before_merge, int):
+                raise ParameterError
+            data['approvals_before_merge'] = approvals_before_merge
+        if assignee_ids:
+            if not isinstance(assignee_ids, int):
+                raise ParameterError
+            data['assignee_ids'] = assignee_ids
+        if description:
+            if not isinstance(description, str):
+                raise ParameterError
+            data['description'] = description
+        if labels:
+            if not isinstance(labels, str):
+                raise ParameterError
+            data['labels'] = labels
+        if milestone_id:
+            if not isinstance(milestone_id, int):
+                raise ParameterError
+            data['milestone_id'] = milestone_id
+        if remove_source_branch:
+            if not isinstance(remove_source_branch, str):
+                raise ParameterError
+            data['remove_source_branch'] = remove_source_branch
+        if reviewer_ids:
+            if not isinstance(reviewer_ids, list):
+                raise ParameterError
+            data['reviewer_ids'] = reviewer_ids
+        if squash:
+            if not isinstance(squash, bool):
+                raise ParameterError
+            data['squash'] = squash
+        if target_project_id:
+            if not isinstance(target_project_id, int):
+                raise ParameterError
+            data['target_project_id'] = target_project_id
+
+        if len(data) > 0:
+            data = json.dumps(data, indent=4)
+            r = self._session.post(f'{self.url}/projects/{project_id}/merge_requests', headers=self.headers,
+                                   verify=self.verify)
+            return r
+        else:
+            raise MissingParameterError
 
     @require_auth
     def get_merge_requests(self, approved_by_ids=None, approver_ids=None, assignee_id=None, author_id=None,
                            author_username=None, created_after=None, created_before=None, deployed_after=None,
                            deployed_before=None, environment=None, search_in=None, labels=None, milestone=None,
                            my_reaction_emoji=None, search_exclude=None, order_by=None, reviewer_id=None,
-                           reviewer_username=None,
-                           scope=None, search=None, sort=None, source_branch=None, state=None, target_branch=None,
-                           updated_after=None, updated_before=None, view=None, with_labels_details=None,
-                           with_merge_status_recheck=None, wip=None, max_pages=0, per_page=100):
+                           reviewer_username=None, scope=None, search=None, sort=None, source_branch=None, state=None,
+                           target_branch=None, updated_after=None, updated_before=None, view=None,
+                           with_labels_details=None, with_merge_status_recheck=None, wip=None, max_pages=0,
+                           per_page=100):
         r = self._session.get(f'{self.url}/merge_requests?per_page={per_page}&x-total-pages', headers=self.headers,
                               verify=self.verify)
         total_pages = int(r.headers['X-Total-Pages'])
@@ -784,20 +849,98 @@ class Api(object):
         return r
 
     @require_auth
-    def create_project_level_rule(self, project_id=None, data=None):
-        if project_id is None or data is None:
+    def create_project_level_rule(self, project_id=None, approvals_required=None, name=None,
+                                  applies_to_all_protected_branches=None, group_ids=None, protected_branch_ids=None,
+                                  report_type=None, rule_type=None, user_ids=None):
+        if project_id is None or approvals_required is None or name is None:
             raise MissingParameterError
-        r = self._session.post(f'{self.url}/projects/{project_id}/approval_rules', data=data, headers=self.headers,
-                               verify=self.verify)
-        return r
+        data = {}
+        if approvals_required:
+            if not isinstance(approvals_required, int):
+                raise ParameterError
+            data['approvals_required'] = approvals_required
+        if name:
+            if not isinstance(name, str):
+                raise ParameterError
+            data['name'] = name
+        if applies_to_all_protected_branches:
+            if not isinstance(applies_to_all_protected_branches, bool):
+                raise ParameterError
+            data['applies_to_all_protected_branches'] = applies_to_all_protected_branches
+        if group_ids:
+            if not isinstance(group_ids, list):
+                raise ParameterError
+            data['group_ids'] = group_ids
+        if protected_branch_ids:
+            if not isinstance(protected_branch_ids, list):
+                raise ParameterError
+            data['protected_branch_ids'] = protected_branch_ids
+        if report_type:
+            if report_type not in ['license_scanning', 'code_coverage']:
+                raise ParameterError
+            data['report_type'] = report_type
+        if rule_type:
+            if rule_type not in ['any_approver', 'regular']:
+                raise ParameterError
+            data['rule_type'] = rule_type
+        if user_ids:
+            if not isinstance(user_ids, list):
+                raise ParameterError
+            data['user_ids'] = user_ids
+        if len(data) > 0:
+            data = json.dumps(data, indent=4)
+            r = self._session.post(f'{self.url}/projects/{project_id}/approval_rules', data=data, headers=self.headers,
+                                   verify=self.verify)
+            return r
+        else:
+            raise MissingParameterError
 
     @require_auth
-    def update_project_level_rule(self, project_id=None, approval_rule_id=None, data=None):
-        if project_id is None or approval_rule_id is None or data is None:
+    def update_project_level_rule(self, project_id=None, approval_rule_id=None, approvals_required=None, name=None,
+                                  applies_to_all_protected_branches=None, group_ids=None, protected_branch_ids=None,
+                                  report_type=None, rule_type=None, user_ids=None):
+        if project_id is None or approval_rule_id is None or approvals_required is None or name is None:
             raise MissingParameterError
-        r = self._session.put(f'{self.url}/projects/{project_id}/approval_rules/{approval_rule_id}', data=data,
-                              headers=self.headers, verify=self.verify)
-        return r
+        data = {}
+        if approvals_required:
+            if not isinstance(approvals_required, int):
+                raise ParameterError
+            data['approvals_required'] = approvals_required
+        if name:
+            if not isinstance(name, str):
+                raise ParameterError
+            data['name'] = name
+        if applies_to_all_protected_branches:
+            if not isinstance(applies_to_all_protected_branches, bool):
+                raise ParameterError
+            data['applies_to_all_protected_branches'] = applies_to_all_protected_branches
+        if group_ids:
+            if not isinstance(group_ids, list):
+                raise ParameterError
+            data['group_ids'] = group_ids
+        if protected_branch_ids:
+            if not isinstance(protected_branch_ids, list):
+                raise ParameterError
+            data['protected_branch_ids'] = protected_branch_ids
+        if report_type:
+            if report_type not in ['license_scanning', 'code_coverage']:
+                raise ParameterError
+            data['report_type'] = report_type
+        if rule_type:
+            if rule_type not in ['any_approver', 'regular']:
+                raise ParameterError
+            data['rule_type'] = rule_type
+        if user_ids:
+            if not isinstance(user_ids, list):
+                raise ParameterError
+            data['user_ids'] = user_ids
+        if len(data) > 0:
+            data = json.dumps(data, indent=4)
+            r = self._session.put(f'{self.url}/projects/{project_id}/approval_rules/{approval_rule_id}', data=data,
+                                  headers=self.headers, verify=self.verify)
+            return r
+        else:
+            raise MissingParameterError
 
     @require_auth
     def delete_project_level_rule(self, project_id=None, approval_rule_id=None):
