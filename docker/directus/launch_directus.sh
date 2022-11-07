@@ -1,8 +1,7 @@
 #!/bin/bash
 
-mkdir -p gitlab
-cd gitlab
-sudo docker-compose up -d
+mkdir -p ./data/database ./uploads ./extensions
+sudo docker-compose up #-d
 # https://www.czerniga.it/2021/11/14/how-to-install-gitlab-using-docker-compose/
 #docker exec -it gitlab-ce grep
 
