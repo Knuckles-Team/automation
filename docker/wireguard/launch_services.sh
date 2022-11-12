@@ -8,6 +8,4 @@ mkdir -p ${WORKDIR}/ddclient
 
 sudo ufw allow 51820/udp
 
-echo "examplepassword" | tee ${WORKDIR}/wireguard/password.txt
-
 sudo docker-compose up -d
