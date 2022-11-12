@@ -16,9 +16,9 @@ services:
       - ALLOWEDIPS=0.0.0.0/0
       - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
       - SERVERURL=${SERVERURL} # Wireguard VPN server address
-      - FILE__PASSWORD=/data/wireguard/password.txt
+      - FILE__PASSWORD=${WORKDIR}/password.txt
     volumes:
-      - ./data:/data
+      - ${WORKDIR}/wireguard:/services
       - /opt/wireguard-server/config:/config
       - /usr/src:/usr/src # location of kernel headers
       - /lib/modules:/lib/modules
@@ -36,5 +36,5 @@ services:
       - PGID=1000
       - TZ=America/Chicago
     volumes:
-      - ./data:/config
+      - ${WORKDIR}/ddclient:/config
     restart: always

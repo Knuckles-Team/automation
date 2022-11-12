@@ -1,7 +1,8 @@
 #!/bin/bash
 
-mkdir -p ./data/wireguard
-mkdir -p ./data/ddclient
+export WORKDIR=/services
+mkdir -p ${WORKDIR}/wireguard
+mkdir -p ${WORKDIR}/ddclient
 
 sudo ufw allow 51820/udp
 
