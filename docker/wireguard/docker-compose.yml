@@ -37,5 +37,6 @@ services:
       - TZ=America/Chicago
       - COMPOSE_HTTP_TIMEOUT=300
     volumes:
+      - /services/ddclient/default:/etc/default/
       - /services/ddclient:/config
     restart: always
