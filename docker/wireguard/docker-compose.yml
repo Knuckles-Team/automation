@@ -39,4 +39,5 @@ services:
       - COMPOSE_HTTP_TIMEOUT=300
     volumes:
       - /services/config:/config
+      - /services/config:/
     restart: always
