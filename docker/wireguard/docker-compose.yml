@@ -18,7 +18,6 @@ services:
       - SERVERURL=heavenvpn.twilightparadox.com # Wireguard VPN server address
       - COMPOSE_HTTP_TIMEOUT=300
     volumes:
-      - /services/wireguard:/services
       - /opt/wireguard-server/config:/config
       - /usr/src:/usr/src # location of kernel headers
       - /lib/modules:/lib/modules
@@ -39,5 +38,5 @@ services:
       - TZ=America/Chicago
       - COMPOSE_HTTP_TIMEOUT=300
     volumes:
-      - /services/ddclient:/config
+      - /services/config:/config
     restart: always
