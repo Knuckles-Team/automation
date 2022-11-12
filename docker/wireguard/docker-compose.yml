@@ -15,9 +15,9 @@ services:
       - PEERDNS=auto
       - ALLOWEDIPS=0.0.0.0/0
       - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
-      - SERVERURL=${SERVERURL} # Wireguard VPN server address
+      - SERVERURL=heavenvpn.twilightparadox.com	 # Wireguard VPN server address
     volumes:
-      - ${WORKDIR}/wireguard:/services
+      - /services/wireguard:/services
       - /opt/wireguard-server/config:/config
       - /usr/src:/usr/src # location of kernel headers
       - /lib/modules:/lib/modules
@@ -35,5 +35,5 @@ services:
       - PGID=1000
       - TZ=America/Chicago
     volumes:
-      - ${WORKDIR}/ddclient:/config
+      - /services/ddclient:/config
     restart: always
