@@ -1,6 +1,8 @@
 #!/bin/bash
 
-sudo apt install ddclient -y
+sudo apt update
+sudo apt upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt install ddclient -y
 
 echo "
 # /etc/ddclient.conf
@@ -21,3 +23,4 @@ sudo sed -i 's/run_ipup="true"/run_ipup="false"/' /etc/default/ddclient
 sudo systemctl restart ddclient
 sudo systemctl status ddclient
 sudo systemctl enable ddclient
+wget https://git.io/wireguard -O wireguard-install.sh && sudo bash wireguard-install.sh

@@ -1,0 +1,38 @@
+version: '1.0'
+services:
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Nairobi #set correct timezone
+      - SERVERPORT=51820 #optional
+      - PEERS=1 #optional
+      - PEERDNS=auto #optional
+      - ALLOWEDIPS=0.0.0.0/0 #Peer addresses allowed
+      - INTERNAL_SUBNET=10.13.13.0/24 #Subnet used in VPN tunnel
+      - SERVERURL=192.168.201.13 #Wireguard VPN server address
+    volumes:
+      - /opt/wireguard-server/config:/config
+      - /usr/src:/usr/src # location of kernel headers
+      - /lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: always
+
+  ddclient:
+    image: lscr.io/linuxserver/ddclient:latest
+    container_name: ddclient
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    volumes:
+      - ./data:/config
+    restart: unless-stopped
