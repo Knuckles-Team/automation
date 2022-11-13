@@ -9,10 +9,12 @@ networks:
 
 services:
   unbound:
-    image: "mvance/unbound:latest"
+    image: mvance/unbound-rpi:latest
     container_name: unbound
     restart: unless-stopped
     hostname: "unbound"
+    env_file:
+      - .env
     volumes:
       - "./unbound:/opt/unbound/etc/unbound/"
     networks:
@@ -26,6 +28,8 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    env_file:
+      - .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -34,16 +38,18 @@ services:
       - 9000:9000
     networks:
       private_network:
-        ipv4_address: 10.3.0.3
+        ipv4_address: 10.3.0.10
 
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
+    env_file:
+      - .env
     volumes:
       - /services/uptime-kuma-data:/app/data
     ports:
       - 3001:3001
-    restart: always
+    restart: unless-stopped
 
   transmission-openvpn:
     depends_on: [unbound]
@@ -73,7 +79,7 @@ services:
       - 10.2.0.200 # Points to unbound
     networks:
       private_network:
-        ipv4_address: 10.3.0.150
+        ipv4_address: 10.3.0.20
 
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
@@ -96,7 +102,7 @@ services:
     restart: unless-stopped
     networks:
       private_network:
-        ipv4_address: 10.3.0.151
+        ipv4_address: 10.3.0.30
 
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
@@ -111,14 +117,14 @@ services:
     ports:
       - 80:80
       - 443:443
-    restart: always
+    restart: unless-stopped
     networks:
       private_network:
-        ipv4_address: 10.3.0.152
+        ipv4_address: 10.3.0.40
 
   gitlab-web:
     image: 'gitlab/gitlab-ce:latest'
-    restart: always
+    restart: unless-stopped
     hostname: 'localhost'
     container_name: gitlab-ce
     environment:
@@ -136,7 +142,7 @@ services:
       - '/home/mrdr/Containers/gitlab/data:/var/opt/gitlab'
     networks:
       private_network:
-        ipv4_address: 10.3.0.153
+        ipv4_address: 10.3.0.50
 
   directus-database:
     container_name: database
@@ -145,7 +151,7 @@ services:
       - ./data/database:/var/lib/postgresql/data
     networks:
       private_network:
-        ipv4_address: 10.3.0.154
+        ipv4_address: 10.3.0.60
     env_file:
       - .env
 
@@ -154,7 +160,7 @@ services:
     image: redis:6
     networks:
       private_network:
-        ipv4_address: 10.3.0.155
+        ipv4_address: 10.3.0.70
 
   directus-web:
     container_name: directus
@@ -172,7 +178,7 @@ services:
       - ./extensions:/directus/extensions
     networks:
       private_network:
-        ipv4_address: 10.3.0.156
+        ipv4_address: 10.3.0.80
     depends_on:
       - directus-cache
       - directus-database
