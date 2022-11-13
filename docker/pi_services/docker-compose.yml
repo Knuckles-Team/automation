@@ -100,4 +100,4 @@ services:
       - 10.2.0.200 # Points to unbound
     networks:
       private_network:
-        ipv4_address: 10.2.0.200
+        ipv4_address: 10.2.0.150
