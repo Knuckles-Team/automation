@@ -15,5 +15,7 @@ ENV USERNAME=${USERNAME}
 ENV URL=${URL}
 ENV SERVER=${SERVER}
 RUN echo -e 'run_dhclient="false"\nrun_ipup="true"\nrun_daemon="false"\ndaemon_interval="300"' > /etc/default/ddclient
+RUN rm -rf /config/ddclient.conf
+RUN rm -rf /ddclient.conf
 RUN echo -e "daemon=5m\ntimeout=10\nsyslog=yes\npid=/var/run/ddclient.pid\nssl=yes\n\nuse=if, if=eth0\nserver=${SERVER}/\nprotocol=freedns\nlogin=${USERNAME}\npassword='${PASSWORD}'\n${SERVERURL}" > /config/ddclient.conf
 RUN echo -e "daemon=5m\ntimeout=10\nsyslog=yes\npid=/var/run/ddclient.pid\nssl=yes\n\nuse=if, if=eth0\nserver=${SERVER}/\nprotocol=freedns\nlogin=${USERNAME}\npassword='${PASSWORD}'\n${SERVERURL}" > /ddclient.conf
