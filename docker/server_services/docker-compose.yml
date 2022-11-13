@@ -20,7 +20,7 @@ services:
         ipv4_address: 10.3.0.200
 
   portainer:
-    depends_on: [unbound, pihole]
+    depends_on: [unbound]
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: unless-stopped
@@ -46,11 +46,11 @@ services:
     restart: always
 
   transmission-openvpn:
-    depends_on: [unbound, pihole]
+    depends_on: [unbound]
     image: haugene/transmission-openvpn
     container_name: transmission-openvpn
     volumes:
-      - /home/${USER}/Torrents/:/data
+      - /mnt/Torrents/:/data
     environment:
       - PUID=1000
       - PGID=1000
