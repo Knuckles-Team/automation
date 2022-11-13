@@ -9,14 +9,11 @@ services:
       - 127.0.0.1
       - 10.2.0.200 # Points to unbound
     environment:
-      - TZ=America/Chicago
-      - WEBPASSWORD=PASSWORD
       - PIHOLE_DNS_=1.1.1.1
       - DHCP_ACTIVE=false
-      - COMPOSE_HTTP_TIMEOUT=300
-      - ServerIP: 10.2.0.100 # Internal IP of pihole
-      - DNS1: 10.2.0.200 # Unbound IP
-      - DNS2: 10.2.0.200 # If we don't specify two, it will auto pick google.
+      - ServerIP=10.2.0.100 # Internal IP of pihole
+      - DNS1=10.2.0.200 # Unbound IP
+      - DNS2=10.2.0.200 # If we don't specify two, it will auto pick google.
     volumes:
       - '/services/etc-pihole:/etc/pihole'
       - '/services/etc-dnsmasq.d:/etc/dnsmasq.d'
