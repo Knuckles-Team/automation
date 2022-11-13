@@ -9,10 +9,11 @@ services:
       - "53:53/udp"
       - "80:80/tcp"
     environment:
-      TZ: 'America/Chicago'
-      WEBPASSWORD: 'PASSWORD'
-      PIHOLE_DNS_: '1.1.1.1'
-      DHCP_ACTIVE: 'false'
+      - TZ=America/Chicago
+      - WEBPASSWORD=PASSWORD
+      - PIHOLE_DNS_=1.1.1.1
+      - DHCP_ACTIVE=false
+      - COMPOSE_HTTP_TIMEOUT=300
     volumes:
       - '/services/etc-pihole:/etc/pihole'
       - '/services/etc-dnsmasq.d:/etc/dnsmasq.d'

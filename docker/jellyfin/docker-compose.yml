@@ -8,6 +8,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Chicago
+      - COMPOSE_HTTP_TIMEOUT=300
       - JELLYFIN_PublishedServerUrl=192.168.1.5 #optional
     volumes:
       - /services:/config
