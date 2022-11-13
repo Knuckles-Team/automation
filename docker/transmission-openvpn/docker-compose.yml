@@ -7,12 +7,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - OPENVPN_PROVIDER=NordVPN
-      - OPENVPN_CONFIG=us
-      - OPENVPN_USERNAME=user
-      - OPENVPN_PASSWORD=pass
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
-      - LOCAL_NETWORK=192.168.1.0/24
     env_file:
       - .env
     devices:
