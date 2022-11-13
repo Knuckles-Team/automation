@@ -1,0 +1,103 @@
+version: "3"
+
+networks:
+  private_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.2.0.0/24
+
+services:
+  unbound:
+    image: "mvance/unbound:latest"
+    container_name: unbound
+    restart: unless-stopped
+    hostname: "unbound"
+    volumes:
+      - "./unbound:/opt/unbound/etc/unbound/"
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.200
+
+  wireguard:
+    depends_on: [unbound, pihole]
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PEERS=9
+      - PEERDNS=10.2.0.100
+      - ALLOWEDIPS=0.0.0.0/0
+      - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
+    env_file:
+      - .env
+    volumes:
+      - /opt/wireguard-server/config:/config
+      - /usr/src:/usr/src # location of kernel headers
+      - /lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+    dns:
+      - 10.2.0.100 # Points to pihole
+      - 10.2.0.200 # Points to unbound
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: always
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.3
+
+  pihole:
+    depends_on: [unbound]
+    container_name: pihole
+    image: pihole/pihole:latest
+    dns:
+      - 127.0.0.1
+      - 10.2.0.200 # Points to unbound
+    environment:
+      - PIHOLE_DNS_=1.1.1.1
+      - DHCP_ACTIVE=false
+      - ServerIP=10.2.0.100 # Internal IP of pihole
+      - DNS1=10.2.0.200 # Unbound IP
+      - DNS2=10.2.0.200 # If we don't specify two, it will auto pick google.
+    volumes:
+      - '/services/etc-pihole:/etc/pihole'
+      - '/services/etc-dnsmasq.d:/etc/dnsmasq.d'
+    restart: always
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.100
+
+  transmission-openvpn:
+    depends_on: [unbound, pihole]
+    image: haugene/transmission-openvpn
+    container_name: transmission-openvpn
+    volumes:
+      - /home/${USER}/Torrents/:/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+    env_file:
+      - .env
+    devices:
+      - /dev/net/tun
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - 9091:9091
+      - 8888:8888
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 10.2.0.100 # Points to pihole
+      - 10.2.0.200 # Points to unbound
+    networks:
+      private_network:
+        ipv4_address: 10.2.0.200
