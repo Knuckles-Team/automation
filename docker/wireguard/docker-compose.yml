@@ -9,14 +9,14 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/Chicago
       - SERVERPORT=51820
       - PEERS=3
       - PEERDNS=auto
       - ALLOWEDIPS=0.0.0.0/0
       - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
       - SERVERURL=heavenvpn.twilightparadox.com # Wireguard VPN server address
-      - COMPOSE_HTTP_TIMEOUT=300
+    env_file:
+      - .env
     volumes:
       - /opt/wireguard-server/config:/config
       - /usr/src:/usr/src # location of kernel headers
@@ -31,12 +31,15 @@ services:
     build:
       context: .
       dockerfile: ./ddclient.Dockerfile
+      args:
+        USERNAME: ${USERNAME}
+        PASSWORD: ${PASSWORD}
     container_name: ddclient
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/Chicago
-      - COMPOSE_HTTP_TIMEOUT=300
+    env_file:
+      - .env
     volumes:
       - /services/config:/config
     restart: always
