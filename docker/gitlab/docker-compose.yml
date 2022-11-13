@@ -6,6 +6,7 @@ services:
     hostname: 'localhost'
     container_name: gitlab-ce
     environment:
+      COMPOSE_HTTP_TIMEOUT: 300
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://localhost'
         gitlab_rails['initial_root_password'] = 'GitLabIsFun'

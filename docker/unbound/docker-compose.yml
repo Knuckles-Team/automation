@@ -6,6 +6,8 @@ services:
     container_name: unbound
     restart: always
     hostname: "unbound"
+    environment:
+      - COMPOSE_HTTP_TIMEOUT=300
     volumes:
       - "./unbound:/opt/unbound/etc/unbound/"
     networks:
