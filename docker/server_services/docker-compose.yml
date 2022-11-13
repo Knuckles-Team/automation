@@ -9,14 +9,15 @@ networks:
 
 services:
   unbound:
-    image: mvance/unbound-rpi:latest
+    image: mvance/unbound:latest
     container_name: unbound
     restart: unless-stopped
     hostname: "unbound"
     env_file:
       - .env
     volumes:
-      - "./unbound:/opt/unbound/etc/unbound/"
+      - ./unbound:/opt/unbound/etc/unbound/
+      - ./unbound/etc:/etc/
     networks:
       private_network:
         ipv4_address: 10.3.0.200
@@ -119,7 +120,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /services/heimdall/config:/config
+      - ./config:/config
     ports:
       - 80:80
       - 443:443
@@ -144,9 +145,9 @@ services:
       - '8080:80'
       - '8443:443'
     volumes:
-      - '/home/mrdr/Containers/gitlab/config:/etc/gitlab'
-      - '/home/mrdr/Containers/gitlab/logs:/var/log/gitlab'
-      - '/home/mrdr/Containers/gitlab/data:/var/opt/gitlab'
+      - './gitlab/config:/etc/gitlab'
+      - './gitlab/logs:/var/log/gitlab'
+      - './gitlab/data:/var/opt/gitlab'
     networks:
       private_network:
         ipv4_address: 10.3.0.50
