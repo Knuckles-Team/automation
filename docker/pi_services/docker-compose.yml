@@ -9,7 +9,7 @@ networks:
 
 services:
   unbound:
-    image: "mvance/unbound:latest"
+    image: mvance/unbound-rpi:latest
     container_name: unbound
     restart: always
     hostname: "unbound"
