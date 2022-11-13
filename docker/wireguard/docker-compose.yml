@@ -9,12 +9,10 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - SERVERPORT=51820
       - PEERS=3
       - PEERDNS=auto
       - ALLOWEDIPS=0.0.0.0/0
       - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
-      - SERVERURL=${SERVERURL} # Wireguard VPN server address
     env_file:
       - .env
     volumes:
@@ -25,23 +23,4 @@ services:
       - 51820:51820/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-    restart: always
-
-  ddclient:
-    build:
-      context: .
-      dockerfile: ./ddclient.Dockerfile
-      args:
-        USERNAME: ${USERNAME}
-        PASSWORD: ${PASSWORD}
-        SERVER: ${SERVER}
-        SERVERURL: ${SERVERURL}
-    container_name: ddclient
-    environment:
-      - PUID=1000
-      - PGID=1000
-    env_file:
-      - .env
-    volumes:
-      - /services/ddclient/config:/config
     restart: always
