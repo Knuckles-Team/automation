@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  transmission-openvpn:
+    image: haugene/transmission-openvpn
+    volumes:
+      - '/services/transmission/:/data'
+      - ${HOME}/Downloads:/downloads
+    environment:
+      - OPENVPN_PROVIDER=PIA
+      - OPENVPN_CONFIG=france
+      - OPENVPN_USERNAME=user
+      - OPENVPN_PASSWORD=pass
+      - LOCAL_NETWORK=192.168.0.0/16
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - '9091:9091'
+    cap_add:
+      - NET_ADMIN
