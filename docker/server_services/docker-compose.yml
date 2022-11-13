@@ -1,0 +1,193 @@
+version: "3"
+
+networks:
+  private_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.3.0.0/24
+
+services:
+  unbound:
+    image: "mvance/unbound:latest"
+    container_name: unbound
+    restart: unless-stopped
+    hostname: "unbound"
+    volumes:
+      - "./unbound:/opt/unbound/etc/unbound/"
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.200
+
+  portainer:
+    depends_on: [unbound, pihole]
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer-data:/data
+    ports:
+      - 9000:9000
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.3
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - /services/uptime-kuma-data:/app/data
+    ports:
+      - 3001:3001
+    restart: always
+
+  transmission-openvpn:
+    depends_on: [unbound, pihole]
+    image: haugene/transmission-openvpn
+    container_name: transmission-openvpn
+    volumes:
+      - /home/${USER}/Torrents/:/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+    env_file:
+      - .env
+    devices:
+      - /dev/net/tun
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - 9091:9091
+      - 8888:8888
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 10.2.0.100 # Points to pihole
+      - 10.2.0.200 # Points to unbound
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.150
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - JELLYFIN_PublishedServerUrl=192.168.1.5 #optional
+    env_file:
+      - .env
+    volumes:
+      - /services:/config
+      - /path/to/tvseries:/data/tvshows
+      - /path/to/movies:/data/movies
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
+    restart: unless-stopped
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.151
+
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    environment:
+      - PUID=1000
+      - PGID=1000
+    env_file:
+      - .env
+    volumes:
+      - /services/heimdall/config:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.152
+
+  gitlab-web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'localhost'
+    container_name: gitlab-ce
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost'
+        gitlab_rails['initial_root_password'] = 'GitLabIsFun'
+    env_file:
+      - .env
+    ports:
+      - '8080:80'
+      - '8443:443'
+    volumes:
+      - '/home/mrdr/Containers/gitlab/config:/etc/gitlab'
+      - '/home/mrdr/Containers/gitlab/logs:/var/log/gitlab'
+      - '/home/mrdr/Containers/gitlab/data:/var/opt/gitlab'
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.153
+
+  directus-database:
+    container_name: database
+    image: postgis/postgis:13-master
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.154
+    environment:
+      POSTGRES_USER: 'directus'
+      POSTGRES_PASSWORD: 'directus'
+      POSTGRES_DB: 'directus'
+
+  directus-cache:
+    container_name: cache
+    image: redis:6
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.155
+
+  directus-web:
+    container_name: directus
+    image: directus/directus:latest
+    ports:
+      - 8055:8055
+    volumes:
+      # By default, uploads are stored in /directus/uploads
+      # Always make sure your volumes matches the storage root when using
+      # local driver
+      - ./uploads:/directus/uploads
+      # Make sure to also mount the volume when using SQLite
+      # - ./database:/directus/database
+      # If you want to load extensions from the host
+      - ./extensions:/directus/extensions
+    networks:
+      private_network:
+        ipv4_address: 10.3.0.156
+    depends_on:
+      - directus-cache
+      - directus-database
+    environment:
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+      DB_CLIENT: 'pg'
+      DB_HOST: 'database'
+      DB_PORT: '5432'
+      DB_DATABASE: 'directus'
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      CACHE_REDIS: 'redis://cache:6379'
+
+
+      PUBLIC_URL: 'https://directus.knux.com'
