@@ -43,5 +43,5 @@ services:
     env_file:
       - .env
     volumes:
-      - /services/config:/config
+      - /services/ddclient/config:/config
     restart: always
