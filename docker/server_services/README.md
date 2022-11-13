@@ -16,8 +16,19 @@ SERVERURL=heavenvpn.twilightparadox.com
 TZ=America/Chicago
 SERVERPORT=51820
 WEBPASSWORD=password
+DB_CLIENT=pg
+DB_HOST=database
+DB_PORT=5432
+DB_DATABASE=directus
 DB_USER=directus
 DB_PASSWORD=directus
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=d1r3ctu5
+KEY=234567
+SECRET=34534675544
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=d1r3ctu5
+POSTGRES_USER: 'directus'
+POSTGRES_PASSWORD: 'directus'
+POSTGRES_DB: 'directus'
 ```
