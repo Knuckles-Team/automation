@@ -8,5 +8,3 @@ RUN cpanm App::cpm
 RUN cpanm --sudo Digest::SHA1
 RUN echo -e 'run_dhclient="false"\nrun_ipup="true"\nrun_daemon="false"\ndaemon_interval="300"' | tee /etc/default/ddclient
 RUN echo -e 'daemon=5m\ntimeout=10\nsyslog=yes\npid=/var/run/ddclient.pid\nssl=yes\n\nuse=if, if=eth0\nserver=freedns.afraid.org/\nprotocol=freedns\nlogin=knucklessg1@gmail.com\npassword="PASSWORD"\nheavenvpn.twilightparadox.com' | tee /ddclient.config
-RUN rc-service ddclient restart
-RUN rc-update add ddclient
