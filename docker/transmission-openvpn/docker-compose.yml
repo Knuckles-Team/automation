@@ -3,19 +3,28 @@ services:
   transmission-openvpn:
     image: haugene/transmission-openvpn
     volumes:
-      - '/services/transmission/:/data'
-      - ${HOME}/Downloads:/downloads
+      - /home/${USER}/Torrents/:/data
     environment:
-      - OPENVPN_PROVIDER=PIA
-      - OPENVPN_CONFIG=france
+      - PUID=1000
+      - PGID=1000
+      - OPENVPN_PROVIDER=NordVPN
+      - OPENVPN_CONFIG=us
       - OPENVPN_USERNAME=user
       - OPENVPN_PASSWORD=pass
-      - LOCAL_NETWORK=192.168.0.0/16
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - LOCAL_NETWORK=192.168.1.0/24
+    env_file:
+      - .env
+    devices:
+      - /dev/net/tun
     logging:
       driver: json-file
       options:
         max-size: 10m
     ports:
-      - '9091:9091'
+      - 9091:9091
+      - 8888:8888
     cap_add:
       - NET_ADMIN
+    dns:
+      - 1.1.1.1
