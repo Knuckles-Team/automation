@@ -1,6 +1,8 @@
 
 Make sure server has port firewall open
 
+Install ddclient on the server and configure it with subdomain details
+
 ```bash
 sudo apt install ufw
 sudo ufw allow 51820/udp
