@@ -11,7 +11,7 @@ services:
   unbound:
     image: "mvance/unbound:latest"
     container_name: unbound
-    restart: unless-stopped
+    restart: always
     hostname: "unbound"
     volumes:
       - "./unbound:/opt/unbound/etc/unbound/"
