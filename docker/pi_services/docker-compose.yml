@@ -24,6 +24,15 @@ services:
       dns_network:
         ipv4_address: 172.20.0.7
 
+  docker-hoster:
+    image: dvdarias/docker-hoster
+    container_name: hoster
+    restart: always
+    hostname: hoster
+    volumes:
+      - /etc/hosts:/tmp/hosts
+      - /var/run/docker.sock:/tmp/docker.sock
+
   wireguard:
     depends_on: [unbound, pihole]
     image: linuxserver/wireguard
@@ -56,6 +65,8 @@ services:
     networks:
       dns_network:
         ipv4_address: 172.20.0.8
+        aliases:
+          - "wireguard.heaven.com"
 
   pihole:
     depends_on: [unbound]
@@ -82,3 +93,5 @@ services:
     networks:
       dns_network:
         ipv4_address: 172.20.0.6
+        aliases:
+          - "pihole.heaven.com"
