@@ -55,12 +55,10 @@ services:
     depends_on: [unbound]
     container_name: pihole
     image: pihole/pihole:latest
-    network_mode: "host"
-#    ports:
-#      - "53:53/tcp"
-#      - "53:53/udp"
-#      - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
-#      - "80:80/tcp"
+    #network_mode: "host"
+    ports:
+      - 53
+      - 80
     dns:
       - 127.0.0.1
       - 10.2.0.200 # Points to unbound
@@ -71,8 +69,8 @@ services:
       - DNS1=10.2.0.200 # Unbound IP
       - DNS2=10.2.0.200 # If we don't specify two, it will auto pick google.
     volumes:
-      - '/services/etc-pihole:/etc/pihole'
-      - '/services/etc-dnsmasq.d:/etc/dnsmasq.d'
+      - /services/etc-pihole:/etc/pihole
+      - /services/etc-dnsmasq.d:/etc/dnsmasq.d
     restart: always
     networks:
       private_network:
