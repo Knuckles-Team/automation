@@ -16,8 +16,8 @@ services:
     volumes:
       - ./unbound:/opt/unbound/etc/unbound/
     ports:
-      - 5053:5053/tcp
-      - 5053:5053/udp
+      - "5053:5053/tcp"
+      - "5053:5053/udp"
     healthcheck:
       disable: true
     networks:
@@ -61,10 +61,10 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     ports:
-      - yy.yy.yy.yy:53:53/tcp
-      - yy.yy.yy.yy:53:53/udp
-      - 80:80/tcp
-      - 443:443/tcp
+      - "yy.yy.yy.yy:53:53/tcp"
+      - "yy.yy.yy.yy:53:53/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
     dns:
       - 127.0.0.1
       - 172.20.0.7 # Points to unbound
