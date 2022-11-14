@@ -8,24 +8,10 @@ networks:
         - subnet: 10.3.0.0/24
 
 services:
-  unbound:
-    image: mvance/unbound:latest
-    container_name: unbound
-    restart: unless-stopped
-    hostname: "unbound"
-    env_file:
-      - .env
-    volumes:
-      - ./unbound:/opt/unbound/etc/unbound/
-      - ./unbound/etc:/etc/
-    networks:
-      private_network:
-        ipv4_address: 10.3.0.200
-
   portainer:
-    depends_on: [unbound]
     image: portainer/portainer-ce:latest
     container_name: portainer
+    hostname: portainer
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -42,9 +28,9 @@ services:
         ipv4_address: 10.3.0.10
 
   uptime-kuma:
-    depends_on: [unbound]
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
+    hostname: uptime
     env_file:
       - .env
     volumes:
@@ -57,9 +43,9 @@ services:
         ipv4_address: 10.3.0.90
 
   transmission-openvpn:
-    depends_on: [unbound]
     image: haugene/transmission-openvpn
     container_name: transmission-openvpn
+    hostname: transmission
     volumes:
       - /mnt/Torrents/:/data
     environment:
@@ -87,9 +73,9 @@ services:
         ipv4_address: 10.3.0.20
 
   jellyfin:
-    depends_on: [unbound]
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
+    hostname: jellyfin
     environment:
       - PUID=1000
       - PGID=1000
@@ -111,9 +97,9 @@ services:
         ipv4_address: 10.3.0.30
 
   heimdall:
-    depends_on: [unbound]
     image: lscr.io/linuxserver/heimdall:latest
     container_name: heimdall
+    hostname: heimdall
     environment:
       - PUID=1000
       - PGID=1000
@@ -130,10 +116,9 @@ services:
         ipv4_address: 10.3.0.40
 
   gitlab-web:
-    depends_on: [unbound]
     image: 'gitlab/gitlab-ce:latest'
     restart: unless-stopped
-    hostname: 'localhost'
+    hostname: gitlabteam
     container_name: gitlab-ce
     environment:
       GITLAB_OMNIBUS_CONFIG: |
@@ -153,8 +138,8 @@ services:
         ipv4_address: 10.3.0.50
 
   directus-database:
-    depends_on: [unbound]
     container_name: directus-database
+    hostname: directusd
     image: postgis/postgis:13-master
     env_file:
       - .env
@@ -165,8 +150,8 @@ services:
         ipv4_address: 10.3.0.60
 
   directus-cache:
-    depends_on: [unbound]
     container_name: directus-cache
+    hostname: directuscache
     image: redis:6
     env_file:
       - .env
@@ -176,6 +161,7 @@ services:
 
   directus-web:
     container_name: directus-web
+    hostname: directus
     image: directus/directus:latest
     ports:
       - 8055:8055
@@ -192,7 +178,6 @@ services:
       private_network:
         ipv4_address: 10.3.0.80
     depends_on:
-      - unbound
       - directus-cache
       - directus-database
     environment:

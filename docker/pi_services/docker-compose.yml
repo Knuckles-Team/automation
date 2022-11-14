@@ -28,6 +28,7 @@ services:
     depends_on: [unbound, pihole]
     image: linuxserver/wireguard
     container_name: wireguard
+    hostname: wireguard
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -59,6 +60,7 @@ services:
   pihole:
     depends_on: [unbound]
     container_name: pihole
+    hostname: pihole
     image: pihole/pihole:latest
     ports:
       - "53"
