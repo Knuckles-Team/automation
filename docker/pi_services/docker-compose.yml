@@ -1,11 +1,11 @@
 version: "3"
 
 networks:
-  private_network:
+  dns_network:
     ipam:
-      driver: default
+      driver: bridge
       config:
-        - subnet: 10.2.0.0/24
+        - subnet: 172.20.0.0/16
 
 services:
   unbound:
@@ -15,9 +15,14 @@ services:
     hostname: unbound
     volumes:
       - ./unbound:/opt/unbound/etc/unbound/
+    ports:
+      - 5053:5053/tcp
+      - 5053:5053/udp
+    healthcheck:
+      disable: true
     networks:
-      private_network:
-        ipv4_address: 10.2.0.200
+      dns_network:
+        ipv4_address: 172.20.0.7
 
   wireguard:
     depends_on: [unbound, pihole]
@@ -30,7 +35,7 @@ services:
       - PUID=1000
       - PGID=1000
       - PEERS=9
-      - PEERDNS=10.2.0.100
+      - PEERDNS=172.20.0.6
       - ALLOWEDIPS=0.0.0.0/0
       - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
     env_file:
@@ -42,36 +47,37 @@ services:
     ports:
       - 51820:51820/udp
     dns:
-      - 10.2.0.100 # Points to pihole
-      - 10.2.0.200 # Points to unbound
+      - 172.20.0.6 # Points to pihole
+      - 172.20.0.7 # Points to unbound
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: always
     networks:
-      private_network:
-        ipv4_address: 10.2.0.3
+      dns_network:
+        ipv4_address: 172.20.0.8
 
   pihole:
     depends_on: [unbound]
     container_name: pihole
     image: pihole/pihole:latest
-    #network_mode: "host"
     ports:
-      - 53
-      - 80
+      - yy.yy.yy.yy:53:53/tcp
+      - yy.yy.yy.yy:53:53/udp
+      - 80:80/tcp
+      - 443:443/tcp
     dns:
       - 127.0.0.1
-      - 10.2.0.200 # Points to unbound
+      - 172.20.0.7 # Points to unbound
     environment:
       - PIHOLE_DNS_=1.1.1.1
       - DHCP_ACTIVE=false
-      - ServerIP=10.2.0.100 # Internal IP of pihole
-      - DNS1=10.2.0.200 # Unbound IP
-      - DNS2=10.2.0.200 # If we don't specify two, it will auto pick google.
+      - ServerIP=172.20.0.6 # Internal IP of pihole
+      - DNS1=172.20.0.7 # Unbound IP
+      - DNS2=172.20.0.7 # If we don't specify two, it will auto pick google.
     volumes:
-      - /services/etc-pihole:/etc/pihole
-      - /services/etc-dnsmasq.d:/etc/dnsmasq.d
+      - ./pihole/etc-pihole:/etc/pihole
+      - ./pihole/services/etc-dnsmasq.d:/etc/dnsmasq.d
     restart: always
     networks:
-      private_network:
-        ipv4_address: 10.2.0.100
+      dns_network:
+        ipv4_address: 172.20.0.6
