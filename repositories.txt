@@ -10,3 +10,4 @@ https://github.com/Knucklessg1/repository-manager.git
 https://github.com/Knucklessg1/system-manager.git
 https://github.com/Knucklessg1/gitlab-api.git
 https://github.com/Knucklessg1/listmonk-api.git
+https://github.com/Knucklessg1/servicenow-api.git
