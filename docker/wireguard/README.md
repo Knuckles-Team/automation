@@ -37,3 +37,8 @@ TZ="<TIMEZONE>"
 COMPOSE_HTTP_TIMEOUT=<30-300>
 SERVERPORT=51820
 ```
+
+Show QR Codes:
+```bash
+docker exec -it wireguard /app/show-peer 1 2 3 4
+```
