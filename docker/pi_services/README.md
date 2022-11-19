@@ -1,3 +1,12 @@
+Prerequisites:
+- ddclient
+- ufw
+
+```bash
+sudo apt install ddclient
+sudo apt install net-tools
+```
+
 .env
 ```bash
 WEBPASSWORD=password
