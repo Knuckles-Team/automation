@@ -12,6 +12,14 @@ Make sure server has port firewall open
 Install ddclient on the server and configure it with subdomain details
 
 Modify: /etc/ddclient.conf
+```bash
+protocol=freedns \
+use=if, if=wlan0 \
+login=<USERNAME> \
+password=<PASSWORD> \
+<DDNS>
+```
+
 
 ```bash
 sudo apt install ufw
