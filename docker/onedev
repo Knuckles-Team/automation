@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  onedev:
+    image: 1dev/server
+    container_name: 1dev
+    environment:
+      - VIRTUAL_HOST=git.fivecat.xyz
+      - VIRTUAL_PORT=6610
+      - VIRTUAL_PROTO=http
+      # - LETSENCRYPT_HOST=git.fivecat.xyz
+    volumes:
+      - ./data:/opt/onedev
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    external: true
