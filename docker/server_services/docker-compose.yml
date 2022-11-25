@@ -6,8 +6,20 @@ networks:
       driver: default
       config:
         - subnet: 10.3.0.0/24
+  host:
+    name: host
+    external: true
 
 services:
+  docker-hoster:
+    image: dvdarias/docker-hoster
+    container_name: hoster
+    restart: always
+    hostname: hoster
+    volumes:
+      - /etc/hosts:/tmp/hosts
+      - /var/run/docker.sock:/tmp/docker.sock
+
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
