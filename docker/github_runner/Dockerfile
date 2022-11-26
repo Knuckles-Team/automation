@@ -8,9 +8,10 @@ RUN curl -sSL https://get.docker.com/ | sh
 RUN python -m pip install --upgrade pip
 RUN python -m pip install pytest repository-manager build twine
 
-# Add non-sudo user
+# Add user
 RUN useradd -m dockercli
 RUN usermod -a -G docker dockercli
+RUN usermod -a -G sudo dockercli
 
 # Github runner version
 ARG RUNNER_VERSION="2.299.1"
