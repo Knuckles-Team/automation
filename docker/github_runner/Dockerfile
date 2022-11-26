@@ -1,35 +1,37 @@
-# base
 FROM ubuntu:latest
 
-# update the base packages and add a non-sudo user
+# Update the base packages
 RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     curl jq wget build-essential libssl-dev libffi-dev python-is-python3 python3 python3-venv python3-dev python3-pip \
     nano vim gcc git dos2unix
 RUN curl -sSL https://get.docker.com/ | sh
 RUN python -m pip install --upgrade pip
 RUN python -m pip install pytest repository-manager build twine
-RUN useradd -m docker
 
-# set the github runner version
+# Add non-sudo user
+RUN useradd -m dockercli
+RUN usermod -a -G docker dockercli
+
+# Github runner version
 ARG RUNNER_VERSION="2.299.1"
 
-# cd into the user directory, download and unzip the github actions runner
-RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
+# cd into the user directory. download and unzip the github actions runner
+RUN cd /home/dockercli && mkdir actions-runner && cd actions-runner \
     && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
     && tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 
-# install some additional dependencies
-RUN chown -R docker ~docker && /home/docker/actions-runner/bin/installdependencies.sh
+# Install additional dependencies
+RUN chown -R dockercli ~dockercli && /home/dockercli/actions-runner/bin/installdependencies.sh
 
-# copy over the start.sh script
+# Copy the start.sh script
 COPY start.sh start.sh
 
-# make the script executable
+# Script executable
 RUN chmod +x start.sh
 
-# since the config and run script for actions are not allowed to be run by root,
-# set the user to "docker" so all subsequent commands are run as the docker user
-USER docker
+# Since the config and run script for actions are not allowed to be run by root,
+# set the user to "dockercli" so all subsequent commands are run as the dockercli user
+USER dockercli
 
 # set the entrypoint to the start.sh script
 ENTRYPOINT ["./start.sh"]
