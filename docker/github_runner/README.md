@@ -14,7 +14,7 @@ docker-compose build
 
 Scale Runners
 ```bash
-docker-compose up --scale runner=2 -d
+docker-compose up --build --scale runner=2 -d
 docker-compose up --scale runner=1 -d
 ```
 
