@@ -3,8 +3,8 @@ version: '3'
 services:
   runner:
     build: .
-    environment:
-      - ORGANIZATION=<YOUR-GITHUB-ORGANIZATION>
-      - ACCESS_TOKEN=<YOUR-GITHUB-ACCESS-TOKEN>
+#    environment:
+#      - ORGANIZATION=<YOUR-GITHUB-ORGANIZATION>
+#      - ACCESS_TOKEN=<YOUR-GITHUB-ACCESS-TOKEN>
     env_file:
       - .env

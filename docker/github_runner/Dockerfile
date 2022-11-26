@@ -2,18 +2,15 @@
 FROM ubuntu:latest
 
 # update the base packages and add a non-sudo user
-RUN apt update -y && apt upgrade -y && apt install nano vim python3 python3-pip gcc git dos2unix
+RUN apt update -y && apt upgrade -y && apt install -y nano vim gcc git dos2unix
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    curl jq wget build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install pytest repository-manager build
 RUN useradd -m docker
 
 # set the github runner version
 ARG RUNNER_VERSION="2.299.1"
-
-# install python and the packages the your code depends on along with jq so we can parse JSON
-# add additional packages as necessary
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    curl jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
