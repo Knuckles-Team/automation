@@ -17,8 +17,10 @@ RUN usermod -a -G sudo dockercli
 ARG RUNNER_VERSION="2.299.1"
 
 # Set PyPi Credentials
-ARG PYPI_USERNAME="__token__"
-ARG PYPI_PASSWORD="PASSWORD"
+# ARG PYPI_USERNAME="__token__"
+# ARG PYPI_PASSWORD="PASSWORD"
+# ENV PYPI_USERNAME=${PYPI_USERNAME}
+# ENV PYPI_PASSWORD=${PYPI_PASSWORD}
 RUN echo -e "[pypi]\nusername = ${PYPI_USERNAME}\npassword = ${PYPI_PASSWORD}\n" | tee $HOME/.pypirc
 
 # cd into the user directory. download and unzip the github actions runner
