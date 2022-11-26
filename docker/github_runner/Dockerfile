@@ -5,6 +5,7 @@ FROM ubuntu:latest
 RUN apt update -y && apt upgrade -y && apt install -y nano vim gcc git dos2unix
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     curl jq wget build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
+RUN curl -sSL https://get.docker.com/ | sh
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install pytest repository-manager build
 RUN useradd -m docker

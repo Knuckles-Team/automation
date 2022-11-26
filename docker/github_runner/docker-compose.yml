@@ -8,4 +8,6 @@ services:
 #      - ACCESS_TOKEN=<YOUR-GITHUB-ACCESS-TOKEN>
     env_file:
       - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
