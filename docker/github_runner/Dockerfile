@@ -16,6 +16,11 @@ RUN usermod -a -G sudo dockercli
 # Github runner version
 ARG RUNNER_VERSION="2.299.1"
 
+# Set PyPi Credentials
+ARG PYPI_USERNAME="__token__"
+ARG PYPI_PASSWORD="PASSWORD"
+RUN echo -e "[pypi]\nusername = ${PYPI_USERNAME}\npassword = ${PYPI_PASSWORD}\n" | tee $HOME/.pypirc
+
 # cd into the user directory. download and unzip the github actions runner
 RUN cd /home/dockercli && mkdir actions-runner && cd actions-runner \
     && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
