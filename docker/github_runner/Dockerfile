@@ -2,12 +2,12 @@
 FROM ubuntu:latest
 
 # update the base packages and add a non-sudo user
-RUN apt update -y && apt upgrade -y && apt install -y nano vim gcc git dos2unix
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    curl jq wget build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
+RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
+    curl jq wget build-essential libssl-dev libffi-dev python-is-python3 python3 python3-venv python3-dev python3-pip \
+    nano vim gcc git dos2unix
 RUN curl -sSL https://get.docker.com/ | sh
-RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install pytest repository-manager build
+RUN python -m pip install --upgrade pip
+RUN python -m pip install pytest repository-manager build twine
 RUN useradd -m docker
 
 # set the github runner version
