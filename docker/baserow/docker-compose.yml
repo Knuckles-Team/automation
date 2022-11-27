@@ -7,6 +7,9 @@ services:
       BASEROW_PUBLIC_URL: 'http://baserow.home.arpa'
       VIRTUAL_HOST: baserow.home.arpa
       VIRTUAL_PORT: 80
+    networks:
+      baserow_network:
+        ipv4_address: 172.20.0.17
     ports:
       - 80
     volumes:
@@ -15,6 +18,8 @@ volumes:
   baserow_data:
 
 networks:
-  default:
-    external:
-      name: internal
+  baserow_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
