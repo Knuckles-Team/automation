@@ -6,7 +6,7 @@ RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive apt instal
     nano vim gcc git dos2unix
 RUN curl -sSL https://get.docker.com/ | sh
 RUN python -m pip install --upgrade pip
-RUN python -m pip install pytest repository-manager build twine geniusbot xlsxwriter sklearn
+RUN python -m pip install pytest repository-manager build twine geniusbot xlsxwriter scikit-learn scipy matplotlib
 
 # Add user
 RUN useradd -m dockercli
