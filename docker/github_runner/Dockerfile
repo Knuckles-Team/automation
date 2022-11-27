@@ -3,7 +3,7 @@ FROM ubuntu:latest
 # Update the base packages
 RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     curl jq wget build-essential libssl-dev libffi-dev python-is-python3 python3 python3-venv python3-dev python3-pip \
-    nano vim gcc git dos2unix
+    nano vim gcc git dos2unix ffmpeg libsm6 libxext6 libgl1
 RUN curl -sSL https://get.docker.com/ | sh
 RUN python -m pip install --upgrade pip
 RUN python -m pip install pytest repository-manager build twine geniusbot xlsxwriter scikit-learn scipy matplotlib
