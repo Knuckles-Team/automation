@@ -6,7 +6,10 @@ https://github.com/Knuckles-Team/subshift.git
 https://github.com/Knuckles-Team/automation.git
 https://github.com/Knuckles-Team/report-manager.git
 https://github.com/Knuckles-Team/repository-manager.git
-https://github.com/Knuckles-Team/system-manager.git
+https://github.com/Knuckles-Team/systems-manager.git
 https://github.com/Knuckles-Team/gitlab-api.git
 https://github.com/Knuckles-Team/listmonk-api.git
 https://github.com/Knuckles-Team/servicenow-api.git
+https://github.com/Knuckles-Team/confluence-calendar-api.git
+https://github.com/Knuckles-Team/pipelines.git
+https://github.com/Knuckles-Team/cockpit-api.git
