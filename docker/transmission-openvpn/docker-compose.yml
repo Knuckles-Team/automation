@@ -18,6 +18,8 @@ services:
       driver: json-file
       options:
         max-size: 10m
+    expose:
+      - 9091
     ports:
       - 9091:9091
       - 8888:8888
