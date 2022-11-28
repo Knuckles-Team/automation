@@ -1,4 +1,9 @@
 version: '3.3'
+
+networks:
+  private:
+    name: private-network
+
 services:
   transmission-openvpn:
     image: haugene/transmission-openvpn:latest
@@ -33,6 +38,3 @@ services:
     dns:
       - 1.1.1.1
 
-networks:
-  private:
-    name: private-network

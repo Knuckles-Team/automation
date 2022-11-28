@@ -1,5 +1,9 @@
 version: '2'
 
+networks:
+  private:
+    name: private-network
+
 services:
   nginx-proxy:
     image: nginxproxy/nginx-proxy:latest
@@ -28,6 +32,3 @@ services:
     networks:
       - private-network
 
-networks:
-  private:
-    name: private-network
