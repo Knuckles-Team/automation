@@ -5,11 +5,15 @@ services:
     volumes:
       - /home/${USER}/Torrents/:/data
       - ./config:/config
+    networks:
+      - docker
     environment:
       - PUID=1000
       - PGID=1000
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --dhcp-option DNS 9.9.9.9
       - CREATE_TUN_DEVICE=true
+      - VIRTUAL_HOST=transmission
+      - VIRTUAL_PORT=9091
     env_file:
       - .env
     devices:
@@ -20,6 +24,7 @@ services:
         max-size: 10m
     expose:
       - 9091
+      - 8888
     ports:
       - 9091:9091
       - 8888:8888

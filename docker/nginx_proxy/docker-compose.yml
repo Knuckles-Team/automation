@@ -15,7 +15,8 @@ services:
       - ./nginx/dhparam:/etc/nginx/dhparam
       - ./nginx/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock
-    network_mode: bridge
+    networks:
+      - docker
 
   whoami:
     image: jwilder/whoami:latest
@@ -24,3 +25,9 @@ services:
     environment:
       - VIRTUAL_HOST=whoami.local
       - VIRTUAL_PORT=8000
+    networks:
+      - docker
+
+networks:
+  docker:
+    name: docker-network
