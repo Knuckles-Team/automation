@@ -5,11 +5,10 @@ RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive apt instal
     curl jq wget build-essential libssl-dev libffi-dev python-is-python3 python3 python3-venv python3-dev python3-pip \
     nano vim gcc git dos2unix ffmpeg libsm6 libxext6 libgl1 ca-certificates gnupg gnupg2 lsb-release \
     software-properties-common apt-transport-https
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+RUN curl -fsSL https://get.docker.com | sh
 RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 RUN python -m pip install --upgrade pip
-RUN python -m pip install pytest repository-manager build twine geniusbot xlsxwriter scikit-learn scipy matplotlib
+RUN python -m pip install pytest repository-manager build twine geniusbot
 
 # Add user
 RUN useradd -m dockercli
