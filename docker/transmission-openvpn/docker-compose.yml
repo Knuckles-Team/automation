@@ -6,7 +6,7 @@ services:
       - /home/${USER}/Torrents/:/data
       - ./config:/config
     networks:
-      - docker
+      - private-network
     environment:
       - PUID=1000
       - PGID=1000

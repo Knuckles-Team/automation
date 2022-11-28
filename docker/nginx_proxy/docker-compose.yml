@@ -16,7 +16,7 @@ services:
       - ./nginx/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock
     networks:
-      - docker
+      - private-network
 
   whoami:
     image: jwilder/whoami:latest
@@ -26,8 +26,8 @@ services:
       - VIRTUAL_HOST=whoami.local
       - VIRTUAL_PORT=8000
     networks:
-      - docker
+      - private-network
 
 networks:
-  docker:
-    name: docker-network
+  private:
+    name: private-network
