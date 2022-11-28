@@ -2,13 +2,17 @@ version: '2'
 
 services:
   nginx-proxy:
-    image: jwilder/nginx-proxy
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
     ports:
       - "80:80"
+      - "443:443"
+      #- "53:53"
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-
-  whoami:
-    image: jwilder/whoami
-    environment:
-      - VIRTUAL_HOST=whoami.local
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/vhost:/etc/nginx/vhost.d
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/dhparam:/etc/nginx/dhparam
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock
+    network_mode: bridge

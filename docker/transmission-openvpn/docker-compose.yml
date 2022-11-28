@@ -1,13 +1,15 @@
 version: '3.3'
 services:
   transmission-openvpn:
-    image: haugene/transmission-openvpn
+    image: haugene/transmission-openvpn:latest
     volumes:
       - /home/${USER}/Torrents/:/data
+      - ./config:/config
     environment:
       - PUID=1000
       - PGID=1000
-      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --dhcp-option DNS 9.9.9.9
+      - CREATE_TUN_DEVICE=true
     env_file:
       - .env
     devices:
