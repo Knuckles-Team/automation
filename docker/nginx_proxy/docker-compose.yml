@@ -18,7 +18,7 @@ services:
     network_mode: bridge
 
   whoami:
-    image: jwilder/whoami
+    image: jwilder/whoami:latest
     expose:
       - "8000"
     environment:
