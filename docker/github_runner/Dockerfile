@@ -41,7 +41,7 @@ RUN chmod +x start.sh
 
 # Since the config and run script for actions are not allowed to be run by root,
 # set the user to "dockercli" so all subsequent commands are run as the dockercli user
-#USER dockercli
+USER dockercli
 
 # set the entrypoint to the start.sh script
 ENTRYPOINT ["./start.sh"]
