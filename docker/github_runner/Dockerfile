@@ -10,6 +10,9 @@ RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-co
 RUN python -m pip install --upgrade pip
 RUN python -m pip install pytest repository-manager build twine geniusbot
 
+# Permissions to Docker
+RUN chmod 666 /var/run/docker.sock
+
 # Add user
 RUN useradd -m dockercli
 RUN usermod -a -G docker dockercli
