@@ -3,7 +3,7 @@ FROM ubuntu:latest
 # Update the base packages
 RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     curl jq wget build-essential libssl-dev libffi-dev python-is-python3 python3 python3-venv python3-dev python3-pip \
-    nano vim gcc git dos2unix ffmpeg libsm6 libxext6 libgl1 ca-certificates gnupg gnupg2 lsb-release \
+    nano vim gcc git dos2unix ffmpeg libsm6 libxext6 libgl1 ca-certificates gnupg gnupg2 lsb-release zip unzip \
     software-properties-common apt-transport-https
 RUN curl -fsSL https://get.docker.com | sh
 RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
