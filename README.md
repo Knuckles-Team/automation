@@ -1,4 +1,9 @@
-# Automation for Linux and Windows
-Linux Automation will setup CentOS with a few configuration and tools
+# Automation 
 
-# Windows Automation Coming Soon
+- PowerShell
+- Linux
+- Python
+- GitLab
+- Ansible
+- ADB (Android)
+- Python
