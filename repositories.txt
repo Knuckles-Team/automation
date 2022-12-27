@@ -14,3 +14,4 @@ https://github.com/Knuckles-Team/servicenow-api.git
 https://github.com/Knuckles-Team/confluence-calendar-api.git
 https://github.com/Knuckles-Team/pipelines.git
 https://github.com/Knuckles-Team/cockpit-api.git
+https://github.com/Knuckles-Team/audio-transcriber.git
