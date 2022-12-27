@@ -1,3 +1,5 @@
+# https://github.com/openai/whisper
+# pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git
 # https://colab.research.google.com/drive/1vJj6EW0nKi3olLb5nOccA4ypkKx-x4Hr#scrollTo=gmaEWTbLWigj
 # https://www.youtube.com/watch?v=Wc4bQxuypo0&list=PL08h2eci_GQsimNShqQ3SOB_sBrkuv69q&index=31&t=102s
 # pip install git+https://github.com/openai/whisper.git -q
