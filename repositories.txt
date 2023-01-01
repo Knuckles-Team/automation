@@ -2,6 +2,7 @@ https://github.com/Knuckles-Team/media-manager.git
 https://github.com/Knuckles-Team/media-downloader.git
 https://github.com/Knuckles-Team/webarchiver.git
 https://github.com/Knuckles-Team/geniusbot.git
+https://github.com/Knuckles-Team/genius-chatbot.git
 https://github.com/Knuckles-Team/subshift.git
 https://github.com/Knuckles-Team/automation.git
 https://github.com/Knuckles-Team/report-manager.git
@@ -13,3 +14,4 @@ https://github.com/Knuckles-Team/servicenow-api.git
 https://github.com/Knuckles-Team/confluence-calendar-api.git
 https://github.com/Knuckles-Team/pipelines.git
 https://github.com/Knuckles-Team/cockpit-api.git
+https://github.com/Knuckles-Team/audio-transcriber.git
