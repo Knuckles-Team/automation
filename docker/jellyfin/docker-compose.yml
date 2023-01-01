@@ -7,10 +7,10 @@ services:
     user: uid:gid
     network_mode: 'host'
     volumes:
-      - /path/to/config:/config
-      - /path/to/cache:/cache
-      - /path/to/media:/media
-      - /path/to/media2:/media2:ro
+      - /apps/jellyfin/config:/config
+      - /apps/jellyfin/cache:/cache
+      - /media/media/Movies:/movies:ro
+      - /media/media/TV:/tv:ro
     restart: 'unless-stopped'
     # Optional - alternative address used for autodiscovery
     environment:
