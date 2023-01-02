@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+  bind9-dns-server:
+    container_name: bind9-dns-server
+    image: ubuntu/bind9:latest
+    environment:
+      VIRTUAL_HOST: bind9-dns.arpa
+    network_mode: "host"    
+    volumes:
+      - ./forward.jellyfin.heaven.com:/etc/bind/forward.jellyfin.heaven.com
+      - ./reverse.jellyfin.heaven.com:/etc/bind/reverse.jellyfin.heaven.com
+      - ./named.conf.local:/etc/bind/named.conf.local
+      - ./named.conf.options:/etc/bind/named.conf.options
+    restart: unless-stopped

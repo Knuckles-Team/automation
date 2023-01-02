@@ -21,6 +21,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     networks:
       - proxy-network
+    restart: unless-stopped
 
   whoami:
     image: jwilder/whoami:latest
