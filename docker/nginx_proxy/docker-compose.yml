@@ -18,6 +18,7 @@ services:
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/dhparam:/etc/nginx/dhparam
       - ./nginx/certs:/etc/nginx/certs:ro
+      - ./nginx/reverse-proxy.conf:/etc/nginx/sites-enabled/reverse-proxy.conf
       - /var/run/docker.sock:/tmp/docker.sock
     networks:
       - proxy-network
