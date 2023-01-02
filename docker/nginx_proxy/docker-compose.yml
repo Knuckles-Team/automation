@@ -6,18 +6,11 @@ networks:
 
 services:
   nginx-proxy:
-    image: nginxproxy/nginx-proxy:latest
+    image: jwilder/nginx-proxy:latest
     container_name: nginx-proxy
     ports:
       - "80:80"
-      #- "443:443"
-      #- "53:53"
     volumes:
-      - ./nginx/conf:/etc/nginx/conf.d
-      - ./nginx/vhost:/etc/nginx/vhost.d
-      - ./nginx/html:/usr/share/nginx/html
-      - ./nginx/dhparam:/etc/nginx/dhparam
-      - ./nginx/certs:/etc/nginx/certs:ro
       - ./nginx/reverse-proxy.conf:/etc/nginx/sites-enabled/reverse-proxy.conf
       - /var/run/docker.sock:/tmp/docker.sock
     networks:
