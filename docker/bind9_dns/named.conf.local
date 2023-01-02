@@ -5,5 +5,5 @@ zone "jellyfin.heaven.com" {
 
 zone "1.168.192.in-addr-arpa" {
     type master;
-    file "/etc/bind/reverse.jellyfin.heaven.com;
+    file "/etc/bind/reverse.jellyfin.heaven.com";
 };
