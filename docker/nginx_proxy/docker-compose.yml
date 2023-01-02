@@ -24,8 +24,6 @@ services:
 
   whoami:
     image: jwilder/whoami:latest
-    expose:
-      - "8000"
     environment:
       - VIRTUAL_HOST=whoami.local
       - VIRTUAL_PORT=8000
