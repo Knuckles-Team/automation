@@ -1,9 +1,9 @@
 zone "heaven.com" {
     type master;
-    file "/etc/bind/forward.heaven.com";
+    file "/etc/bind/forward.heaven.arpa";
 };
 
 zone "1.168.192.in-addr-arpa" {
     type master;
-    file "/etc/bind/reverse.heaven.com";
+    file "/etc/bind/reverse.heaven.arpa";
 };
