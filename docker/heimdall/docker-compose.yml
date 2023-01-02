@@ -4,6 +4,8 @@ services:
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
     container_name: heimdall
+    networks:
+      - proxy-network
     environment:
       - PUID=1000
       - PGID=1000
@@ -17,3 +19,7 @@ services:
       - 80:80
       - 443:443
     restart: always
+
+networks:
+  proxy-network:
+    name: proxy-network
