@@ -1,8 +1,8 @@
 version: '2'
 
 networks:
-  private-network:
-    name: private-network
+  proxy-network:
+    name: proxy-network
 
 services:
   nginx-proxy:
@@ -10,7 +10,7 @@ services:
     container_name: nginx-proxy
     ports:
       - "80:80"
-      - "443:443"
+      #- "443:443"
       #- "53:53"
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d
@@ -20,7 +20,7 @@ services:
       - ./nginx/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock
     networks:
-      - private-network
+      - proxy-network
 
   whoami:
     image: jwilder/whoami:latest
@@ -30,5 +30,5 @@ services:
       - VIRTUAL_HOST=whoami.local
       - VIRTUAL_PORT=8000
     networks:
-      - private-network
+      - proxy-network
 
