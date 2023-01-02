@@ -13,6 +13,7 @@ services:
     volumes:
       - ./nginx/reverse-proxy.conf:/etc/nginx/sites-enabled/reverse-proxy.conf
       - /var/run/docker.sock:/tmp/docker.sock
+    #network_mode: "host"   
     networks:
       - proxy-network
     restart: unless-stopped
@@ -20,7 +21,7 @@ services:
   whoami:
     image: jwilder/whoami:latest
     environment:
-      - VIRTUAL_HOST=whoami.local
+      - VIRTUAL_HOST=whoami.arpa
       - VIRTUAL_PORT=8000
     networks:
       - proxy-network

@@ -3,7 +3,7 @@ options {
 
     forwarders {
         8.8.8.8;
-        9.9.9.9;
+        1.1.1.1;
     };
     dnssec-validation auto;
     listen-on-v6 { any; };
