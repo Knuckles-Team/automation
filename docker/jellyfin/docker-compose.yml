@@ -14,8 +14,8 @@ services:
     restart: 'unless-stopped'
     # Optional - alternative address used for autodiscovery
     environment:
-      - JELLYFIN_PublishedServerUrl=http://heaven.jellyfin
-      - VIRTUAL_HOST=heaven.jellyfin
+      - JELLYFIN_PublishedServerUrl=http://heaven.jellyfin.arpa
+      - VIRTUAL_HOST=heaven.jellyfin.arpa
       - VIRTUAL_PORT=8096
       - TRUST_DOWNSTREAM_PROXY=true
     # Optional - may be necessary for docker healthcheck to pass if running in host network mode
