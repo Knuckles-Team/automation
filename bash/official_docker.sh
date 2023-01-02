@@ -2,6 +2,7 @@
 
 sudo snap remove docker
 sudo apt remove -y docker docker-engine docker.io containerd runc
+sudo apt autoremove -y
 
 sudo apt update
 sudo apt install -y ca-certificates curl gnupg lsb-release
