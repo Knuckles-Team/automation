@@ -4,7 +4,7 @@ services:
   jellyfin:
     image: jellyfin/jellyfin
     container_name: jellyfin
-    #user: uid:gid
+    user: 1000:1000
     networks:
       - proxy-network
     volumes:
