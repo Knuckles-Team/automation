@@ -1,0 +1,22 @@
+;
+; BIND reverse data file for local loopback interface
+;
+$TTL    20
+@       IN      SOA     heaven.arpa.         root.heaven.arpa. (
+                                1               ; Serial
+                                20              ; Refresh
+                                20              ; Retry
+                                20              ; Expire
+                                20 )            ; Negative Cache TTL
+;
+@       IN      NS      heaven.arpa.
+60      IN      PTR     heaven.arpa.
+@       IN      SOA     jellyfin.arpa.         root.jellyfin.arpa. (
+                                1               ; Serial
+                                20              ; Refresh
+                                20              ; Retry
+                                20              ; Expire
+                                20 )            ; Negative Cache TTL
+;
+@       IN      NS      jellyfin.arpa.
+60      IN      PTR     jellyfin.arpa.
