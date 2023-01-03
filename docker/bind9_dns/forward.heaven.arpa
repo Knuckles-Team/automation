@@ -10,6 +10,6 @@ $TTL    20
                                 20 )            ; Negative Cache TTL
 ;
 @       IN      NS      heaven.arpa.
-@       IN      A       192.168.1.62
-www     IN      A       192.168.1.62
+@       IN      A       192.168.1.60
+www     IN      A       192.168.1.60
 @       IN      AAAA    1234:1234::1
