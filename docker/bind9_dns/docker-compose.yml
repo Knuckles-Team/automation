@@ -7,8 +7,8 @@ services:
       VIRTUAL_HOST: bind9-dns.arpa
     network_mode: "host"    
     volumes:
-      - ./forward.heaven.arpa:/etc/bind/forward.heaven.arpa
-      - ./reverse.heaven.arpa:/etc/bind/reverse.heaven.arpa
+      - ./forward.arpa:/etc/bind/forward.arpa
+      - ./reverse.arpa:/etc/bind/reverse.arpa
       - ./named.conf.local:/etc/bind/named.conf.local
       - ./named.conf.options:/etc/bind/named.conf.options
     restart: unless-stopped
