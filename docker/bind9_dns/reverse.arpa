@@ -9,8 +9,6 @@ $TTL    20
                                 20              ; Expire
                                 20 )            ; Negative Cache TTL
 ;
-@       IN      NS      heaven.arpa.
-60      IN      PTR     heaven.arpa.
 @       IN      SOA     jellyfin.arpa.         root.jellyfin.arpa. (
                                 1               ; Serial
                                 20              ; Refresh
@@ -18,5 +16,7 @@ $TTL    20
                                 20              ; Expire
                                 20 )            ; Negative Cache TTL
 ;
+@       IN      NS      heaven.arpa.
+60      IN      PTR     heaven.arpa.
 @       IN      NS      jellyfin.arpa.
 60      IN      PTR     jellyfin.arpa.
