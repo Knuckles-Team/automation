@@ -1,5 +1,10 @@
 ---
 version: "2.1"
+
+networks:
+  default:
+    name: webproxy
+
 services:
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
@@ -19,7 +24,3 @@ services:
       - 8080:80
       - 443:443
     restart: always
-
-networks:
-  default:
-    name: webproxy
