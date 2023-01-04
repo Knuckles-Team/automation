@@ -25,5 +25,5 @@ services:
 
 networks:
   default:
-    external:
-      name: webproxy
+    name: webproxy
+    external: true

@@ -1,8 +1,9 @@
-version: '3.3'
+version: '3.5'
 
 networks:
-  private-network:
-    name: private-network
+  default:
+    name: webproxy
+    external: true
 
 services:
   transmission-openvpn:

@@ -1,4 +1,4 @@
-version: '2'
+version: '3.9'
 
 services:
   nginx-proxy:
@@ -13,5 +13,5 @@ services:
 
 networks:
   default:
-    external:
-      name: webproxy
+    name: webproxy
+    external: true
