@@ -6,7 +6,7 @@ services:
     container_name: jellyfin
     user: 1000:1000
     networks:
-      - proxy-network
+      - webproxy
     volumes:
       - /apps/jellyfin/config:/config
       - /apps/jellyfin/cache:/cache
@@ -24,5 +24,6 @@ services:
       - "host.docker.internal:host-gateway"
 
 networks:
-  proxy-network:
-    name: proxy-network
+  default:
+    external:
+      name: webproxy
