@@ -21,8 +21,8 @@ services:
       - "--entrypoints.web.address=:80"
       - "--providers.docker=true"
     labels:
-      - "traefik.port=8080"
-      - "traefik.frontend.rule=Host:lab.arpa"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.arpa`)"
 
   whoami:
     image: "traefik/whoami"
