@@ -15,7 +15,7 @@ services:
       - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./traefik.toml:/traefik.toml"
+      #- "./traefik.toml:/traefik.toml"
     command:
       # Traefik will listen to incoming request on the port 80 (HTTP)
       - "--entrypoints.web.address=:80"
