@@ -16,8 +16,9 @@ services:
       - PGID=1000
       - TZ=America/Chicago
       - COMPOSE_HTTP_TIMEOUT=300
-      - VIRTUAL_HOST=heimdall.arpa
-      - VIRTUAL_PORT=80
+    labels:
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:heimdall.arpa"
     volumes:
       - /services/heimdall/config:/config
     ports:
