@@ -15,6 +15,7 @@ services:
       HTTP_PASSWORD: Test123
     volumes:
       - ./dnsmasq.conf:/etc/dnsmasq.conf
+      - /etc/hosts:/etc/hosts
     ports:
       - "53:53/udp"
     cap_add:
