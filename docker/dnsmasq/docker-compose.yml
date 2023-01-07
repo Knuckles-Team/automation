@@ -1,4 +1,9 @@
-version: '2'
+version: '3.5'
+
+networks:
+  default:
+    name: webproxy
+
 services:
   dns:
     restart: always
@@ -10,4 +15,4 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      - private_network
+      - webproxy
