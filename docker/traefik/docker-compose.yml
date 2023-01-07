@@ -27,6 +27,8 @@ services:
   whoami:
     image: "traefik/whoami"
     container_name: "simple-service"
+    networks:
+      - webproxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`whoami.arpa`)"
