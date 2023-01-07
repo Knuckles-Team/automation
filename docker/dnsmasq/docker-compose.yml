@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.9'
 
 networks:
   webproxy:
@@ -7,7 +7,12 @@ networks:
 services:
   dns:
     restart: always
-    image: strm/dnsmasq
+    image: jpillora/dnsmasq
+    hostname: 'dnsmasq'
+    container_name: 'dnsmasq'
+    environment:
+      HTTP_USER: admin
+      HTTP_PASSWORD: Test123
     volumes:
       - ./dnsmasq.conf:/etc/dnsmasq.conf
     ports:
