@@ -6,7 +6,7 @@ networks:
 
 services:
   traefik:
-    image: traefik
+    image: 'traefik:latest'
     container_name: traefik
     networks:
       - webproxy
@@ -16,6 +16,18 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./traefik.toml:/traefik.toml"
+    command:
+      # Traefik will listen to incoming request on the port 80 (HTTP)
+      - "--entrypoints.web.address=:80"
+      - "--providers.docker=true"
     labels:
       - "traefik.port=8080"
       - "traefik.frontend.rule=Host:lab.arpa"
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.arpa`)"
+      - "traefik.http.routers.whoami.entrypoints=web"

@@ -17,8 +17,10 @@ services:
       - TZ=America/Chicago
       - COMPOSE_HTTP_TIMEOUT=300
     labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.rule=Host(`heimdall.arpa`)"
+      - "traefik.http.routers.heimdall.entrypoints=web"
       - "traefik.port=80"
-      - "traefik.frontend.rule=Host:heimdall.arpa"
     volumes:
       - /services/heimdall/config:/config
     ports:

@@ -30,5 +30,5 @@ defaultEntryPoints = ["http","https"]
 #Watch Docker, when new containers are created with label create mapping.
 [docker]
   endpoint = "unix:///var/run/docker.sock"
-  domain = "lab.arpa"
+  domain = ".arpa"
   watch = true
