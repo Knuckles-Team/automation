@@ -13,35 +13,34 @@ maximum_temperature = 80 # fans at max at this temp
 
 temperature_power = 6 # decrease for cooler server, increase for quiter
 
+
+def get_core_temp(cpus, sensors):
+    highest_temp = 0
+    highest_core = 0
+    cores = 0
+    temp_cpu = 0
+    for cpu in cpus:
+        if cpu in sensors:
+            for key in sensors[cpu].keys():
+                if 'Core' in key:
+                    cores = cores + 1
+                    for temp_key in sensors[cpu][key].keys():
+                        if '_input' in temp_key:
+                            temp_cpu = sensors[cpu][key][temp_key]
+                            print(f"CPU {cpu} - Core {cores} Temperature: {temp_cpu}")
+                            if temp_cpu > highest_temp:
+                                highest_temp = temp_cpu
+                                highest_core = cores
+            temp_cpu = highest_temp
+    print(f"Highest Core {highest_core} Temperature: {highest_temp}")
+    return temp_cpu
+
+
 def get_temp():
     sensors = json.loads(os.popen('/usr/bin/sensors -j').read())
-    temp_cpu_0 = 0
-    temp_cpu_1 = 0
-    if 'coretemp-isa-0000' in sensors:
-        highest_temp = 0
-        for key in sensors["coretemp-isa-0000"].keys():
-            if 'Core' in key:
-                for temp_key in sensors["coretemp-isa-0000"][key].keys():
-                    if '_input' in temp_key:
-                        temp_cpu_0 = sensors["coretemp-isa-0000"][key][temp_key]
-                        print(f"CPU 0 Temperature: {temp_cpu_0}")
-                        if temp_cpu_0 > highest_temp:
-                            highest_temp = temp_cpu_0
-                            print(f"Reached new highest tempurature of: {highest_temp}")
-        temp_cpu_0 = highest_temp
-    if 'coretemp-isa-0001' in sensors:
-        highest_temp = 0
-        for key in sensors["coretemp-isa-0001"].keys():
-            if 'Core' in key:
-                for temp_key in sensors["coretemp-isa-0001"][key].keys():
-                    if '_input' in temp_key:
-                        temp_cpu_1 = sensors["coretemp-isa-0001"][key][temp_key]
-                        print(f"CPU 1 Temperature: {temp_cpu_1}")
-                        if temp_cpu_1 > highest_temp:
-                            highest_temp = temp_cpu_1
-                            print(f"Reached new highest tempurature of: {highest_temp}")
-        temp_cpu_1 = highest_temp
-    return max(temp_cpu_0, temp_cpu_1)
+    cpus = ['coretemp-isa-0000', 'coretemp-isa-0001']
+    temp_cpu = get_core_temp(cpus, sensors)
+    return temp_cpu
 
 def determine_fan_level(temp):
     x = min(1, max(0, (temp - minimum_temperature) / (maximum_temperature - minimum_temperature)))
