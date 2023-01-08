@@ -15,31 +15,33 @@ temperature_power = 6 # decrease for cooler server, increase for quiter
 
 def get_temp():
     sensors = json.loads(os.popen('/usr/bin/sensors -j').read())
-    temp0 = 0
-    temp1 = 0
+    temp_cpu_0 = 0
+    temp_cpu_1 = 0
     if 'coretemp-isa-0000' in sensors:
         highest_temp = 0
         for key in sensors["coretemp-isa-0000"].keys():
             if 'Core' in sensors["coretemp-isa-0000"][key]:
                 for temp_key in sensors["coretemp-isa-0000"][key].keys():
                     if '_input' in temp_key:
-                        temp0 = sensors["coretemp-isa-0000"][key][temp_key]
-                        if temp0 > highest_temp:
-                            highest_temp = temp0
+                        temp_cpu_0 = sensors["coretemp-isa-0000"][key][temp_key]
+                        print(f"CPU 0 Temperature: {temp_cpu_0}")
+                        if temp_cpu_0 > highest_temp:
+                            highest_temp = temp_cpu_0
                             print(f"Reached new highest tempurature of: {highest_temp}")
-        temp0 = highest_temp
+        temp_cpu_0 = highest_temp
     if 'coretemp-isa-0001' in sensors:
         highest_temp = 0
         for key in sensors["coretemp-isa-0001"].keys():
             if 'Core' in sensors["coretemp-isa-0001"][key]:
                 for temp_key in sensors["coretemp-isa-0001"][key].keys():
                     if '_input' in temp_key:
-                        temp1 = sensors["coretemp-isa-0001"][key][temp_key]
-                        if temp1 > highest_temp:
-                            highest_temp = temp1
+                        temp_cpu_1 = sensors["coretemp-isa-0001"][key][temp_key]
+                        print(f"CPU 1 Temperature: {temp_cpu_1}")
+                        if temp_cpu_1 > highest_temp:
+                            highest_temp = temp_cpu_1
                             print(f"Reached new highest tempurature of: {highest_temp}")
-        temp1 = highest_temp
-    return max(temp0, temp1)
+        temp_cpu_1 = highest_temp
+    return max(temp_cpu_0, temp_cpu_1)
 
 def determine_fan_level(temp):
     x = min(1, max(0, (temp - minimum_temperature) / (maximum_temperature - minimum_temperature)))
@@ -51,13 +53,12 @@ def set_fan(fan_level):
     os.system(cmd)
     # set fan level
     cmd = f"ipmitool raw 0x30 0x30 0x02 0xff {hex(fan_level)}"
-    print(f"Running: \n{cmd}")
+    #print(f"Running: \n{cmd}")
     os.system(cmd)
 
 if __name__ == "__main__":
     while True:
         temp = get_temp()
         fan = determine_fan_level(temp)
-        print(f"CPU Temperature: {temp} Fan Level: {fan}")
         set_fan(fan)
         time.sleep(tempurature_poll_rate)
