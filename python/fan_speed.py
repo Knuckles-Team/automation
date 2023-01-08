@@ -15,8 +15,8 @@ temperature_power = 6 # decrease for cooler server, increase for quiter
 
 def get_temp():
     sensors = json.loads(os.popen('/usr/bin/sensors -j').read())
-    temp0 = 21
-    temp1 = 21
+    temp0 = 0
+    temp1 = 0
     if 'coretemp-isa-0000' in sensors:
         highest_temp = 0
         for key in sensors["coretemp-isa-0000"].keys():
