@@ -20,9 +20,6 @@ services:
       - CREATE_TUN_DEVICE=true
       - VIRTUAL_HOST=transmission.arpa
       - VIRTUAL_PORT=9091
-    labels:
-      - "traefik.port=9091"
-      - "traefik.frontend.rule=Host:transmission.arpa"
     env_file:
       - .env
     devices:

@@ -16,11 +16,13 @@ services:
       - PGID=1000
       - TZ=America/Chicago
       - COMPOSE_HTTP_TIMEOUT=300
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.heimdall.rule=Host(`heimdall.arpa`)"
-      - "traefik.http.routers.heimdall.entrypoints=web"
-      - "traefik.port=80"
+      - VIRTUAL_HOST=heaven.jellyfin.arpa
+      - VIRTUAL_PORT=8096
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.heimdall.rule=Host(`heimdall.arpa`)"
+#      - "traefik.http.routers.heimdall.entrypoints=web"
+#      - "traefik.port=80"
     volumes:
       - /services/heimdall/config:/config
     ports:
