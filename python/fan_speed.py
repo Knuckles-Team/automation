@@ -18,9 +18,25 @@ def get_temp():
     temp0 = 21
     temp1 = 21
     if 'coretemp-isa-0000' in sensors:
-        temp0 = sensors["coretemp-isa-0000"]["Package id 0"]["temp1_input"]
+        highest_temp = 0
+        for key in sensors["coretemp-isa-0000"].keys():
+            if 'Core' in sensors["coretemp-isa-0000"][key]:
+                for temp_key in sensors["coretemp-isa-0000"][key].keys():
+                    if '_input' in temp_key:
+                        temp0 = sensors["coretemp-isa-0000"][key][temp_key]
+                        if temp0 > highest_temp:
+                            highest_temp = temp0
+                            print(f"Reached new highest tempurature of: {highest_temp}")
     if 'coretemp-isa-0001' in sensors:
-        temp1 = sensors["coretemp-isa-0001"]["Package id 1"]["temp1_input"]
+        highest_temp = 0
+        for key in sensors["coretemp-isa-0001"].keys():
+            if 'Core' in sensors["coretemp-isa-0001"][key]:
+                for temp_key in sensors["coretemp-isa-0001"][key].keys():
+                    if '_input' in temp_key:
+                        temp1 = sensors["coretemp-isa-0001"][key][temp_key]
+                        if temp1 > highest_temp:
+                            highest_temp = temp1
+                            print(f"Reached new highest tempurature of: {highest_temp}")
     return max(temp0, temp1)
 
 def determine_fan_level(temp):
