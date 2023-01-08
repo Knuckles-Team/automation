@@ -20,7 +20,7 @@ def get_temp():
     if 'coretemp-isa-0000' in sensors:
         highest_temp = 0
         for key in sensors["coretemp-isa-0000"].keys():
-            if 'Core' in sensors["coretemp-isa-0000"][key]:
+            if 'Core' in key:
                 for temp_key in sensors["coretemp-isa-0000"][key].keys():
                     if '_input' in temp_key:
                         temp_cpu_0 = sensors["coretemp-isa-0000"][key][temp_key]
@@ -32,7 +32,7 @@ def get_temp():
     if 'coretemp-isa-0001' in sensors:
         highest_temp = 0
         for key in sensors["coretemp-isa-0001"].keys():
-            if 'Core' in sensors["coretemp-isa-0001"][key]:
+            if 'Core' in key:
                 for temp_key in sensors["coretemp-isa-0001"][key].keys():
                     if '_input' in temp_key:
                         temp_cpu_1 = sensors["coretemp-isa-0001"][key][temp_key]
