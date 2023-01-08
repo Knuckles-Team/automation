@@ -16,7 +16,7 @@ services:
       - PGID=1000
       - TZ=America/Chicago
       - COMPOSE_HTTP_TIMEOUT=300
-      - VIRTUAL_HOST=heaven.jellyfin.arpa
+      - VIRTUAL_HOST=heimdall.arpa
       - VIRTUAL_PORT=8096
 #    labels:
 #      - "traefik.enable=true"

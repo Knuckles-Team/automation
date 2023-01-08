@@ -11,7 +11,7 @@ services:
        - 3000:3000/tcp
        - 83:80/tcp
      environment:
-      - VIRTUAL_HOST=heaven.adguard.arpa
+      - VIRTUAL_HOST=adguard.arpa
       - VIRTUAL_PORT=3000
      volumes:
        - ./work:/opt/adguardhome/work
