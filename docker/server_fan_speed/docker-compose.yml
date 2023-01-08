@@ -5,4 +5,6 @@ services:
   server_fan_speed:
     build: .
     container_name: server_fan_speed
+    volumes:
+      - /dev/ipmi0:/dev/ipmi0:ro
     restart: unless-stopped
