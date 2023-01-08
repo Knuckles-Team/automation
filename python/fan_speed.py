@@ -47,9 +47,11 @@ def determine_fan_level(temp):
 
 def set_fan(fan_level):
     # manual fan control
-    os.system("ipmitool raw 0x30 0x30 0x01 0x00")
+    cmd = f"ipmitool raw 0x30 0x30 0x01 0x00"
+    os.system(cmd)
     # set fan level
-    cmd = "ipmitool raw 0x30 0x30 0x02 0xff " + hex(fan_level)
+    cmd = f"ipmitool raw 0x30 0x30 0x02 0xff {hex(fan_level)}"
+    print(f"Running: \n{cmd}")
     os.system(cmd)
 
 if __name__ == "__main__":
