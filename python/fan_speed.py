@@ -15,8 +15,12 @@ temperature_power = 6 # decrease for cooler server, increase for quiter
 
 def get_temp():
     sensors = json.loads(os.popen('/usr/bin/sensors -j').read())
-    temp0 = sensors["coretemp-isa-0000"]["Package id 0"]["temp1_input"]
-    temp1 = sensors["coretemp-isa-0001"]["Package id 1"]["temp1_input"]
+    temp0 = 21
+    temp1 = 21
+    if 'coretemp-isa-0000' in sensors:
+        temp0 = sensors["coretemp-isa-0000"]["Package id 0"]["temp1_input"]
+    if 'coretemp-isa-0001' in sensors:
+        temp1 = sensors["coretemp-isa-0001"]["Package id 1"]["temp1_input"]
     return max(temp0, temp1)
 
 def determine_fan_level(temp):
