@@ -11,7 +11,7 @@ maximum_fan_speed = 100
 minimum_temperature = 50 # fans at min at this temp
 maximum_temperature = 80 # fans at max at this temp
 
-temperature_power = 3 # decrease for cooler server, increase for quiter
+temperature_power = 6 # decrease for cooler server, increase for quiter
 
 def get_temp():
     sensors = json.loads(os.popen('/usr/bin/sensors -j').read())
