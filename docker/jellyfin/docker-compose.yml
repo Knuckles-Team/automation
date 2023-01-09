@@ -17,7 +17,7 @@ services:
     environment:
       - JELLYFIN_PublishedServerUrl=http://jellyfin.arpa
       - TRUST_DOWNSTREAM_PROXY=true
-      - VIRTUAL_HOST=heaven.jellyfin.arpa
+      - VIRTUAL_HOST=jellyfin.arpa
       - VIRTUAL_PORT=8096
     # Optional - may be necessary for docker healthcheck to pass if running in host network mode
 #    extra_hosts:
