@@ -7,9 +7,10 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-      - ./configs/default.conf:/etc/nginx/conf.d/default.conf
+      - ./vhost.d:/etc/nginx/vhost.d
+      - ./conf.d:/etc/nginx/conf.d
       - ./certs:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock
     restart: unless-stopped
 
 networks:
