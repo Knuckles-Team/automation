@@ -1,4 +1,5 @@
 FROM ubuntu:latest AS ubuntu
 RUN apt update && apt upgrade -y && apt install -y dos2unix lm-sensors ipmitool wget curl git python3 python-is-python3 python3-pip gcc
-COPY fan_manager.py  /fan_manager.py
-CMD ["/fan_manager.py --intensity 5 --cold 50 --warm 80 --slow 5 --fast 100 --poll-rate 24"]
+RUN python -m pip install --upgrade pip
+RUN python -m pip install --upgrade fan-manager
+CMD ["fan-manager --intensity 5 --cold 50 --warm 80 --slow 5 --fast 100 --poll-rate 24"]
