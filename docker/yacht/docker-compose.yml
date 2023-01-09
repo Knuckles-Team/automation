@@ -5,6 +5,9 @@ services:
     image: selfhostedpro/yacht
     container_name: yacht
     restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=yacht.arpa
+      - VIRTUAL_PORT=8000
     ports:
       - 8000:8000
     volumes:
