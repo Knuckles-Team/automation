@@ -5,8 +5,6 @@ services:
     image: selfhostedpro/yacht
     container_name: yacht
     restart: unless-stopped
-    networks:
-      - webproxy
     environment:
       - VIRTUAL_HOST=yacht.arpa
       - VIRTUAL_PORT=8000
@@ -18,7 +16,3 @@ services:
 
 volumes:
   yacht:
-
-networks:
-  webproxy:
-    name: webproxy
