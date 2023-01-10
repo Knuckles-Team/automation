@@ -22,6 +22,7 @@ services:
             - docker-registry:docker-registry
         volumes:
             - ./servername.conf:/etc/apache2/conf-available/servername.conf
+            - ./docker-registry-frontend:/docker-registry-frontend
         ports:
             - "8080:80"
         restart: unless-stopped
@@ -30,3 +31,4 @@ services:
             ENV_DOCKER_REGISTRY_PORT: 8080
             VIRTUAL_HOST: docker-registry.arpa
             VIRTUAL_PORT: 8080
+        command: /docker-registry-frontend/apache_restart.sh
