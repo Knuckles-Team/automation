@@ -9,14 +9,17 @@ services:
       POSTGRES_USER: 'directus'
       POSTGRES_PASSWORD: 'directus'
       POSTGRES_DB: 'directus'
+    restart: unless-stopped
 
   cache:
     container_name: cache
     image: redis:6
+    restart: unless-stopped
 
   directus:
     container_name: directus
     image: directus/directus:latest
+    restart: unless-stopped
     ports:
       - 8055:8055
     volumes:

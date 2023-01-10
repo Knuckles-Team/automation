@@ -11,4 +11,4 @@ services:
       - /services/uptime-kuma-data:/app/data
     ports:
       - 3001:3001
-    restart: always
+    restart: unless-stopped

@@ -11,5 +11,7 @@ services:
       - "8090:8090"
     volumes:
       - baserow_data:/baserow/data
+    restart: unless-stopped
+
 volumes:
   baserow_data:
