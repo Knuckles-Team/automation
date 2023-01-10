@@ -2,8 +2,11 @@ version: '3.3'
 
 services:
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:latest
     container_name: uptime-kuma
+    environment:
+      VIRTUAL_HOST: 'uptime-kuma.arpa'
+      VIRTUAL_PORT: '3001'
     volumes:
       - /services/uptime-kuma-data:/app/data
     ports:
