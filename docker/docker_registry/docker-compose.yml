@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  dns:
+    restart: 'always'
+    image: jregistry:2
+    hostname: 'docker_registry'
+    container_name: 'docker_registry'
+    environment:
+      VIRTUAL_HOST: 'registry.arpa'
+      VIRTUAL_PORT: 5000
+    volumes:
+      - ./dnsmasq.conf:/etc/dnsmasq.conf
+      - ./hosts:/etc/hosts
+    ports:
+      - "5000:5000"
