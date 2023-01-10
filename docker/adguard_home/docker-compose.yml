@@ -4,8 +4,7 @@ services:
      image: adguard/adguardhome
      container_name: adguardhome
      ports:
-       - 192.168.1.60:53:53/tcp
-       - 192.168.1.60:53:53/udp
+       - 2553:53
        - 784:784/udp
        - 853:853/tcp
        - 3000:3000/tcp
