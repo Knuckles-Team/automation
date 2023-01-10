@@ -6,7 +6,7 @@ services:
     container_name: nginx-proxy
     network_mode: host
     ports:
-      - "80:80"
+      - "80:90"
     volumes:
       - ./vhost.d:/etc/nginx/vhost.d
       - ./conf.d:/etc/nginx/conf.d
