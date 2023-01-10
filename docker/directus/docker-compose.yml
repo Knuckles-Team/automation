@@ -13,8 +13,6 @@ services:
   cache:
     container_name: cache
     image: redis:6
-    networks:
-      - webproxy
 
   directus:
     container_name: directus
