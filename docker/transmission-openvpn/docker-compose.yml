@@ -10,7 +10,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --dhcp-option DNS 192.168.1.60
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --dhcp-option DNS 9.9.9.9
       - CREATE_TUN_DEVICE=true
       - VIRTUAL_HOST=transmission.arpa
       - VIRTUAL_PORT=9091
@@ -31,5 +31,5 @@ services:
     cap_add:
       - NET_ADMIN
     dns:
-      - 192.168.1.60
+      - 8.8.8.8
 
