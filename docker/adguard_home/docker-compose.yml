@@ -16,7 +16,7 @@ services:
        - "5443:5443/tcp"
        - "5443:5443/udp"
        - "3000:3000/tcp"
-       - "80:80/tcp"
+       - "82:82/tcp"
      environment:
       - VIRTUAL_HOST=adguard.arpa
       - VIRTUAL_PORT=3000
