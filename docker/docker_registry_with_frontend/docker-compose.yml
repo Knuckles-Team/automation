@@ -9,7 +9,7 @@ services:
             - "5000:5000"
         restart: unless-stopped
         environment:
-          VIRTUAL_HOST: docker-registry
+          VIRTUAL_HOST: registry.arpa
           VIRTUAL_PORT: 5000
         volumes:
             - ./volume:/var/lib/registry
@@ -24,5 +24,5 @@ services:
         environment:
             ENV_DOCKER_REGISTRY_HOST: docker-registry
             ENV_DOCKER_REGISTRY_PORT: 5000
-            VIRTUAL_HOST: docker-registry
-            VIRTUAL_PORT: 5000
+            VIRTUAL_HOST: docker-registry.arpa
+            VIRTUAL_PORT: 8080
