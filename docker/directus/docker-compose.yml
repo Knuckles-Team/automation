@@ -5,8 +5,6 @@ services:
     image: postgis/postgis:13-master
     volumes:
       - ./data/database:/var/lib/postgresql/data
-    networks:
-      - webproxy
     environment:
       POSTGRES_USER: 'directus'
       POSTGRES_PASSWORD: 'directus'
@@ -32,8 +30,6 @@ services:
       # - ./database:/directus/database
       # If you want to load extensions from the host
       - ./extensions:/directus/extensions
-    networks:
-      - webproxy
     depends_on:
       - cache
       - database
@@ -59,8 +55,3 @@ services:
       VIRTUAL_PORT: '8055'
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
-      #
-
-networks:
-  webproxy:
-    name: webproxy

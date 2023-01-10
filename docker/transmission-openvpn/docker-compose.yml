@@ -1,9 +1,5 @@
 version: '3.9'
 
-networks:
-  webproxy:
-    name: webproxy
-
 services:
   transmission-openvpn:
     image: haugene/transmission-openvpn:latest
@@ -11,8 +7,6 @@ services:
     volumes:
       - /home/${USER}/Torrents/:/data
       - ./config:/config
-    networks:
-      - webproxy
     environment:
       - PUID=1000
       - PGID=1000

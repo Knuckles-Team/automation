@@ -1,16 +1,10 @@
 ---
 version: "3.9"
 
-networks:
-  webproxy:
-    name: webproxy
-
 services:
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
     container_name: heimdall
-    networks:
-      - webproxy
     environment:
       - PUID=1000
       - PGID=1000

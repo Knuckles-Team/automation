@@ -1,9 +1,5 @@
 version: '3.9'
 
-networks:
-  webproxy:
-    name: webproxy
-
 services:
   dns:
     restart: always
@@ -20,5 +16,3 @@ services:
       - "53:53/udp"
     cap_add:
       - NET_ADMIN
-    networks:
-      - webproxy

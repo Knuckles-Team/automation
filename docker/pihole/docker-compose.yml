@@ -2,7 +2,6 @@ version: "3"
 
 services:
   pihole:
-    depends_on: [unbound]
     container_name: pihole
     image: pihole/pihole:latest
     dns:
@@ -18,6 +17,3 @@ services:
       - '/services/etc-pihole:/etc/pihole'
       - '/services/etc-dnsmasq.d:/etc/dnsmasq.d'
     restart: always
-    networks:
-      private_network:
-        ipv4_address: 10.2.0.100

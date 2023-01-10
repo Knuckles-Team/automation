@@ -12,7 +12,3 @@ services:
       - ./certs:/etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock
     restart: unless-stopped
-
-networks:
-  webproxy:
-    name: webproxy
