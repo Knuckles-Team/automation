@@ -1,13 +1,24 @@
-version: '2'
+version: '3.9'
+
+networks:
+  webproxy:
+    name: webproxy
+
 services:
   dns:
     restart: always
-    image: strm/dnsmasq
+    image: jpillora/dnsmasq
+    hostname: 'dnsmasq'
+    container_name: 'dnsmasq'
+    environment:
+      HTTP_USER: admin
+      HTTP_PASSWORD: Test123
     volumes:
       - ./dnsmasq.conf:/etc/dnsmasq.conf
+      - /etc/hosts:/etc/hosts
     ports:
       - "53:53/udp"
     cap_add:
       - NET_ADMIN
     networks:
-      - private_network
+      - webproxy

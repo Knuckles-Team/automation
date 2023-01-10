@@ -1,3 +1,5 @@
+docker compose up --build --remove-orphans -d
+
 default.conf
 ```bash
 server {

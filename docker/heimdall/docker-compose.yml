@@ -1,11 +1,16 @@
 ---
-version: "2.1"
+version: "3.9"
+
+networks:
+  webproxy:
+    name: webproxy
+
 services:
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
     container_name: heimdall
     networks:
-      - proxy-network
+      - webproxy
     environment:
       - PUID=1000
       - PGID=1000
@@ -16,10 +21,6 @@ services:
     volumes:
       - /services/heimdall/config:/config
     ports:
-      - 80:80
+      - 8080:80
       - 443:443
     restart: always
-
-networks:
-  proxy-network:
-    name: proxy-network
