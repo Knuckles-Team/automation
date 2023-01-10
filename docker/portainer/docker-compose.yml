@@ -14,4 +14,4 @@ services:
       - ./portainer:/data
     environment:
       - VIRTUAL_HOST=portainer.arpa
-      - VIRTUAL_PORT=8096
+      - VIRTUAL_PORT=8099
