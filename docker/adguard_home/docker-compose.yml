@@ -16,10 +16,25 @@ services:
        - "5443:5443/tcp"
        - "5443:5443/udp"
        - "3000:3000/tcp"
-       - "82:82/tcp"
+       - "80:80/tcp"
      environment:
       - VIRTUAL_HOST=adguard.arpa
       - VIRTUAL_PORT=3000
      volumes:
        - ./work:/opt/adguardhome/work
        - ./conf:/opt/adguardhome/conf
+     networks:
+       dockervlan:
+         ipv4_address: 192.168.1.61
+
+networks:
+ dockervlan:
+   name: dockervlan
+   driver: macvlan
+   driver_opts:
+     parent: eno2
+   ipam:
+     config:
+       - subnet: "192.168.1.0/24"
+         ip_range: "192.168.1.254/26"
+         gateway: "192.168.1.1"
