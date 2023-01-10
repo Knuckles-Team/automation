@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
   database:
     container_name: database
@@ -6,7 +6,7 @@ services:
     volumes:
       - ./data/database:/var/lib/postgresql/data
     networks:
-      - directus
+      - webproxy
     environment:
       POSTGRES_USER: 'directus'
       POSTGRES_PASSWORD: 'directus'
@@ -16,7 +16,7 @@ services:
     container_name: cache
     image: redis:6
     networks:
-      - directus
+      - webproxy
 
   directus:
     container_name: directus
@@ -33,7 +33,7 @@ services:
       # If you want to load extensions from the host
       - ./extensions:/directus/extensions
     networks:
-      - directus
+      - webproxy
     depends_on:
       - cache
       - database
@@ -54,11 +54,13 @@ services:
 
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
-      PUBLIC_URL: 'https://directus.knux.com'
+      PUBLIC_URL: 'http://directus.arpa'
+      VIRTUAL_HOST: 'directus.arpa'
+      VIRTUAL_PORT: '8055'
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
       #
 
 networks:
-  directus:
-    name: directus-network
+  webproxy:
+    name: webproxy
