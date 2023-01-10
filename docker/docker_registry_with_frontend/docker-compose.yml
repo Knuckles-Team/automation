@@ -20,6 +20,8 @@ services:
         image: konradkleine/docker-registry-frontend:v2
         links:
             - docker-registry:docker-registry
+        volumes:
+            - ./servername.conf:/etc/apache2/conf-available/servername.conf
         ports:
             - "8080:80"
         restart: unless-stopped
