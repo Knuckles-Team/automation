@@ -6,6 +6,7 @@ services:
     image: jpillora/dnsmasq
     hostname: 'dnsmasq'
     container_name: 'dnsmasq'
+    network_mode: host
     environment:
       HTTP_USER: admin
       HTTP_PASSWORD: Test123
