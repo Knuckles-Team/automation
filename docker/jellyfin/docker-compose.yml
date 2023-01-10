@@ -19,11 +19,6 @@ services:
       - TRUST_DOWNSTREAM_PROXY=true
       - VIRTUAL_HOST=jellyfin.arpa
       - VIRTUAL_PORT=8096
-    ports:
-      - "8096:80"
-    # Optional - may be necessary for docker healthcheck to pass if running in host network mode
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
 
 networks:
   webproxy:
