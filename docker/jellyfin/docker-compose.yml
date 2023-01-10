@@ -14,10 +14,12 @@ services:
       - /media/media/TV:/tv:ro
     restart: 'unless-stopped'
     environment:
-      - JELLYFIN_PublishedServerUrl=http://192.168.1.60
+      - JELLYFIN_PublishedServerUrl=http://192.168.1.60:8096
       - TRUST_DOWNSTREAM_PROXY=true
       - VIRTUAL_HOST=jellyfin.arpa
-      #- VIRTUAL_PORT=8096
+      - VIRTUAL_PORT=8096
+    ports:
+      - "8096:8096"
 
 networks:
   webproxy:
