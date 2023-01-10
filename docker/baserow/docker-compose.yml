@@ -2,13 +2,13 @@ version: "3.4"
 services:
   baserow:
     container_name: baserow
-    image: baserow/baserow:1.13.0
+    image: baserow/baserow:latest
     environment:
       BASEROW_PUBLIC_URL: 'http://baserow.arpa'
       VIRTUAL_HOST: baserow.arpa
       VIRTUAL_PORT: 8090
     ports:
-      - "8090"
+      - "80:8090"
     volumes:
       - baserow_data:/baserow/data
 volumes:
