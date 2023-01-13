@@ -8,7 +8,7 @@ services:
       VIRTUAL_HOST: baserow.arpa
       VIRTUAL_PORT: 8090
     ports:
-      - "8090:8090"
+      - "80:8090"
     volumes:
       - baserow_data:/baserow/data
     restart: unless-stopped
