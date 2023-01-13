@@ -10,6 +10,8 @@ services:
       - VIRTUAL_HOST=assist.arpa
       - VIRTUAL_PORT=8123
       - TZ="US/Chicago"
+    ports:
+      - "8123:8123"
     restart: unless-stopped
     privileged: true
     networks:
