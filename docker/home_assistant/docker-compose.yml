@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
   homeassistant:
     container_name: homeassistant
@@ -12,7 +12,21 @@ services:
       - TZ="US/Chicago"
     restart: unless-stopped
     privileged: true
-    network_mode: host
+    networks:
+      dockervlan:
+        ipv4_address: 192.168.1.198
+
+networks:
+  dockervlan:
+    name: dockervlan
+    driver: macvlan
+    driver_opts:
+      parent: eno2
+    ipam:
+      config:
+        - subnet: "192.168.1.0/24"
+          ip_range: "192.168.1.254/26"
+          gateway: "192.168.1.1"
 
 #services:
 #  homeassistant:
