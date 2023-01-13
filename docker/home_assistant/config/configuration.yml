@@ -3,6 +3,6 @@ default_config:
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-  - 127.0.0.1
+  - 192.168.1.60
   ip_ban_enabled: true
   login_attempts_threshold: 5
