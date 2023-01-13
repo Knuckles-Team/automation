@@ -13,8 +13,8 @@ services:
             # Publish the frontend's port 443 on the IP 0.0.0.0 on port 8443
             - "0.0.0.0:8443:443"
         volumes:
-            - ./frontend/certs/frontend.crt:/etc/apache2/server.crt:ro
-            - ./frontend/certs/frontend.key:/etc/apache2/server.key:ro
+            - ./certs/frontend.crt:/etc/apache2/server.crt:ro
+            - ./certs/frontend.key:/etc/apache2/server.key:ro
         environment:
             # The front-end is SSL protected
             - ENV_USE_SSL=no
