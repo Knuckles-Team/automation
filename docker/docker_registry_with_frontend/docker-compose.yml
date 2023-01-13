@@ -9,7 +9,7 @@ services:
             - docker-registry:docker-registry
         ports:
             - "8080:80"
-            - "8443:443"
+            #- "8443:443"
         volumes:
             - ./certs/frontend.crt:/etc/apache2/server.crt:ro
             - ./certs/frontend.key:/etc/apache2/server.key:ro
