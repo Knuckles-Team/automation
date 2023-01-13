@@ -9,6 +9,7 @@ services:
     environment:
       - VIRTUAL_HOST=assist.arpa
       - VIRTUAL_PORT=8123
+      - TZ="US/Chicago"
     restart: unless-stopped
     privileged: true
-    #network_mode: host
+    network_mode: host
