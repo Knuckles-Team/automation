@@ -12,9 +12,9 @@ services:
       - TZ="US/Chicago"
     restart: unless-stopped
     privileged: true
-#    networks:
-#      dockervlan:
-#        ipv4_address: 192.168.1.198
+    networks:
+      dockervlan:
+        ipv4_address: 192.168.1.198
 
 networks:
   dockervlan:
@@ -27,21 +27,3 @@ networks:
         - subnet: "192.168.1.0/24"
           ip_range: "192.168.1.254/26"
           gateway: "192.168.1.1"
-
-#services:
-#  homeassistant:
-#    container_name: homeassistant
-#    image: homeassistant/home-assistant:latest
-#    volumes:
-#      - ./config:/config
-#      - /etc/localtime:/etc/localtime:ro
-#    environment:
-#      - VIRTUAL_HOST=assist.arpa
-#      - TZ="US/Chicago"
-#    ports:
-#      - "8123:8123"
-#    restart: unless-stopped
-#    privileged: true
-##    cap_add:
-##      - NET_ADMIN
-#    network_mode: host
