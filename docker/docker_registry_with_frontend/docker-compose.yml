@@ -23,7 +23,7 @@ services:
             # The registry is SSL protected as well
             - ENV_DOCKER_REGISTRY_USE_SSL=1
             - VIRTUAL_HOST=docker-registry.arpa
-            - VIRTUAL_PORT=5000
+            - VIRTUAL_PORT=8443
         restart: unless-stopped
 
     # Setup registry
