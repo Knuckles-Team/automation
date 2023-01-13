@@ -4,7 +4,7 @@ services:
     container_name: baserow
     image: baserow/baserow:latest
     environment:
-      BASEROW_PUBLIC_URL: 'http://baserow.arpa'
+      BASEROW_PUBLIC_URL: 'http://192.168.1.60'
       VIRTUAL_HOST: baserow.arpa
       VIRTUAL_PORT: 8090
     ports:
