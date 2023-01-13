@@ -6,9 +6,9 @@ services:
     environment:
       BASEROW_PUBLIC_URL: 'http://192.168.1.60'
       VIRTUAL_HOST: baserow.arpa
-      VIRTUAL_PORT: 8090
+      VIRTUAL_PORT: 9090
     ports:
-      - "80:8090"
+      - "9090:9090"
     volumes:
       - baserow_data:/baserow/data
     restart: unless-stopped
