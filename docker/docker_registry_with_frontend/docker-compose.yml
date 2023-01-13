@@ -2,7 +2,6 @@
 version: '3.9'
 
 services:
-
     docker-registry-ui:
         container_name: docker-registry-ui
         image: konradkleine/docker-registry-frontend:latest
@@ -15,17 +14,14 @@ services:
             - ./certs/frontend.crt:/etc/apache2/server.crt:ro
             - ./certs/frontend.key:/etc/apache2/server.key:ro
         environment:
-            # The front-end is SSL protected
-            - ENV_USE_SSL=no
-            - ENV_DOCKER_REGISTRY_HOST=docker-registry.arpa
-            - ENV_DOCKER_REGISTRY_PORT=5000
-            # The registry is SSL protected as well
-            - ENV_DOCKER_REGISTRY_USE_SSL=0
+            - USE_SSL=no
+            - DOCKER_REGISTRY_HOST=docker-registry.arpa
+            - DOCKER_REGISTRY_PORT=5000
+            - DOCKER_REGISTRY_USE_SSL=0
             - VIRTUAL_HOST=docker-registry.arpa
             - VIRTUAL_PORT=8443
         restart: unless-stopped
 
-    # Setup registry
     docker-registry:
         container_name: docker-registry
         image: registry:latest
@@ -39,5 +35,4 @@ services:
             - ./registry/storage:/var/lib/registry:rw
             - ./registry/certs:/certs:ro
         ports:
-            # Publish registry's port 5000 on the IP 0.0.0.0 on port 5000
             - "5000:5000"
