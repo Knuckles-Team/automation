@@ -4,11 +4,11 @@ services:
     container_name: homeassistant
     image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
-      - /PATH_TO_YOUR_CONFIG:/config
+      - ./settings.conf:/config
       - /etc/localtime:/etc/localtime:ro
     environment:
       - VIRTUAL_HOST=assist.arpa
       - VIRTUAL_PORT=8123
     restart: unless-stopped
     privileged: true
-    network_mode: host
+    #network_mode: host
