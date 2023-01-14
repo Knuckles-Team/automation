@@ -33,4 +33,3 @@ services:
       - NET_ADMIN
     dns:
       - 8.8.8.8
-
