@@ -72,7 +72,7 @@
         extra_args: --upgrade
 
 - name: Cloning Repositories
-  hosts: homelab
+  hosts: poweredge
   strategy: free
   tasks:
     - name: Create a directory if it does not exist
