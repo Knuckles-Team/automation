@@ -27,7 +27,24 @@
     - name: Installing Ubuntu Dependencies
       become: yes
       apt: 
-        name: dos2unix wget curl git python3 python3-pip python-is-python3 atomicparsley ffmpeg gparted jq unzip tmux ca-certificates gnupg lsb-release trash-cli
+        name:  
+          - dos2unix 
+          - wget 
+          - curl 
+          - git  
+          - python3  
+          - python3-pip  
+          - python-is-python3  
+          - atomicparsley  
+          - ffmpeg  
+          - gparted  
+          - jq  
+          - unzip  
+          - tmux  
+          - ca-certificates  
+          - gnupg  
+          - lsb-release  
+          - trash-cli
         state: present
 
 - name: Installing Docker
@@ -75,7 +92,11 @@
     - name: Installing Ubuntu Dependencies
       become: yes
       apt: 
-        name: docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        name: 
+          - docker-ce 
+          - docker-ce-cli  
+          - containerd.io  
+          - docker-compose-plugin
         state: present
       when: docker_installed == "0"
       
