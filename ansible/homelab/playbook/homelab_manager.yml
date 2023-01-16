@@ -51,9 +51,8 @@
   hosts: homelab
   tasks:
     - name: Checking if Docker is Already Installed
-      ansible.builtin.shell:
-        cmd: which docker | wc -l
-        register: docker_installed
+      shell: which docker | wc -l
+      register: docker_installed
 
     - name: Creating Docker Keyring Directory
       ansible.builtin.file:
@@ -63,18 +62,15 @@
       when: docker_installed == "0"
 
     - name: Downloading Docker Keyring
-      ansible.builtin.shell:
-        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       when: docker_installed == "0"
 
     - name: Adding Docker to Keyring
-      ansible.builtin.shell:
-        cmd: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
       when: docker_installed == "0"
 
     - name: Giving Permissions to Docker Keyring
-      ansible.builtin.shell:
-        cmd: sudo chmod a+r /etc/apt/keyrings/docker.gpg
+      shell: sudo chmod a+r /etc/apt/keyrings/docker.gpg
       when: docker_installed == "0"
       
     - name: Waiting for DPKG to be Unlocked
