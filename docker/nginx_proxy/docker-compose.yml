@@ -1,28 +1,15 @@
-version: '2'
-
-networks:
-  proxy-network:
-    name: proxy-network
+version: '3.9'
 
 services:
   nginx-proxy:
     image: jwilder/nginx-proxy:latest
     container_name: nginx-proxy
+    network_mode: host
     ports:
       - "80:80"
     volumes:
-      - ./nginx/reverse-proxy.conf:/etc/nginx/sites-enabled/reverse-proxy.conf
+      - ./vhost.d:/etc/nginx/vhost.d
+      - ./conf.d:/etc/nginx/conf.d
+      - ./certs:/etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock
-    #network_mode: "host"   
-    networks:
-      - proxy-network
     restart: unless-stopped
-
-  whoami:
-    image: jwilder/whoami:latest
-    environment:
-      - VIRTUAL_HOST=whoami.arpa
-      - VIRTUAL_PORT=8000
-    networks:
-      - proxy-network
-

@@ -1,13 +1,19 @@
-version: '2'
+version: '3.9'
+
 services:
   dns:
     restart: always
-    image: strm/dnsmasq
+    image: jpillora/dnsmasq
+    hostname: 'dnsmasq'
+    container_name: 'dnsmasq'
+    network_mode: host
+    environment:
+      HTTP_USER: admin
+      HTTP_PASSWORD: Test123
     volumes:
       - ./dnsmasq.conf:/etc/dnsmasq.conf
+      - ./hosts:/etc/hosts
     ports:
       - "53:53/udp"
     cap_add:
       - NET_ADMIN
-    networks:
-      - private_network

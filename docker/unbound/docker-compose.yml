@@ -10,13 +10,3 @@ services:
       - COMPOSE_HTTP_TIMEOUT=300
     volumes:
       - "./unbound:/opt/unbound/etc/unbound/"
-    networks:
-      private_network:
-        ipv4_address: 10.2.0.200
-
-networks:
-  private_network:
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.2.0.0/24

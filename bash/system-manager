@@ -1085,15 +1085,17 @@ architecture="$(uname -m)"
 date=$(date +"%m-%d-%Y_%I-%M")
 script_directory="$(dirname ${0})"
 apps=( "adb" "android-studio" "ansible" "atomicparsley" "audacity" "chrome" "dialog" "discord" "docker" "dos2unix" \
-"enscript" "ffmpeg" "fstab" "geniusbot" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" "history" "jq" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "nordvpn" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
-"python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" "startup-disk-creator" "system-manager" "telegram" "tesseract" "theme-manager" "tigervnc" \
+"enscript" "ffmpeg" "fstab" "geniusbot" "gimp" "git" "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "gramps" \
+"history" "jq" "kexi" "kvm" "mediainfo" "mkvtoolnix" "neofetch" "nfs" "nordvpn" "openjdk" "openssh" "openvpn" "packer" \
+"phoronix" "preload" "poppler-utils" "powershell" "python" "pycharm" "redshift" "rygel" "scrcpy" "statlog" "steam" \
+"startup-disk-creator" "system-manager" "telegram" "tesseract" "theme-manager" "tigervnc" \
 "tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-manager" "wine" "wireshark" "youtube-dl" "xdotool" "xsel" "yq" )
 server_apps=( "adb" "ansible" "atomicparsley" "dialog" "docker" "dos2unix" \
 "enscript" "ffmpeg" "fstab" "geniusbot" "git" "gnucobol" "ghostscript" "gparted" "history" "jq" "kexi" "kvm" \
-"mediainfo" "mkvtoolnix" "neofetch" "nfs" "nordvpn" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" "poppler-utils" "powershell" \
-"python" "rygel" "scrcpy" "statlog" "startup-disk-creator" "system-manager" "tesseract" "theme-manager" \
-"tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" "video-manager" "youtube-dl" "xdotool" "xsel" "yq" )
+"mediainfo" "mkvtoolnix" "neofetch" "nfs" "nordvpn" "openjdk" "openssh" "openvpn" "packer" "phoronix" "preload" \
+"poppler-utils" "powershell" "python" "rygel" "scrcpy" "statlog" "startup-disk-creator" "system-manager" \
+"tesseract" "theme-manager" "tmux" "transmission" "translate-shell" "trash-cli" "tree" "unzip" "udisks2" "vlc" \
+"video-manager" "youtube-dl" "xdotool" "xsel" "yq" )
 pi_apps=( "atomicparsley" "audacity" "chrome" "docker" "dos2unix" "ffmpeg" "gimp" "git" \
 "gnome" "gnome-theme" "gnucobol" "ghostscript" "gparted" "history" "kvm" "mediainfo" "mkvtoolnix" "nfs" "nordvpn" "openjdk" "geniusbot" \
 "openssh" "preload" "powershell" "python" "pycharm" "redshift" "statlog" "scrcpy" "system-manager" "tesseract" "theme-manager" "tmux" "transmission" \

@@ -2,24 +2,13 @@ version: "3.4"
 services:
   baserow:
     container_name: baserow
-    image: baserow/baserow:1.13.0
+    image: baserow/baserow:latest
     environment:
-      BASEROW_PUBLIC_URL: 'http://baserow.home.arpa'
-      VIRTUAL_HOST: baserow.home.arpa
-      VIRTUAL_PORT: 80
-    networks:
-      baserow_network:
-        ipv4_address: 172.20.0.17
-    ports:
-      - 80
+      BASEROW_PUBLIC_URL: 'http://192.168.1.60'
+      VIRTUAL_HOST: baserow.arpa
     volumes:
       - baserow_data:/baserow/data
+    restart: unless-stopped
+
 volumes:
   baserow_data:
-
-networks:
-  baserow_network:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/16
