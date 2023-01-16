@@ -86,11 +86,11 @@
       become: yes
       ansible.builtin.git:
         repo: https://github.com/Knuckles-Team/automation.git
-        dest: /Development
+        dest: /Development/automation
 
     - name: Cloning Remaining Repositories
       become: yes
-      shell:  repository-manager -c -d /Development -p -f /Development/automation/repositories.txt -b
+      shell: repository-manager -d "/Development" -f "/Development/automation/repositories.txt" -c -p -b
 
 - name: Installing Ubuntu Server Dependencies
   hosts: poweredge
