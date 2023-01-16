@@ -18,12 +18,23 @@
       apt:
         upgrade: full
 
-- name: Installing Dependencies
+- name: Installing Ubuntu Dependencies
   hosts: homelab
+  strategy: free
   tasks:
     - name: Waiting for DPKG to be Unlocked
       become: yes
       shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+
+    - name: Adding Main Repository
+      become: yes
+      shell: sudo apt-add-repository --yes main
+      
+    - name: Updating Ubuntu Apt Cache
+      become: yes
+      apt:
+        update_cache: yes
+        force_apt_get: yes
 
     - name: Installing Ubuntu Dependencies
       become: yes
@@ -46,8 +57,26 @@
           - gnupg  
           - lsb-release  
           - trash-cli
+          - lm-sensors 
+          - ipmitool
+          - gcc
+        state: present
+
+- name: Installing Ubuntu Server Dependencies
+  hosts: poweredge
+  strategy: free
+  tasks:
+    - name: Waiting for DPKG to be Unlocked
+      become: yes
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+
+    - name: Installing Ubuntu Server Dependencies
+      become: yes
+      apt: 
+        name:  
           - cpu-checker
           - qemu-kvm 
+          - qemu-efi
           - virt-manager 
           - libvirt-daemon-system 
           - virtinst 
@@ -55,7 +84,6 @@
           - bridge-utils
           - lm-sensors 
           - ipmitool
-          - gcc
         state: present
 
     - name: Giving KVM Access to Ansible
