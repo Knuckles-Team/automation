@@ -7,12 +7,12 @@ services:
     container_name: virt-manager
     restart: always
     ports:
-      - 8185:8185
+      - 8185:80
     environment:
       DARK_MODE: false
       HOSTS: "['qemu:///system']"
       VIRTUAL_HOST: virtualization.arpa
-      VIRTUAL_PORT: 8185
+      VIRTUAL_PORT: 80
     privileged: true
     volumes:
       - "/var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock"
