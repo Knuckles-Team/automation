@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 # Update the base packages
-RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
+RUN apt update -y && apt upgrade -y && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y --no-install-recommends \
     curl jq wget build-essential libssl-dev libffi-dev python-is-python3 python3 python3-venv python3-dev python3-pip \
     nano vim gcc git dos2unix ffmpeg libsm6 libxext6 libgl1 ca-certificates gnupg gnupg2 lsb-release zip unzip \
     software-properties-common apt-transport-https libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 \

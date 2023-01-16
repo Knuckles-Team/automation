@@ -1,5 +1,5 @@
 FROM ubuntu:latest AS awx_dependencies
-RUN apt update && apt upgrade -y && apt install -y vim nano libssl-dev libffi-dev dos2unix wget curl open-vm-tools-desktop net-tools git python3-pip python3-virtualenv python-is-python3
+RUN apt update && apt upgrade -y && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y --no-install-recommends vim nano libssl-dev libffi-dev dos2unix wget curl open-vm-tools-desktop net-tools git python3-pip python3-virtualenv python-is-python3
 RUN curl -sSL https://get.docker.com/ | sh
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --upgrade docker-compose ansible
