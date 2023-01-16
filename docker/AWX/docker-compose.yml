@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  awx:
+    container_name: awx
+    build: .
+    environment:
+      - VIRTUAL_HOST: awx.arpa
+      - VIRTUAL_PORT: 8043
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
