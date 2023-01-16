@@ -1,6 +1,8 @@
 # Old Files
 *.sh~
 
+*inventory*
+
 .idea/
 *.mkv
 *.mp4

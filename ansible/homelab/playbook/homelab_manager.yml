@@ -1,0 +1,44 @@
+---
+- name: Home Lab Manager
+  hosts: homelab
+  tasks:
+    - name: Updating Ubuntu Apt Cache
+      become: yes
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: Waiting for DPKG to be Unlocked
+      become: yes
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+
+    - name: Upgrading Ubuntu
+      become: yes
+      apt:
+        upgrade: full
+
+    - name: Installing dos2unix
+      become: yes
+      apt:
+        name: dos2unix
+        state: present
+
+    - name: Installing wget
+      become: yes
+      apt:
+        name: wget
+        state: present
+
+    - name: Installing curl
+      become: yes
+      apt:
+        name: wget
+        state: present
+
+    - name: Installing git
+      become: yes
+      apt:
+        name: wget
+        state: present
+
+        

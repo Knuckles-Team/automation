@@ -11,4 +11,5 @@ services:
       - ./reverse.heaven.arpa:/etc/bind/reverse.heaven.arpa
       - ./named.conf.local:/etc/bind/named.conf.local
       - ./named.conf.options:/etc/bind/named.conf.options
+      - ./default.conf:/etc/nginx/conf.d/default.conf
     restart: unless-stopped
