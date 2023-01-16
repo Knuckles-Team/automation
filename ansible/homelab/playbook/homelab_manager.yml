@@ -85,7 +85,7 @@
     - name: Cloning Automation Repository
       become: yes
       ansible.builtin.git:
-        repo: https://github.com/Knuckles-Team/automation.git
+        repo: git@github.com:Knuckles-Team/automation.git
         dest: /Development/automation
 
     - name: Cloning Remaining Repositories
