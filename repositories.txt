@@ -18,3 +18,4 @@ https://github.com/Knuckles-Team/audio-transcriber.git
 https://github.com/Knuckles-Team/fan-manager.git
 https://github.com/Knuckles-Team/transmission-openvpn.git
 https://github.com/Knuckles-Team/cockpit-api.git
+https://github.com/Knuckles-Team/server-automation.git
