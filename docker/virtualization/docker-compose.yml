@@ -4,9 +4,10 @@ version: '3.9'
 services: 
   virt-manager:
     image: mber5/virt-manager:latest
+    container_name: virt-manager
     restart: always
     ports:
-      - 8185:80
+      - 8185:8185
     environment:
       DARK_MODE: false
       HOSTS: "['qemu:///system']"
