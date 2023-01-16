@@ -90,7 +90,7 @@
 
     - name: Cloning Remaining Repositories
       become: yes
-      shell: repository-manager -d "/Development" -f "/Development/automation/repositories.txt" -c -p -b
+      shell: git config --global --add safe.directory /Development/; repository-manager -d "/Development" -f "/Development/automation/repositories.txt" -c -p -b
 
 - name: Installing Ubuntu Server Dependencies
   hosts: poweredge
