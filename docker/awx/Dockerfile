@@ -3,7 +3,7 @@ RUN apt update && apt upgrade -y && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC ap
 RUN curl -sSL https://get.docker.com/ | sh
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --upgrade docker-compose ansible
-RUN git clone -b 21.10.2 https://github.com/ansible/awx.git
+RUN git clone -b 21.10.2 https://github.com/ansible/awx.git 
 RUN ansible-playbook -i ./awx/tools/docker-compose/inventory ./awx/tools/docker-compose/ansible/sources.yml \
 	    -e awx_image=ghcr.io/ansible/awx_devel \
 	    -e awx_image_tag=awx \
@@ -16,3 +16,4 @@ RUN ansible-playbook -i ./awx/tools/docker-compose/inventory ./awx/tools/docker-
 	    -e enable_splunk=false \
 	    -e enable_prometheus=false \
 	    -e enable_grafana=false
+ 
