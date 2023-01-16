@@ -1,6 +1,7 @@
 ---
 - name: Updating System
   hosts: homelab
+  strategy: free
   tasks:
     - name: Waiting for DPKG to be Unlocked
       become: yes
@@ -45,10 +46,25 @@
           - gnupg  
           - lsb-release  
           - trash-cli
+          - cpu-checker
+          - qemu-kvm 
+          - virt-manager 
+          - libvirt-daemon-system 
+          - virtinst 
+          - libvirt-clients 
+          - bridge-utils
+          - lm-sensors 
+          - ipmitool
+          - gcc
         state: present
+
+    - name: Giving KVM Access to Ansible
+      become: yes
+      shell:  sudo usermod -aG kvm ansible; sudo usermod -aG libvirt ansible;
 
 - name: Installing Docker
   hosts: homelab
+  strategy: free
   tasks:
     - name: Checking if Docker is Already Installed
       shell: which docker | wc -l
@@ -98,6 +114,7 @@
       
 - name: Cleaning System
   hosts: homelab
+  strategy: free
   tasks:
     - name: Emptying Trash
       become: yes
