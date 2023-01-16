@@ -62,6 +62,36 @@
           - gcc
         state: present
 
+    - name: Installing Python Dependencies
+      become: yes
+      ansible.builtin.pip:
+        name: 
+          - pip
+          - geniusbot
+          - ansible
+        extra_args: --upgrade
+
+- name: Cloning Repositories
+  hosts: homelab
+  strategy: free
+  tasks:
+    - name: Create a directory if it does not exist
+      become: yes
+      ansible.builtin.file:
+        path: /Development
+        state: directory
+        mode: '0755'
+
+    - name: Cloning Automation Repository
+      become: yes
+      ansible.builtin.git:
+        repo: https://github.com/Knuckles-Team/automation.git
+        dest: /Development
+
+    - name: Cloning Remaining Repositories
+      become: yes
+      shell:  repository-manager -c -d /Development -p -f /Development/automation/repositories.txt -b
+
 - name: Installing Ubuntu Server Dependencies
   hosts: poweredge
   strategy: free
@@ -129,7 +159,7 @@
         force_apt_get: yes
       when: docker_installed == "0"
              
-    - name: Installing Ubuntu Dependencies
+    - name: Installing Docker
       become: yes
       apt: 
         name: 
