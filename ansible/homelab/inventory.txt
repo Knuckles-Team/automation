@@ -6,4 +6,4 @@ rpi4 ansible_host=192.168.1.150
 [homelab:vars]
 ansible_user=ansible
 ansible_ssh_user=ansible
-ansible_ssh_pass=PASSWORD
+ansible_ssh_pass=AnsibleAutomation
