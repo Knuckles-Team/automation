@@ -1,44 +1,101 @@
 ---
-- name: Home Lab Manager
+- name: Update
   hosts: homelab
   tasks:
+    - name: Waiting for DPKG to be Unlocked
+      become: yes
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+
     - name: Updating Ubuntu Apt Cache
       become: yes
       apt:
         update_cache: yes
         force_apt_get: yes
 
-    - name: Waiting for DPKG to be Unlocked
-      become: yes
-      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
-
     - name: Upgrading Ubuntu
       become: yes
       apt:
         upgrade: full
 
-    - name: Installing dos2unix
+- name: Installing Dependencies
+  hosts: homelab
+  tasks:
+    - name: Waiting for DPKG to be Unlocked
       become: yes
-      apt:
-        name: dos2unix
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+
+    - name: Installing Ubuntu Dependencies
+      become: yes
+      apt: 
+        name: dos2unix wget curl git python3 python3-pip python-is-python3 atomicparsley ffmpeg gparted jq unzip tmux ca-certificates gnupg lsb-release trash-cli
         state: present
 
-    - name: Installing wget
+- name: Installing Docker
+  hosts: homelab
+  tasks:
+    - name: Checking if Docker is Already Installed
+      ansible.builtin.shell:
+        cmd: which docker | wc -l
+        register: docker_installed
+
+    - name: Creating Docker Keyring Directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+      when: docker_installed == "0"
+
+    - name: Downloading Docker Keyring
+      ansible.builtin.shell:
+        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      when: docker_installed == "0"
+
+    - name: Adding Docker to Keyring
+      ansible.builtin.shell:
+        cmd: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      when: docker_installed == "0"
+
+    - name: Giving Permissions to Docker Keyring
+      ansible.builtin.shell:
+        cmd: sudo chmod a+r /etc/apt/keyrings/docker.gpg
+      when: docker_installed == "0"
+      
+    - name: Waiting for DPKG to be Unlocked
+      become: yes
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+      when: docker_installed == "0"
+      
+    - name: Updating Ubuntu Apt Cache
       become: yes
       apt:
-        name: wget
+        update_cache: yes
+        force_apt_get: yes
+      when: docker_installed == "0"
+             
+    - name: Installing Ubuntu Dependencies
+      become: yes
+      apt: 
+        name: docker-ce docker-ce-cli containerd.io docker-compose-plugin
         state: present
+      when: docker_installed == "0"
+      
+- name: Cleaning System
+  hosts: homelab
+  tasks:
+    - name: Emptying Trash
+      become: yes
+      shell:  trash-empty
+    
+    - name: Waiting for DPKG to be Unlocked
+      become: yes
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
 
-    - name: Installing curl
+    - name: Cleaning Apt
       become: yes
       apt:
-        name: wget
-        state: present
+        clean: true 
 
-    - name: Installing git
+    - name: Autoremoving Apt Packages
       become: yes
       apt:
-        name: wget
-        state: present
-
-        
+        autoremove: true
