@@ -169,6 +169,37 @@
           - docker-compose-plugin
         state: present
       when: docker_installed == "0"
+
+- name: Installing Cockpit
+  hosts: homelab
+  strategy: free
+  tasks:
+    - name: Checking if Docker is Already Installed
+      shell: which cockpit | wc -l
+      register: cockpit_installed
+
+    - name: Waiting for DPKG to be Unlocked
+      become: yes
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+      when: cockpit_installed == "0"
+  
+    - name: Downloading Docker Cockpit Plugin
+      shell: wget https://launchpad.net/ubuntu/+source/cockpit/215-1~ubuntu19.10.1/+build/18889196/+files/cockpit-docker_215-1~ubuntu19.10.1_all.deb && sudo apt install -y ./cockpit-docker_215-1~ubuntu19.10.1_all.deb
+      when: cockpit_installed == "0"
+             
+    - name: Installing Cockpit
+      become: yes
+      apt: 
+        name: 
+          - cockpit  
+          - cockpit-machines  
+          - cockpit-podman  
+          - cockpit-system  
+          - cockpit-bridge  
+          - cockpit-storaged  
+          - cockpit-networkmanager
+        state: present
+      when: cockpit_installed == "0"
       
 - name: Cleaning System
   hosts: homelab
