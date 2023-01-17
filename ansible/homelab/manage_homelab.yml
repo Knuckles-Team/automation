@@ -1,3 +1,0 @@
----
-- name: Manage Home Lab
-  ansible.builtin.import_playbook: ./playbook/homelab_manager.yml
