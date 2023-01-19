@@ -9,8 +9,8 @@ services:
       VIRTUAL_HOST: gitlab.arpa
       VIRTUAL_PORT: 80
       GITLAB_PORT: 80
-      GITLAB_ROOT_EMAIL: "genius@arpa"
-      GITLAB_ROOT_PASSWORD: "gitlab_rocks"
+#      GITLAB_ROOT_EMAIL: "genius@arpa"
+#      GITLAB_ROOT_PASSWORD: "gitlab_rocks"
       EXTERNAL_URL: "http://gitlab.arpa"
       COMPOSE_HTTP_TIMEOUT: 300
     ports:
