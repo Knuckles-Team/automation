@@ -14,7 +14,7 @@ services:
         external_url 'http://gitlab.arpa'
         gitlab_rails['initial_root_password'] = 'GitLabIsFun'
     ports:
-      - '8080:80'
+      - '8929:80'
     volumes:
       - '/apps/gitlab/config:/etc/gitlab'
       - '/apps/gitlab/logs:/var/log/gitlab'
