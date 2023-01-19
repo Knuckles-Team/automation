@@ -1,14 +1,15 @@
-version: '3.7'
+version: '3.9'
 services:
   web:
     image: 'gitlab/gitlab-ce:latest'
     restart: always
-    hostname: 'localhost'
-    container_name: gitlab-ce
+    hostname: 'gitlab'
+    container_name: gitlab
     environment:
+      VIRTUAL_HOST: gitlab.arpa
       COMPOSE_HTTP_TIMEOUT: 300
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://localhost'
+        external_url 'http://192.168.1.60'
         gitlab_rails['initial_root_password'] = 'GitLabIsFun'
     ports:
       - '8080:80'
@@ -28,9 +29,3 @@ services:
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
 #      - '/home/mrdr/Containers/gitlab/gitlab-runner:/etc/gitlab-runner'
-#    networks:
-#      - gitlab
-
-networks:
-  gitlab:
-    name: gitlab-network
