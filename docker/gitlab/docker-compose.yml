@@ -7,7 +7,7 @@ services:
     container_name: gitlab
     environment:
       VIRTUAL_HOST: gitlab.arpa
-      VIRTUAL_PORT: 80
+      VIRTUAL_PORT: 8929
       GITLAB_PORT: 8929
       COMPOSE_HTTP_TIMEOUT: 300
       GITLAB_OMNIBUS_CONFIG: |
