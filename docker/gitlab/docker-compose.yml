@@ -18,14 +18,13 @@ services:
       - '/home/mrdr/Containers/gitlab/config:/etc/gitlab'
       - '/home/mrdr/Containers/gitlab/logs:/var/log/gitlab'
       - '/home/mrdr/Containers/gitlab/data:/var/opt/gitlab'
-    networks:
-      - gitlab
-#  gitlab-runner:
-#    image: gitlab/gitlab-runner:alpine
-#    container_name: gitlab-runner
-#    restart: always
-#    depends_on:
-#      - web
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - '/home/mrdr/Containers/gitlab/gitlab-runner:/etc/gitlab-runner'
+
+ gitlab-runner:
+   image: gitlab/gitlab-runner:alpine
+   container_name: gitlab-runner
+   restart: always
+   depends_on:
+     - web
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - '/home/mrdr/Containers/gitlab/gitlab-runner:/etc/gitlab-runner'
