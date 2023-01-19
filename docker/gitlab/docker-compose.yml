@@ -15,9 +15,9 @@ services:
       - '8080:80'
       - '8443:443'
     volumes:
-      - '/home/mrdr/Containers/gitlab/config:/etc/gitlab'
-      - '/home/mrdr/Containers/gitlab/logs:/var/log/gitlab'
-      - '/home/mrdr/Containers/gitlab/data:/var/opt/gitlab'
+      - '/apps/gitlab/config:/etc/gitlab'
+      - '/apps/gitlab/logs:/var/log/gitlab'
+      - '/apps/gitlab/data:/var/opt/gitlab'
 
   gitlab-runner:
     image: gitlab/gitlab-runner:alpine
@@ -27,4 +27,4 @@ services:
       - web
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - '/home/mrdr/Containers/gitlab/gitlab-runner:/etc/gitlab-runner'
+      - '/apps/gitlab/gitlab-runner:/etc/gitlab-runner'
