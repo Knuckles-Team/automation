@@ -4,6 +4,10 @@ services:
     depends_on: [unbound, pihole]
     image: linuxserver/wireguard
     container_name: wireguard
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE

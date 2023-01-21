@@ -3,6 +3,10 @@ services:
    adguardhome:
      image: adguard/adguardhome
      container_name: adguardhome
+     logging:
+       options:
+         max-size: "10m"
+         max-file: "10"
      restart: unless-stopped
      ports:
        - "53:53/tcp"

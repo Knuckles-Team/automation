@@ -3,5 +3,9 @@ services:
   dind:
     container_name: dind
     build: .
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

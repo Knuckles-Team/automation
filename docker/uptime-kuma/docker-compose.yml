@@ -4,6 +4,10 @@ services:
   uptime-kuma:
     image: louislam/uptime-kuma:latest
     container_name: uptime-kuma
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       VIRTUAL_HOST: 'uptime-kuma.arpa'
       VIRTUAL_PORT: '3001'

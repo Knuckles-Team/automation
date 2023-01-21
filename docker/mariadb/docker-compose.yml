@@ -6,6 +6,10 @@ services:
     container_name: mariadb
     hostname: mariadb
     restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       - MARIADB_ROOT_PASSWORD=example
       - VIRTUAL_HOST=mariadb.arpa
@@ -16,6 +20,10 @@ services:
     container_name: adminer
     hostname: adminer
     restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       - VIRTUAL_HOST=adminer.arpa
       - VIRTUAL_PORT=8080

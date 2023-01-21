@@ -3,6 +3,10 @@ services:
   database:
     container_name: database
     image: postgis/postgis:13-master
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
     volumes:
       - ./data/database:/var/lib/postgresql/data
     environment:
@@ -19,6 +23,10 @@ services:
   directus:
     container_name: directus
     image: directus/directus:latest
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
     restart: unless-stopped
     ports:
       - 8055:8055

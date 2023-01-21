@@ -3,6 +3,10 @@ services:
   homeassistant:
     container_name: homeassistant
     image: homeassistant/home-assistant:latest
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
     volumes:
       - ./config:/config
       - /etc/localtime:/etc/localtime:ro
