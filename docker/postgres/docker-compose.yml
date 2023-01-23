@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: example
       VIRTUAL_HOST: postgres.arpa
       VIRTUAL_PORT: 5432
+    ports:
+      - "5432:5432"
 
   adminer:
     image: adminer
@@ -24,4 +26,4 @@ services:
       - VIRTUAL_HOST=adminer.arpa
       - VIRTUAL_PORT=8080
     ports:
-      - 8282:8080
+      - "8282:8080"
