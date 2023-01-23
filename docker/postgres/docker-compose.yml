@@ -6,6 +6,8 @@ services:
     container_name: postgres
     hostname: postgres
     restart: unless-stopped
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: example
       VIRTUAL_HOST: postgres.arpa
