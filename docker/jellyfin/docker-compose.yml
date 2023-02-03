@@ -4,6 +4,10 @@ services:
   jellyfin:
     image: jellyfin/jellyfin
     container_name: jellyfin
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
     user: 1000:1000
     volumes:
       - /apps/jellyfin/config:/config

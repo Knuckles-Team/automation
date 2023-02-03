@@ -1,19 +1,19 @@
 version: '3.9'
 
 services:
-  mariadb:
-    image: mariadb
-    container_name: mariadb
-    hostname: mariadb
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: postgres
     restart: unless-stopped
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "5"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
     environment:
-      - MARIADB_ROOT_PASSWORD=example
-      - VIRTUAL_HOST=mariadb.arpa
-      - VIRTUAL_PORT=3306
+      POSTGRES_PASSWORD: example
+      VIRTUAL_HOST: postgres.arpa
+      VIRTUAL_PORT: 5432
+    ports:
+      - "5432:5432"
 
   adminer:
     image: adminer
@@ -28,4 +28,4 @@ services:
       - VIRTUAL_HOST=adminer.arpa
       - VIRTUAL_PORT=8080
     ports:
-      - 8282:8080
+      - "8282:8080"

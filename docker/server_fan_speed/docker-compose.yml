@@ -6,6 +6,10 @@ services:
     build: .
     container_name: server_fan_speed
     privileged: true
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - /dev/ipmi0:/dev/ipmi0
     restart: unless-stopped

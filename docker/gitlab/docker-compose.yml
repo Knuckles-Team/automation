@@ -5,6 +5,10 @@ services:
     restart: always
     hostname: 'gitlab'
     container_name: gitlab
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "100"
     environment:
       VIRTUAL_HOST: gitlab.arpa
       VIRTUAL_PORT: 80
