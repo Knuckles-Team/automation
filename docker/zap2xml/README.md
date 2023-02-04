@@ -1,0 +1,1 @@
+This is used for pulling TV Guide information into Jellyfin
