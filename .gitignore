@@ -3,7 +3,7 @@
 *node_modules/
 *inventory*
 
-.idea/
+../../.idea/
 *.mkv
 *.mp4
 
