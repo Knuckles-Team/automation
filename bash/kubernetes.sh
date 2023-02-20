@@ -1,5 +1,10 @@
 #!/bin/bash
 
+function usage(){
+    #https://www.cloudsigma.com/how-to-install-and-use-kubernetes-on-ubuntu-20-04/
+    echo "Usage: Installing Kubernetes on Linux"
+}
+
 function install() {
     if [[ "Ubuntu" == *"Ubuntu" ]]; then
         apt update
