@@ -27,6 +27,9 @@ EOF
         yum install -y kubectl bash-completion
         echo 'source <(kubectl completion bash)' >>~/.bashrc
     fi
+    curl -L https://github.com/kubernetes/kompose/releases/download/v1.26.0/kompose-linux-amd64 -o kompose
+    chmod +x kompose
+    mv ./kompose /usr/local/bin/kompose
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert"
     install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert
     sysctl net.bridge.bridge-nf-call-iptables=1
