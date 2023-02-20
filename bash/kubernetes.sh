@@ -8,7 +8,7 @@ function usage(){
 function install() {
     if [[ "Ubuntu" == *"Ubuntu" ]]; then
         apt update
-        apt install -y ca-certificates curl
+        apt install -y ca-certificates curl git
         apt install -y apt-transport-https
         curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
         echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
@@ -16,6 +16,7 @@ function install() {
         apt install -y kubectl bash-completion
         echo 'source <(kubectl completion bash)' >>~/.bashrc
     else
+        yum install curl git
         cat <<EOF | tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
