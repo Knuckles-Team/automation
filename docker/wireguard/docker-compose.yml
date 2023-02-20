@@ -1,13 +1,9 @@
-version: '3.3'
+version: '3.9'
 services:
   wireguard:
-    depends_on: [unbound, pihole]
     image: linuxserver/wireguard
     container_name: wireguard
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "5"
+    hostname: wireguard
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -15,9 +11,13 @@ services:
       - PUID=1000
       - PGID=1000
       - PEERS=9
-      - PEERDNS=10.2.0.100
+      - PEERDNS=192.168.1.60
       - ALLOWEDIPS=0.0.0.0/0
       - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
+      - SERVERURL=wireguard.arpa       
+      - VIRUTAL_HOST=wireguard.arpa
+      - SERVERPORT=51820 
+      - VIRTUAL_PORT=51820      
     env_file:
       - .env
     volumes:
@@ -27,11 +27,7 @@ services:
     ports:
       - 51820:51820/udp
     dns:
-      - 10.2.0.100 # Points to pihole
-      - 10.2.0.200 # Points to unbound
+      - 192.168.1.60
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-    restart: always
-    networks:
-      private_network:
-        ipv4_address: 10.2.0.3
+    restart: unless-stopped
