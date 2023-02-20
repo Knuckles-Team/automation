@@ -11,6 +11,7 @@ services:
       - PUID=1000
       - PGID=1000
       - PEERS=9
+      - PERSISTENTKEEPALIVE_PEERS=3
       - PEERDNS=192.168.1.60
       - ALLOWEDIPS=0.0.0.0/0
       - INTERNAL_SUBNET=10.13.13.0/24 # Subnet used in VPN tunnel
