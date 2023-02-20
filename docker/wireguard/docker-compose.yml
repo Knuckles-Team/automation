@@ -18,6 +18,7 @@ services:
       - VIRUTAL_HOST=wireguard.arpa
       - SERVERPORT=51820 
       - VIRTUAL_PORT=51820      
+      - COMPOSE_HTTP_TIMEOUT=300
     env_file:
       - .env
     volumes:
