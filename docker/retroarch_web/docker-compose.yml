@@ -1,0 +1,15 @@
+---
+version: '3.9'
+
+services:
+  retroarch:
+    image: inglebard/retroarch-web
+    container_name: retroarch
+    restart: unless-stopped
+    volumes:
+      - /games:/games
+    ports:
+      - 8080:8093
+    environment:
+      - VIRTUAL_HOST=retroarch.arpa
+      - VIRTUAL_PORT=8093
