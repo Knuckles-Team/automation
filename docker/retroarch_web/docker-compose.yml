@@ -9,7 +9,7 @@ services:
     volumes:
       - /games:/games
     ports:
-      - 8080:8093
+      - 8080:80
     environment:
       - VIRTUAL_HOST=retroarch.arpa
-      - VIRTUAL_PORT=8093
+      - VIRTUAL_PORT=8080
