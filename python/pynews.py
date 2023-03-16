@@ -75,12 +75,12 @@ class NewsScrape:
         data.pop('timeTakenForResearchReports', None)
         data.pop('timeTakenForScreenerField', None)
         data.pop('timeTakenForCulturalAssets', None)
-        # data['exchange'] = data['quotes'][0]['exchange']
-        # data['industry'] = data['quotes'][0]['industry']
-        # data['sector'] = data['quotes'][0]['sector']
         for quote_index in range(0, len(data['quotes'])):
             data['symbol'] = data['quotes'][0]['symbol']
             data['symbolName'] = data['quotes'][0]['longname']
+            # data['exchange'] = data['quotes'][0]['exchange']
+            # data['industry'] = data['quotes'][0]['industry']
+            # data['sector'] = data['quotes'][0]['sector']
             data['quotes'][quote_index].pop('index', None)
             data['quotes'][quote_index].pop('typeDisp', None)
             data['quotes'][quote_index].pop('isYahooFinance', None)
@@ -147,9 +147,6 @@ class NewsScrape:
                             self.companies.append(new_company)
                     #elif ticker['ticker'] in text:
                         #print(f"{ticker['ticker']} IN {text}")
-
-
-
         #print(f"COMPANIES: {json.dumps(self.companies,indent=2)}")
 
     def get_sentiment(self, company_index):
