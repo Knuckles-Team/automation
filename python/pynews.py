@@ -78,9 +78,6 @@ class NewsScrape:
         for quote_index in range(0, len(data['quotes'])):
             data['symbol'] = data['quotes'][0]['symbol']
             data['symbolName'] = data['quotes'][0]['longname']
-            # data['exchange'] = data['quotes'][0]['exchange']
-            # data['industry'] = data['quotes'][0]['industry']
-            # data['sector'] = data['quotes'][0]['sector']
             data['quotes'][quote_index].pop('index', None)
             data['quotes'][quote_index].pop('typeDisp', None)
             data['quotes'][quote_index].pop('isYahooFinance', None)
@@ -110,15 +107,12 @@ class NewsScrape:
             search_terms = headlines_1 + headlines_2 + headlines_3 + headlines_4 + paragraphs
             unwanted_filters = ['BBC World News TV', 'BBC World Service Radio',
                                 'News daily newsletter', 'Mobile app', 'Get in touch']
-
             cleaned_text = []
             for text in list(dict.fromkeys(search_terms)):
                 for unwanted_filter in unwanted_filters:
                     if unwanted_filter not in text.text.strip():
                         cleaned_text.append(text.text.strip())
-
             cleaned_text = list(set(cleaned_text))
-
             for text in cleaned_text:
                 text = html.unescape(text)
                 text = text.encode("ascii", "ignore")
@@ -135,19 +129,14 @@ class NewsScrape:
                             self.companies.append(new_company)
                         company_index = 0
                         if ticker['name'] in self.companies[company_index]['name']:
-                            #print(f"Appending news headline to {self.companies[company_index]['name']}")
                             self.companies[company_index]['news_headlines'].append(text)
                         elif ticker['name'] not in self.companies[company_index]['name']:
-                            #print(f"Company not found, creating one for {ticker['name']}")
                             new_company = {
                                 "symbolName": ticker['symbolName'],
                                 "symbol": ticker['symbol'],
                                 "news_headlines": [text]
                             }
                             self.companies.append(new_company)
-                    #elif ticker['ticker'] in text:
-                        #print(f"{ticker['ticker']} IN {text}")
-        #print(f"COMPANIES: {json.dumps(self.companies,indent=2)}")
 
     def get_sentiment(self, company_index):
         result = self.sentiment_pipeline(self.companies[company_index]['news_headlines'])
@@ -157,11 +146,8 @@ class NewsScrape:
                 "label": result[data_index]['label'],
                 "score": result[data_index]['score'],
             }
-        #print(json.dumps(result, indent=4))
 
     def deduplicate_news_headlines(self):
-        print("Deduping data")
-        #self.companies = list(set(self.companies))
         res_list = []
         for i in range(len(self.companies)):
             if self.companies[i] not in self.companies[i + 1:]:
@@ -176,7 +162,7 @@ class NewsScrape:
         self.deduplicate_news_headlines()
         for company_index in range(0, len(self.companies)):
             self.get_sentiment(company_index=company_index)
-        print(f"COMPANIES: {json.dumps(self.companies, indent=2)}")
+        print(f"Data: {json.dumps(self.companies, indent=2)}")
 
 if __name__ == "__main__":
     pynews_client = NewsScrape()
