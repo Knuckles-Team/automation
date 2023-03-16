@@ -6,24 +6,14 @@ from bs4 import BeautifulSoup
 import json
 from transformers import pipeline
 import html
+import barchart_api
 
 class NewsScrape:
     def __init__(self):
-
-        self.tickers = [
-            {
-                'name': 'Tesla',
-                'ticker': 'TSLA'
-            },
-            {
-                'name': 'Apple',
-                'ticker': 'AAPL'
-            },
-            {
-                'name': 'Google',
-                'ticker': 'GOOGL'
-            },
-        ]
+        self.barchart_client = barchart_api.Api(url="https://www.barchart.com/")
+        self.tickers = self.barchart_client.get_top_stocks_top_own(max_pages=1)
+        self.tickers = self.tickers[0]['data'][2:7]
+        print(f"Top Stocks: {json.dumps(self.tickers, indent=2)}")
 
         self.companies = []
 
@@ -57,21 +47,16 @@ class NewsScrape:
         # https://huggingface.co/docs/transformers/main_classes/pipelines
         self.sentiment_pipeline = pipeline("sentiment-analysis")
 
-    def get_company_information(self):
+    def scrape_news_yahoo(self):
         for ticker_index in range(0, len(self.tickers)):
-            self.companies.append(self.search_company(self.tickers[ticker_index]))
-            print(f"Ticker: {self.companies[ticker_index]['ticker']}\n"
-                  f"Name: {self.companies[ticker_index]['name']}\n"
-                  f"Exchange: {self.companies[ticker_index]['exchange']}\n"
-                  f"Industry: {self.companies[ticker_index]['industry']}\n"
-                  f"Sector: {self.companies[ticker_index]['sector']}\n"
-                  f"News: {self.companies[ticker_index]['news_headlines']}\n")
+            self.companies.append(self.search_company(self.tickers[ticker_index]['symbolName']))
+            self.companies.append(self.search_company(self.tickers[ticker_index]['symbol']))
 
     def search_company(self, search):
         yfinance = "https://query2.finance.yahoo.com/v1/finance/search"
         user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
         params = {"q": search, "quotes_count": 1, "country": "United States"}
-
+        print(f"Searching: {search}...")
         res = requests.get(url=yfinance, params=params, headers={'User-Agent': user_agent})
         data = res.json()
         data.pop('explains', None)
@@ -90,22 +75,27 @@ class NewsScrape:
         data.pop('timeTakenForResearchReports', None)
         data.pop('timeTakenForScreenerField', None)
         data.pop('timeTakenForCulturalAssets', None)
-        data['ticker'] = data['quotes'][0]['symbol']
-        data['name'] = data['quotes'][0]['longname']
-        data['exchange'] = data['quotes'][0]['exchange']
-        data['industry'] = data['quotes'][0]['industry']
-        data['sector'] = data['quotes'][0]['sector']
+        # data['exchange'] = data['quotes'][0]['exchange']
+        # data['industry'] = data['quotes'][0]['industry']
+        # data['sector'] = data['quotes'][0]['sector']
         for quote_index in range(0, len(data['quotes'])):
+            data['symbol'] = data['quotes'][0]['symbol']
+            data['symbolName'] = data['quotes'][0]['longname']
             data['quotes'][quote_index].pop('index', None)
             data['quotes'][quote_index].pop('typeDisp', None)
             data['quotes'][quote_index].pop('isYahooFinance', None)
             data['quotes'][quote_index].pop('shortname', None)
+        data.pop('quotes', None)
         data['news_headlines'] = []
         for news_index in range(0, len(data['news'])):
             data['news'][news_index].pop('uuid', None)
             data['news'][news_index].pop('type', None)
             data['news'][news_index].pop('thumbnail', None)
-            data['news_headlines'].append(data['news'][news_index]['title'])
+            title = html.unescape(data['news'][news_index]['title'])
+            title = title.encode("ascii", "ignore")
+            title = title.decode()
+            data['news_headlines'].append(title)
+        data.pop('news', None)
         return data
 
     def scrape_news(self):
@@ -134,12 +124,12 @@ class NewsScrape:
                 text = text.encode("ascii", "ignore")
                 text = text.decode()
                 for ticker in self.tickers:
-                    if ticker['name'] in text:
-                        print(f"{ticker['name']} was found in {text}")
+                    if ticker['symbolName'] in text:
+                        print(f"{ticker['symbolName']} was found in {text}")
                         if len(self.companies) == 0:
                             new_company = {
-                                "name": ticker['name'],
-                                "ticker": ticker['ticker'],
+                                "symbolName": ticker['symbolName'],
+                                "symbol": ticker['symbol'],
                                 "news_headlines": [text]
                             }
                             self.companies.append(new_company)
@@ -150,15 +140,15 @@ class NewsScrape:
                         elif ticker['name'] not in self.companies[company_index]['name']:
                             #print(f"Company not found, creating one for {ticker['name']}")
                             new_company = {
-                                "name": ticker['name'],
-                                "ticker": ticker['ticker'],
+                                "symbolName": ticker['symbolName'],
+                                "symbol": ticker['symbol'],
                                 "news_headlines": [text]
                             }
                             self.companies.append(new_company)
                     #elif ticker['ticker'] in text:
                         #print(f"{ticker['ticker']} IN {text}")
 
-        self.dedeplicate_news_headlines()
+
 
         #print(f"COMPANIES: {json.dumps(self.companies,indent=2)}")
 
@@ -172,8 +162,8 @@ class NewsScrape:
             }
         #print(json.dumps(result, indent=4))
 
-    def dedeplicate_news_headlines(self):
-        #print("Deduping data")
+    def deduplicate_news_headlines(self):
+        print("Deduping data")
         #self.companies = list(set(self.companies))
         res_list = []
         for i in range(len(self.companies)):
@@ -185,10 +175,9 @@ class NewsScrape:
 
     def retreive_news(self):
         self.scrape_news()
-
-        # get_company_information()
+        self.scrape_news_yahoo()
+        self.deduplicate_news_headlines()
         for company_index in range(0, len(self.companies)):
-            #print(f"TRYING: {company['name']} - {company['news_headlines']}")
             self.get_sentiment(company_index=company_index)
         print(f"COMPANIES: {json.dumps(self.companies, indent=2)}")
 
