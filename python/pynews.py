@@ -43,6 +43,65 @@ class NewsScrape:
             'https://www.cnn.com/world',
             'https://www.cnn.com/politics',
             'https://www.cnn.com/business',
+            'https://www.nytimes.com/',
+            'https://www.nytimes.com/section/world',
+            'https://www.nytimes.com/section/us',
+            'https://www.nytimes.com/section/politics',
+            'https://www.nytimes.com/section/business',
+            'https://www.nytimes.com/section/science',
+            'https://www.theguardian.com/us',
+            'https://www.theguardian.com/us-news',
+            'https://www.theguardian.com/world',
+            'https://www.theguardian.com/us-news/us-politics',
+            'https://www.theguardian.com/us/business',
+            'https://www.theguardian.com/us/technology',
+            'https://www.theguardian.com/science',
+            'http://www.thedailybeast.com/',
+            'https://www.thedailybeast.com/category/us-news',
+            'https://www.thedailybeast.com/category/politics',
+            'https://www.thedailybeast.com/category/world',
+            'https://www.thedailybeast.com/category/innovation',
+            'https://www.thedailybeast.com/category/tech',
+            'https://www.reuters.com/',
+            'https://www.reuters.com/world/',
+            'https://www.reuters.com/business/',
+            'https://www.reuters.com/technology/',
+            'https://www.huffpost.com/',
+            'https://www.huffpost.com/news/politics',
+            'https://www.usatoday.com/news/nation/',
+            'https://www.usatoday.com/money/',
+            'https://www.usatoday.com/tech/',
+            'https://www.businessinsider.com/',
+            'https://www.businessinsider.com/sai',
+            'https://www.businessinsider.com/clusterstock',
+            'https://markets.businessinsider.com/',
+            'https://www.businessinsider.com/warroom',
+            'https://www.businessinsider.com/retail',
+            'https://www.newsweek.com/',
+            'https://www.newsweek.com/us',
+            'https://www.newsweek.com/world',
+            'https://www.newsweek.com/tech-science',
+            'https://www.npr.org/',
+            'https://www.npr.org/sections/national/',
+            'https://www.npr.org/sections/world/',
+            'https://www.npr.org/sections/business/',
+            'https://www.npr.org/sections/science/',
+            'https://www.npr.org/sections/climate/',
+            'https://www.npr.org/sections/politics/',
+            'https://www.politico.com/',
+            'https://www.latimes.com/',
+            'https://www.latimes.com/business',
+            'https://www.latimes.com/politics',
+            'https://www.latimes.com/world-nation',
+            'https://www.nbcnews.com/',
+            'https://www.nbcnews.com/politics',
+            'https://www.nbcnews.com/us-news',
+            'https://www.nbcnews.com/world',
+            'https://www.nbcnews.com/tech-media',
+            'https://news.google.com/topics/CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE?hl=en-US&gl=US&ceid=US%3Aen',
+            'https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen',
+            'https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen',
+            'https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp0Y1RjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen',
         ]
         # https://huggingface.co/docs/transformers/main_classes/pipelines
         self.sentiment_pipeline = pipeline("sentiment-analysis")
@@ -92,6 +151,7 @@ class NewsScrape:
             title = title.encode("ascii", "ignore")
             title = title.decode()
             data['news_headlines'].append(title)
+        data['url'] = "Yahoo News"
         data.pop('news', None)
         return data
 
@@ -99,12 +159,36 @@ class NewsScrape:
         for url in self.urls:
             response = requests.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
-            headlines_1 = soup.find('body').find_all('h1')
-            headlines_2 = soup.find('body').find_all('h2')
-            headlines_3 = soup.find('body').find_all('h3')
-            headlines_4 = soup.find('body').find_all('h4')
-            paragraphs = soup.find('body').find_all('p')
+            headlines_1 = None
+            headlines_2 = None
+            headlines_3 = None
+            headlines_4 = None
+            paragraphs = None
+            search_terms = None
+            try:
+                headlines_1 = soup.find('body').find_all('h1')
+            except Exception as e:
+                print(f"Unable to find body of request. \nError: {e}")
+            try:
+                headlines_2 = soup.find('body').find_all('h2')
+            except Exception as e:
+                print(f"Unable to find body of request. \nError: {e}")
+            try:
+                headlines_3 = soup.find('body').find_all('h3')
+            except Exception as e:
+                print(f"Unable to find body of request. \nError: {e}")
+            try:
+                headlines_4 = soup.find('body').find_all('h4')
+            except Exception as e:
+                print(f"Unable to find body of request. \nError: {e}")
+            try:
+                paragraphs = soup.find('body').find_all('p')
+            except Exception as e:
+                print(f"Unable to find body of request. \nError: {e}")
             search_terms = headlines_1 + headlines_2 + headlines_3 + headlines_4 + paragraphs
+            if not search_terms:
+                print(f"Nothing found for: {url}")
+                return
             unwanted_filters = ['BBC World News TV', 'BBC World Service Radio',
                                 'News daily newsletter', 'Mobile app', 'Get in touch']
             cleaned_text = []
@@ -124,7 +208,8 @@ class NewsScrape:
                             new_company = {
                                 "symbolName": ticker['symbolName'],
                                 "symbol": ticker['symbol'],
-                                "news_headlines": [text]
+                                "news_headlines": [text],
+                                "url": url,
                             }
                             self.companies.append(new_company)
                         company_index = 0
@@ -134,7 +219,8 @@ class NewsScrape:
                             new_company = {
                                 "symbolName": ticker['symbolName'],
                                 "symbol": ticker['symbol'],
-                                "news_headlines": [text]
+                                "news_headlines": [text],
+                                "url": url,
                             }
                             self.companies.append(new_company)
 
@@ -158,7 +244,7 @@ class NewsScrape:
 
     def retreive_news(self):
         self.scrape_news()
-        self.scrape_news_yahoo()
+        #self.scrape_news_yahoo()
         self.deduplicate_news_headlines()
         for company_index in range(0, len(self.companies)):
             self.get_sentiment(company_index=company_index)
