@@ -11,5 +11,5 @@ services:
       - --no-autoupdate
       - run
       - --token
-      - "${TOKEN}"
+      - "$${TOKEN}"
     restart: "unless-stopped"
