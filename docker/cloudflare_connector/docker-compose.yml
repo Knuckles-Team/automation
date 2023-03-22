@@ -7,6 +7,8 @@ services:
     env_file:
       - token.env
     command:
+      - echo
+      - "$${TOKEN}";
       - tunnel
       - --no-autoupdate
       - run
