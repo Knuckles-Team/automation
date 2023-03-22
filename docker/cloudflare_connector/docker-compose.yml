@@ -4,14 +4,10 @@ version: '3.9'
 services:
   cloudflared:
     image: "cloudflare/cloudflared:latest"
-    env_file:
-      - token.env
     command:
-      - echo
-      - "$${TOKEN}";
       - tunnel
       - --no-autoupdate
       - run
       - --token
-      - $${TOKEN}
+      - TOKEN
     restart: "unless-stopped"
