@@ -8,7 +8,7 @@ services:
         max-size: "10m"
         max-file: "10"
     environment:
-      BASEROW_PUBLIC_URL: 'http://192.168.1.60'
+      BASEROW_PUBLIC_URL: 'https://baserow.heavenhomestead.comU'
       VIRTUAL_HOST: baserow.arpa
     volumes:
       - baserow_data:/baserow/data
