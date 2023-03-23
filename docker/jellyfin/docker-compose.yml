@@ -14,6 +14,9 @@ services:
       - /apps/jellyfin/cache:/cache
       - /media/media/Movies:/movies
       - /media/media/TV:/tv
+      - /media/media/Comics:/comics
+      - /media/media/Books:/books
+      - /media/media/Music:/music
       - /dev/shm:/transcodes:rw
     restart: 'unless-stopped'
     environment:
