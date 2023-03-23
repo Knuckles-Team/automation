@@ -17,6 +17,7 @@ services:
       - /media/media/Comics:/comics
       - /media/media/Books:/books
       - /media/media/Music:/music
+      - /media/photos:/photos
       - /dev/shm:/transcodes:rw
     restart: 'unless-stopped'
     environment:
