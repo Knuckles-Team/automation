@@ -11,7 +11,7 @@ services:
       test: curl -f http://localhost:8080/health || exit 1
     volumes:
       - /:/data
-      - /app/filebrowser/config:/config
+      - ./config:/config
     restart: always
     logging:
       options:
