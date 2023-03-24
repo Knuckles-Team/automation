@@ -2,19 +2,18 @@
 version: '3.9'
 services:
   file_browser:
-    image: 'filebrowser/filebrowser'
+    image: hurlenko/filebrowser
+    user: "1000:1000"
+    ports:
+      - 8188:8080
+    volumes:
+      - /:/data
+      - ./config:/config
     restart: always
     logging:
       options:
         max-size: "10m"
         max-file: "100"
-    user: "1000:1000"
     environment:
       VIRTUAL_HOST: filebrowser.arpa
-      VIRTUAL_PORT: 8097
-    ports:
-      - '8097:80'
-    volumes:
-      - '/:/srv'
-      - './filebrowser.db:/database.db'
-      - './.filebrowser.json:/.filebrowser.json'
+      VIRTUAL_PORT: 8188
