@@ -1,0 +1,20 @@
+---
+version: '3.9'
+services:
+  file_browser:
+    image: 'filebrowser/filebrowser'
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "100"
+    user: "$(id -u):$(id -g)"
+    environment:
+      VIRTUAL_HOST: filebrowser.arpa
+      VIRTUAL_PORT: 8097
+    ports:
+      - '8097:80'
+    volumes:
+      - '/:/srv'
+      - './filebrowser.db:/database.db'
+      - './.filebrowser.json:/.filebrowser.json'
