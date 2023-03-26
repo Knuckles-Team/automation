@@ -15,10 +15,10 @@ services:
       - TZ=America/Chicago
       - COMPOSE_HTTP_TIMEOUT=300
       - VIRTUAL_HOST=heimdall.arpa
-      - VIRTUAL_PORT=80
+      - VIRTUAL_PORT=8093
     volumes:
       - /services/heimdall/config:/config
     ports:
-      - 8093:8093
+      - 8093:80
       - 443:443
     restart: unless-stopped
