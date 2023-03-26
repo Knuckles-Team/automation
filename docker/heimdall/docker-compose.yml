@@ -20,5 +20,5 @@ services:
       - /services/heimdall/config:/config
     ports:
       - 8093:80
-      - 443:443
+      - 8443:443
     restart: unless-stopped
