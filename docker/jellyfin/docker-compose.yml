@@ -2,7 +2,7 @@
 version: '3.9'
 services:
   jellyfin:
-    image: jellyfin/jellyfin
+    image: jellyfin/jellyfin:10.8.1
     container_name: jellyfin
     logging:
       options:
