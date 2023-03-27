@@ -5,7 +5,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    command: serge python3 /usr/src/app/api/utils/download.py tokenizer 7B
+    #command: serge python3 /usr/src/app/api/utils/download.py tokenizer 7B
     volumes:
       - datadb:/data/db
       - weights:/usr/src/app/weights/
