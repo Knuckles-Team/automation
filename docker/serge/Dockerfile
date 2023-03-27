@@ -19,7 +19,7 @@ WORKDIR /usr/src/app
 
 # install pip
 RUN apt update
-RUN apt-get install -y python3-pip curl wget
+RUN apt-get install -y python3-pip curl wget dos2unix
 RUN pip install --upgrade pip
 
 # install nodejs
@@ -56,6 +56,10 @@ COPY ./api /usr/src/app/api
 
 # get the deploy script with the right permissions
 COPY deploy.sh /usr/src/app/deploy.sh
+RUN dos2unix /usr/src/app/deploy.sh
+RUN dos2unix /usr/src/app/web/*
+RUN dos2unix web/*
+RUN dos2unix api/*
 RUN chmod +x /usr/src/app/deploy.sh
 
 CMD /usr/src/app/deploy.sh
