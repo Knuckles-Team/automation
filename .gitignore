@@ -19,6 +19,29 @@
 # production
 *build/
 
+*adguard_home/conf/
+*adguard_home/work/
+*calibre-web/config/
+*filebrowser/config/
+*home_assistant/config/.HA_VERSION
+*home_assistant/config/.storage/
+*home_assistant/config/automations.yaml
+*home_assistant/config/blueprints/
+*home_assistant/config/configuration.yaml
+*home_assistant/config/home-assistant.log
+*home_assistant/config/home-assistant.log.1
+*home_assistant/config/home-assistant.log.fault
+*home_assistant/config/home-assistant_v2.db
+*home_assistant/config/home-assistant_v2.db-shm
+*home_assistant/config/home-assistant_v2.db-wal
+*home_assistant/config/scenes.yaml
+*home_assistant/config/scripts.yaml
+*home_assistant/config/secrets.yaml
+*portainer/portainer/
+*transmission-openvpn/config/
+
+*nginx_proxy/conf.d/default.conf
+
 # misc
 .DS_Store
 .env.local
