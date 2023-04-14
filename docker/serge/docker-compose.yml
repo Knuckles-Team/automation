@@ -3,6 +3,9 @@ services:
   serge:
     restart: unless-stopped
     image: ghcr.io/nsarrazin/serge:latest
+    environment:
+      VIRTUAL_HOST: "genius.arpa"
+      VIRTUAL_PORT: "8008"
     volumes:
       - datadb:/data/db
       - weights:/usr/src/app/weights/
