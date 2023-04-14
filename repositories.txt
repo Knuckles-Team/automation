@@ -19,3 +19,4 @@ https://github.com/Knuckles-Team/fan-manager.git
 https://github.com/Knuckles-Team/cockpit-api.git
 https://github.com/Knuckles-Team/server-automation.git
 https://github.com/Knuckles-Team/barchart-api.git
+https://github.com/Knuckles-Team/genius-chat.git
