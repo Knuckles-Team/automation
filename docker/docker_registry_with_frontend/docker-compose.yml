@@ -2,42 +2,45 @@
 version: '3.9'
 
 services:
-    docker-registry:
-        container_name: docker-registry
-        image: registry:latest
-        restart: unless-stopped
-        logging:
-            options:
-                max-size: "10m"
-                max-file: "10"
-        environment:
-            VIRTUAL_HOST: registry.arpa
-            VIRTUAL_PORT: 5000
-        volumes:
-            - ./registry/config:/etc/docker/registry:ro
-            - ./registry/storage:/var/lib/registry:rw
-#            - ./registry/certs:/certs:ro
-        ports:
-            - "5000:5000"
+  docker-registry:
+    container_name: docker-registry
+    image: registry:latest
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    environment:
+      VIRTUAL_HOST: registry.arpa
+      VIRTUAL_PORT: 8005
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      REGISTRY_HTTP_SECRET: testestestestestestest
+      REGISTRY_HTTP_ADDR: 0.0.0.0:8005
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/frontend.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/frontend.key
+    volumes:
+      - ./data:/data
+      - ./certs:/certs
+    ports:
+      - "8005:8005"
 
-    docker-registry-ui:
-        container_name: docker-registry-ui
-        image: konradkleine/docker-registry-frontend:latest
-        logging:
-            options:
-                max-size: "10m"
-                max-file: "10"
-        ports:
-            - "8080:80"
-#        volumes:
-#            - ./certs/frontend.crt:/etc/apache2/server.crt:ro
-#            - ./certs/frontend.key:/etc/apache2/server.key:ro
-        environment:
-            #- USE_SSL=no
-            #- ENV_USE_SSL=no
-            - ENV_DOCKER_REGISTRY_HOST=registry.arpa
-            - ENV_DOCKER_REGISTRY_PORT=5000
-            #- ENV_DOCKER_REGISTRY_USE_SSL=0
-            - VIRTUAL_HOST=docker-registry.arpa
-            - VIRTUAL_PORT=80
-        restart: unless-stopped
+  docker-registry-ui:
+    container_name: docker-registry-ui
+    image: parabuzzle/craneoperator:latest
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    ports:
+      - "8080:80"
+    environment:
+      VIRTUAL_HOST: docker-registry.arpa
+      VIRTUAL_PORT: 8080
+      REGISTRY_PUBLIC_URL: docker.arpa
+      REGISTRY_HOST: docker-registry
+      REGISTRY_PORT: 8005
+      REGISTRY_PROTOCOL: http
+      SSL_VERIFY: "false"
+    depends_on:
+      - docker-registry
+    restart: unless-stopped
