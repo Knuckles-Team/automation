@@ -17,7 +17,6 @@ services:
       - selenoid
     environment:
       VIRTUAL_HOST: "selenoid.arpa"
-      VIRTUAL_PORT: "8081"
     ports:
       - "8081:8080"
     command: ["--selenoid-uri", "http://selenoid:4444"]
