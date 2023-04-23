@@ -10,7 +10,7 @@ async def main():
     song = {}
     shazam = Shazam()
     print("Starting")
-    file = 'Holybrune - JoyRide [HlQCatfWBSk].m4a'
+    file = 'Snakehips - All My Friends (Official Video) ft. Tinashe, Chance the Rapper [I3mrYxPLSH4].m4a'
     song = await shazam.recognize_song(file)
     with open("shazam.json", "w") as outfile:
         outfile.write(json.dumps(song, indent=4))
@@ -29,10 +29,22 @@ async def main():
     audio['artist'] = song['track']['subtitle']
     audio['album'] = song['track']['sections'][0]['metadata'][0]['text']
     audio['year'] = song['track']['sections'][0]['metadata'][2]['text']
-    audio['lyrics'] = song['track']['sections'][1]['text']
-    audio['comment'] = song['track']['sections'][1]['text']
-    audio['genre'] = song['track']['genres']['primary']
-    audio['composer'] = song['track']['sections'][0]['metadata'][1]['text']
+    try:
+        audio['lyrics'] = song['track']['sections'][1]['text']
+        audio['comment'] = song['track']['sections'][1]['text']
+    except KeyError:
+        print("No Lyrics found")
+
+    try:
+        audio['genre'] = song['track']['genres']['primary']
+    except KeyError:
+        print("No Genre found")
+
+    try:
+        audio['composer'] = song['track']['sections'][0]['metadata'][1]['text']
+    except KeyError:
+        print("No Composer found")
+
     new_file = f"{song['track']['subtitle']} - {song['track']['title']}"
     print(f"Track: {audio['title']}\n"
           f"Artist:{audio['artist']}\n"
