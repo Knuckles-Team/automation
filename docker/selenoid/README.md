@@ -2,6 +2,9 @@
 
 http://selenoid:4444
 
+https://aerokube.com/images/latest/#_firefox
+
+
 ```bash
 docker pull selenoid/vnc_chrome:112.0
 docker pull selenoid/vnc_chrome:111.0
