@@ -10,8 +10,8 @@ services:
     healthcheck:
       test: curl -f http://localhost:8080/health || exit 1
     volumes:
-      - /:/data:Z
-      - ./config:/config:Z
+      - /:/data:z
+      - ./config:/config:z
     restart: always
     logging:
       options:
