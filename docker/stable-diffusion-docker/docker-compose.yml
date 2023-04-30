@@ -96,8 +96,7 @@ services:
       - ./services/tensorflow/data:/deploy
 
   auto: &automatic
-    <<: *base_service
-    <<: *gpu_service
+    <<: [*base_service, *gpu_service]
     profiles: ["auto"]
     environment:
       - ACCELERATE=False
