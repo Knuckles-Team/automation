@@ -1,0 +1,44 @@
+https://drive.yerf.org/wl/?id=EBfTrmcCCUAGaQBXVIj5lJmEhjoP1tgl&mode=grid&download=1
+  out=StableDiffusion/model.ckpt
+https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt
+  out=VAE/vae-ft-mse-840000-ema-pruned.ckpt
+https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/GFPGANv1.4.pth
+  out=GFPGAN/GFPGANv1.4.pth
+https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
+  out=RealESRGAN/RealESRGAN_x4plus.pth
+https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth
+  out=RealESRGAN/RealESRGAN_x4plus_anime_6B.pth
+https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth
+  out=RealESRGAN/realesr-general-x4v3.pth
+https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth
+  out=RealESRGAN/realesr-general-wdn-x4v3.pth
+https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth
+  out=RealESRGAN/realesr-animevideov3.pth
+https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth
+  out=RealESRGAN/RealESRGAN_x2plus.pth
+https://heibox.uni-heidelberg.de/f/31a76b13ea27482981b4/?dl=1
+  out=LDSR/project.yaml
+https://heibox.uni-heidelberg.de/f/578df07c8fc04ffbadf3/?dl=1
+  out=LDSR/model.ckpt
+https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt
+  out=StableDiffusion/v1-5-pruned-emaonly.ckpt
+https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned.ckpt
+  out=StableDiffusion/v1-5-pruned.ckpt
+https://huggingface.co/runwayml/stable-diffusion-inpainting/resolve/main/sd-v1-5-inpainting.ckpt
+  out=StableDiffusion/sd-v1-5-inpainting.ckpt
+https://huggingface.co/nousr/robo-diffusion/resolve/main/models/robo-diffusion-v1.ckpt
+  out=StableDiffusion/robo-diffusion-v1.ckpt
+https://huggingface.co/ogkalu/Comic-Diffusion/resolve/main/comic-diffusion-V2.ckpt
+  out=StableDiffusion/comic-diffusion-V2.ckpt
+https://huggingface.co/PublicPrompts/16-bit-landscape_PublicPrompts/resolve/main/16-bit-landscape_PublicPrompts.ckpt
+  out=StableDiffusion/16-bit-landscape_PublicPrompts.ckpt
+https://huggingface.co/PublicPrompts/All-In-One-Pixel-Model/resolve/main/Public-Prompts-Pixel-Model.ckpt
+  out=StableDiffusion/Public-Prompts-Pixel-Model.ckpt
+https://huggingface.co/0xJustin/Dungeons-and-Diffusion/resolve/main/model30000.ckpt
+  out=StableDiffusion/d-and-d-diffusion.ckpt
+https://huggingface.co/dallinmackay/JWST-Deep-Space-diffusion/resolve/main/JWST-Deep-Space.ckpt
+  out=StableDiffusion/Deep-Space.ckpt
+https://huggingface.co/Onodofthenorth/SD_PixelArt_SpriteSheet_Generator/resolve/main/PixelartSpritesheet_V.1.ckpt
+  out=StableDiffusion/PixelartSpritesheet_V.1.ckpt
+https://huggingface.co/Fictiverse/Stable_Diffusion_VoxelArt_Model/resolve/main/VoxelArt_v1.ckpt
+  out=StableDiffusion/VoxelArt_v1.ckpt

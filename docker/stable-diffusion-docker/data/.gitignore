@@ -1,0 +1,43 @@
+# for all of the stuff downloaded by transformers, pytorch, and others
+/.cache
+# for UIs
+/config
+# for all stable diffusion models (main, waifu diffusion, etc..)
+/StableDiffusion
+# others
+/Codeformer
+/GFPGAN
+/ESRGAN
+/BSRGAN
+/RealESRGAN
+/SwinIR
+/ScuNET
+/LDSR
+/Hypernetworks
+/embeddings
+/deepbooru
+/VAE
+/Deforum
+/inspiration
+/dataset
+/Interrogator
+/midas
+/torch_deepdanbooru
+/mmdet
+/leres
+/pix2pix
+/LoRA
+/3dphoto
+/ControlNet
+/Autoprune
+/Components
+/rem_bg
+
+#Generated pip wheels
+/*.whl
+#Random files
+/build.log
+/inspiration.zip
+/*-requirements.txt
+/requirements.txt
+
