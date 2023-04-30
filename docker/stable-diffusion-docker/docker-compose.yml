@@ -24,7 +24,7 @@ x-base_service: &base_service
         MAX_GCC_VERSION: 10
         TRITON_VERSION: 2.0.0
         DEEPSPEED_VERSION: 0.8.0
-        TORCH_CUDA_ARCH_LIST: 7.5
+        #TORCH_CUDA_ARCH_LIST: 7.5
         DS_BUILD_OPS: 1
         TORCH_CUDA_ARCH_LIST: 7.5+PTX
         NVCC_FLAGS: --use_fast_math
