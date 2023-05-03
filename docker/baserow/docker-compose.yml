@@ -9,7 +9,8 @@ services:
         max-file: "10"
     environment:
       BASEROW_PUBLIC_URL: 'https://baserow.heavenhomestead.com'
-      VIRTUAL_HOST: baserow.arpa
+      VIRTUAL_HOST: "baserow.arpa"
+      VIRTUAL_PORT: "8442"
     ports:
       - "8280:80"
       - "8442:443"
