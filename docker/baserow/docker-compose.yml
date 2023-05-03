@@ -8,8 +8,11 @@ services:
         max-size: "10m"
         max-file: "10"
     environment:
-      BASEROW_PUBLIC_URL: 'http://baserow.arpa'
+      BASEROW_PUBLIC_URL: 'http://192.168.1.60'
       VIRTUAL_HOST: baserow.arpa
+    ports:
+      - "8280:80"
+      - "8442:443"
     volumes:
       - baserow_data:/baserow/data
     restart: unless-stopped
