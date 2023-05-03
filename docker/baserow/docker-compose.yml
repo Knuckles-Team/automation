@@ -10,7 +10,7 @@ services:
     environment:
       BASEROW_PUBLIC_URL: 'https://baserow.heavenhomestead.com'
       VIRTUAL_HOST: "baserow.arpa"
-      VIRTUAL_PORT: "8442"
+      VIRTUAL_PORT: "8280"
     ports:
       - "8280:80"
       - "8442:443"
