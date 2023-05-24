@@ -20,3 +20,4 @@ https://github.com/Knuckles-Team/cockpit-api.git
 https://github.com/Knuckles-Team/server-automation.git
 https://github.com/Knuckles-Team/barchart-api.git
 https://github.com/Knuckles-Team/genius-chat.git
+https://github.com/matiffeder/3DS-stuff.git
