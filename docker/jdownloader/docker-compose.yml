@@ -1,0 +1,21 @@
+---
+version: "3.9"
+
+services:
+  jdownloader:
+    image: jlesage/jdownloader-2:latest
+    container_name: jdownloader
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    environment:
+      - COMPOSE_HTTP_TIMEOUT=300
+      - VIRTUAL_HOST=jdownloader.arpa
+      - VIRTUAL_PORT=5800
+    volumes:
+      - /home/genius/Downloads:/output:rw
+      - /docker/appdata/jdownloader-2:/config:rw
+    ports:
+      - 5800:5800
+    restart: unless-stopped
