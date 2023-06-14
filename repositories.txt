@@ -21,3 +21,6 @@ https://github.com/Knuckles-Team/server-automation.git
 https://github.com/Knuckles-Team/barchart-api.git
 https://github.com/Knuckles-Team/genius-chat.git
 https://github.com/Knucklessg1/3ds-toolkit.git
+https://git.fivecat.xyz/AY-Org/wasp-finance-dashboard.git
+https://git.fivecat.xyz/AY-Org/todo-app.git
+https://git.fivecat.xyz/AY-Org/finance-dashboard.git
