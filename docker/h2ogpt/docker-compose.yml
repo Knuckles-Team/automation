@@ -9,7 +9,7 @@ services:
         BUILDKIT_INLINE_CACHE: "0"
     image: h2o-llm
     shm_size: '64gb'
-    command: generate.py --load_8bit True --base_model 'ehartford/Wizard-Vicuna-13B-Uncensored''
+    command: generate.py --load_8bit True --base_model 'ehartford/Wizard-Vicuna-13B-Uncensored'
     restart: unless-stopped
     environment:
       VIRTUAL_HOST: "h2o.arpa"
