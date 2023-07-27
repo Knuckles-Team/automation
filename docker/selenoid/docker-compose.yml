@@ -21,3 +21,39 @@ services:
     ports:
       - "8081:8080"
     command: ["--selenoid-uri", "http://selenoid:4444"]
+
+  chrome-vnc-114:
+    image: selenoid/vnc_chrome:114.0
+
+  chrome-vnc-113:
+    image: selenoid/vnc_chrome:113.0
+
+  chrome-vnc-112:
+    image: selenoid/vnc_chrome:112.0
+
+  chrome-vnc-111:
+    image: selenoid/vnc_chrome:111.0
+
+  chrome-114:
+    image: selenoid/chrome:114.0
+
+  chrome-113:
+    image: selenoid/chrome:113.0
+
+  chrome-112:
+    image: selenoid/chrome:112.0
+
+  chrome-111:
+    image: selenoid/chrome:111.0
+
+  firefox-vnc-47:
+    image: selenoid/vnc_firefox:47.0
+
+  firefox-vnc-46:
+    image: selenoid/vnc_firefox:46.0
+
+  firefox-47:
+    image: selenoid/firefox:47.0
+
+  firefox-46:
+    image: selenoid/firefox:46.0
