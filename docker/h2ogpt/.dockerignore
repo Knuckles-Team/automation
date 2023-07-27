@@ -6,6 +6,8 @@
 .github
 .nv
 .benchmarks
+.dockerfile
+docker-compose.yml
 h2ogpt.egg-info
 venv
 build
