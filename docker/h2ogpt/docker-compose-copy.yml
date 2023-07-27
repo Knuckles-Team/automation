@@ -1,10 +1,10 @@
-version: '3.9'
+version: '3'
 
 services:
   h2o-llm:
     build:
       context: ./
-      dockerfile: cpu.dockerfile
+      dockerfile: Dockerfile
       args:
         BUILDKIT_INLINE_CACHE: "0"
     image: h2o-llm
@@ -15,7 +15,13 @@ services:
       - h2o-llm:/root/.cache # Location downloaded weights will be stored
     ports:
       - 7860:7860
-
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
 
 volumes:
   h2o-llm:
