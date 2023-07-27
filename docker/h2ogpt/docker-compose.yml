@@ -9,7 +9,7 @@ services:
         BUILDKIT_INLINE_CACHE: "0"
     image: h2o-llm
     shm_size: '64gb'
-    command: generate.py --load_8bit True --base_model 'EleutherAI/gpt-j-6B'
+    command: generate.py --load_8bit True --base_model 'tiiuae/falcon-7b'
     restart: unless-stopped
     volumes:
       - h2o-llm:/root/.cache # Location downloaded weights will be stored

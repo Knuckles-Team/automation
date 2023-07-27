@@ -21,6 +21,9 @@ RUN python3.10 -m pip install -r reqs_optional/requirements_optional_langchain.t
 RUN python3.10 -m pip install -r reqs_optional/requirements_optional_gpt4all.txt
 RUN python3.10 -m pip install -r reqs_optional/requirements_optional_langchain.gpllike.txt
 RUN python3.10 -m pip install -r reqs_optional/requirements_optional_langchain.urls.txt
+RUN generate.py --load_8bit True --base_model 'tiiuae/falcon-7b'
+RUN generate.py --load_8bit True --base_model 'ehartford/WizardLM-7B-Uncensored'
+RUN generate.py --load_8bit True --base_model 'ehartford/Wizard-Vicuna-13B-Uncensored'
 
 COPY . .
 ENTRYPOINT [ "python3.10"]
