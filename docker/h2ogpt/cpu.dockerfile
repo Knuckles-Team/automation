@@ -1,8 +1,11 @@
 FROM ubuntu:latest
 
 ARG DEBIAN_FRONTEND=noninteractive
-
+ENV HNSWLIB_NO_NATIVE=1
 RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    libboost-all-dev \
     git \
     curl \
     wget \
