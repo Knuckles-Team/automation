@@ -11,6 +11,9 @@ services:
     shm_size: '64gb'
     command: generate.py --load_8bit True --base_model 'tiiuae/falcon-7b'
     restart: unless-stopped
+    environment:
+      VIRTUAL_HOST: "h2o.arpa"
+      VIRTUAL_PORT: "7860"
     volumes:
       - h2o-llm:/root/.cache # Location downloaded weights will be stored
     ports:
