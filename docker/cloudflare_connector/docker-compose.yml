@@ -5,7 +5,7 @@ services:
   cloudflared:
     image: "cloudflare/cloudflared:latest"
     env_file:
-      "token.env"
+      - "token.env"
     command:
       - tunnel
       - --no-autoupdate
