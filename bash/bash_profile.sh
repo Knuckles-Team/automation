@@ -1,7 +1,13 @@
 #!/bin/bash
 
-echo "Setting bash profile"
+echo "Adding Paths"
+if grep -q "alias Development=" $HOME/.bashrc; then
+  sed -i "s/alias Development=.*$/alias Development='cd /mnt/c/Users/knuck/Development'/" $HOME/.bashrc
+else
+  echo "alias Development='cd /mnt/c/Users/knuck/Development'" | tee -a $HOME/.bashrc
+fi
 
+echo "Setting bash ssh profiles"
 alias=${1}
 username=${2}
 password=${3}
