@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  h2o-llm:
+    build:
+      context: ./
+      dockerfile: cpu.dockerfile
+      args:
+        BUILDKIT_INLINE_CACHE: "0"
+    image: h2o-llm
+    shm_size: '64gb'
+    command: generate.py --load_8bit True --base_model 'ehartford/Wizard-Vicuna-13B-Uncensored'
+    restart: unless-stopped
+    environment:
+      VIRTUAL_HOST: "h2o.arpa"
+      VIRTUAL_PORT: "7860"
+    volumes:
+      - h2o-llm:/root/.cache # Location downloaded weights will be stored
+    ports:
+      - 7860:7860
+
+
+volumes:
+  h2o-llm:
+    name: h2o-llm
