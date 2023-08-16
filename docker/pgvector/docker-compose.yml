@@ -2,9 +2,9 @@ version: '3.9'
 
 services:
   postgres:
-    image: postgres
-    container_name: postgres
-    hostname: postgres
+    image: ankane/pgvector
+    container_name: pgvector
+    hostname: pgvector
     restart: unless-stopped
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
@@ -14,4 +14,6 @@ services:
       VIRTUAL_PORT: 5432
     ports:
       - "5432:5432"
+
+
 

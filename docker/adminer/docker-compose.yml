@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  adminer:
+    image: adminer
+    container_name: adminer
+    hostname: adminer
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
+    environment:
+      - VIRTUAL_HOST=adminer.arpa
+      - VIRTUAL_PORT=8080
+    ports:
+      - "8282:8080"
