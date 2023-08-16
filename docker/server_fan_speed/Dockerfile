@@ -1,4 +1,4 @@
-dockeFROM ubuntu:latest AS ubuntu
+FROM ubuntu:latest AS ubuntu
 RUN apt update && apt upgrade -y && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y --no-install-recommends dos2unix lm-sensors ipmitool wget curl git python3 python-is-python3 python3-pip gcc
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --upgrade fan-manager>=0.4.0
