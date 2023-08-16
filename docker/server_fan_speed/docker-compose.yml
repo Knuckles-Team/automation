@@ -4,6 +4,7 @@ version: '3.9'
 services:
   server_fan_speed:
     build: .
+    image: server_fan_speed
     container_name: server_fan_speed
     privileged: true
     logging:
