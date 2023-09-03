@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  cockpit:
+    image: cockpit/cockpit
+    container_name: cockpit
+    ports:
+      - "9090:9090"
+    environment:
+      - COCKPIT_ADMINISTRATORS=genius
+    networks:
+      - ldap-network
+
+networks:
+  ldap-network:
