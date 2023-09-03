@@ -2,6 +2,7 @@ version: '3.9'
 services:
   cockpit:
     image: markdegroot/cockpit-ubuntu
+    container_name: cockpit
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
