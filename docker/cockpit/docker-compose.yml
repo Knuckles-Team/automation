@@ -5,5 +5,8 @@ services:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
-      - "9090:9090"
+      - "8080:9090"
+    environment:
+      VIRTUAL_HOST: "r510.arpa"
+      VIRTUAL_PORT: "8080"
     privileged: true
