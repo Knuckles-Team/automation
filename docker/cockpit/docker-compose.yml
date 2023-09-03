@@ -1,7 +1,9 @@
 version: '3.9'
 services:
   cockpit:
-    image: agentejo/cockpit
-    container_name: cockpit
+    image: markdegroot/cockpit-ubuntu
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
-      - "8080:80"
+      - "9090:9090"
+    privileged: true
