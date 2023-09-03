@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   389-ds:
-    image: 389ds/dirsrv
+    image: 389ds/dirsrv:latest
     container_name: 389-ds
     environment:
       - DS_DM_PASSWORD=Zesty
@@ -10,18 +10,3 @@ services:
       - "636:636"
     volumes:
       - ./data:/data
-    networks:
-      - ldap-network
-
-  cockpit:
-    image: cockpit/cockpit
-    container_name: cockpit
-    ports:
-      - "9090:9090"
-    environment:
-      - COCKPIT_ADMINISTRATORS=your_username
-    networks:
-      - ldap-network
-
-networks:
-  ldap-network:
