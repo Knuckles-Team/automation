@@ -10,4 +10,5 @@ services:
     environment:
       VIRTUAL_HOST: "r510.arpa"
       VIRTUAL_PORT: "9090"
+    restart: unless-stopped
     privileged: true

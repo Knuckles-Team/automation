@@ -10,3 +10,4 @@ services:
       - "636:636"
     volumes:
       - ./data:/data
+    restart: unless-stopped
