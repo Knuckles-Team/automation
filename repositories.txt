@@ -24,4 +24,5 @@ https://github.com/Knucklessg1/3ds-toolkit.git
 https://git.fivecat.xyz/AY-Org/wasp-finance-dashboard.git
 https://git.fivecat.xyz/AY-Org/todo-app.git
 https://git.fivecat.xyz/AY-Org/finance-dashboard.git
-https://github.com/Knucklessg1/privateGPT.git
+https://git.fivecat.xyz/knuckless/reflex-finance-dashboard.git
+https://github.com/Knucklessg1/privateGPT.gitl
