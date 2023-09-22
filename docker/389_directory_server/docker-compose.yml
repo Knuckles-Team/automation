@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  389-ds:
+    image: 389ds/dirsrv:latest
+    container_name: 389-ds
+    environment:
+      - DS_DM_PASSWORD=Zesty
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
