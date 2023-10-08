@@ -43,5 +43,15 @@ async def main():
 
         print("Agent finished its work!")
 
+        artifacts = await api_instance.list_agent_task_artifacts(task_id=task_id)
+        for artifact in artifacts:
+            if artifact.file_name == "hi.txt":
+                content = await api_instance.download_agent_task_artifact(
+                    task_id=task_id, artifact_id=artifact.artifact_id
+                )
+                print(f'The content of the hi.txt is {content})')
+                break
+        else:
+            print("The agent did not create the hi.txt file.")
 
 asyncio.run(main())
