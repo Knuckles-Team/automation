@@ -9,7 +9,9 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       VIRTUAL_HOST: postgres.arpa
       VIRTUAL_PORT: 5432
     ports:
