@@ -1,0 +1,17 @@
+---
+version: '3.9'
+services:
+  genius-webui:
+    build: .
+    ports:
+      - "8099:8099"
+    healthcheck:
+      test: curl -f http://localhost:8099/health || exit 1
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "100"
+    environment:
+      VIRTUAL_HOST: geniusbot.arpa
+      VIRTUAL_PORT: 8099
