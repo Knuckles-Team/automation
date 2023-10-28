@@ -1,0 +1,2 @@
+openai==0.28.1
+genius-chatbot==1.8.0

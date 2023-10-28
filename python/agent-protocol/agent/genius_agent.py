@@ -1,5 +1,10 @@
 from agent_protocol import Agent, Step, Task
+import enum
 
+class StepTypes(str, enum.Enum):
+    PLAN = "plan"
+    SPECIFY_FILE_PATHS = "specify_file_paths"
+    GENERATE_CODE = "generate_code"
 
 async def plan(step: Step) -> Step:
     task = await Agent.db.get_task(step.task_id)
