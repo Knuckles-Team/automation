@@ -1,6 +1,7 @@
 FROM python:3.11-slim AS ubuntu
-ARG OPENAI_API_KEY="NA"
-ARG OPENAI_API_BASE="0.0.0.0:8080"
+#ARG OPENAI_API_KEY="NA"
+#ARG OPENAI_API_BASE="http://localhost:8080/v1"
+#ARG WEBUI_API_URL="http://localhost:8000"
 WORKDIR  /genius_webui
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -y \
     && apt install unzip gcc g++ curl gnupg ca-certificates -y \

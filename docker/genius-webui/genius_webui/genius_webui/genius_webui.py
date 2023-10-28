@@ -6,6 +6,10 @@ from genius_webui.components import chat, modal, navbar, sidebar
 from genius_webui.state import State
 
 
+async def assimilate(item_id: int):
+    return {"my_result": item_id}
+
+
 def index() -> rx.Component:
     """The main app."""
     return rx.vstack(
@@ -25,4 +29,5 @@ def index() -> rx.Component:
 # Add state and page to the app.
 app = rx.App(state=State, style=styles.base_style)
 app.add_page(index)
+app.api.add_api_route("/assimilate/{item_id}", assimilate)
 app.compile()
