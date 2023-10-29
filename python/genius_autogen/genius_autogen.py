@@ -17,7 +17,7 @@ import agent_constructs
 
 
 autogen.ChatCompletion.start_logging()
-PROBLEM = "Build snake using pygame in Python"
+PROBLEM = "Download this video https://www.youtube.com/watch?v=QCdQe8CdWV0 using python media-downloader library"
 
 
 def _reset_agents():
@@ -40,7 +40,7 @@ def rag_chat(max_round: int = 12):
         messages=[],
         max_round=max_round
     )
-    manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=agent_constructs.model_config)
+    manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=agent_constructs.llm_config)
 
     # Start chatting with boss_aid as this is the user proxy agent.
     agent_constructs.boss_aid.initiate_chat(
@@ -56,7 +56,7 @@ def norag_chat():
         agents=[agent_constructs.boss_aid, agent_constructs.coder,
                 agent_constructs.pm, agent_constructs.reviewer], messages=[], max_round=12
     )
-    manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=agent_constructs.model_config)
+    manager = autogen.GroupChatManager(groupchat=groupchat, llm_config=agent_constructs.llm_config)
 
     # Start chatting with boss as this is the user proxy agent.
     agent_constructs.boss.initiate_chat(
