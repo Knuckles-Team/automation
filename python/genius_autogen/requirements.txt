@@ -1,2 +1,0 @@
-pyautogen[retrievechat]==0.1.14
-chromadb==0.4.15
