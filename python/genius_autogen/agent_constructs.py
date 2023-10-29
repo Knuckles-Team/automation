@@ -184,9 +184,9 @@ boss_aid = RetrieveUserProxyAgent(
     retrieve_config={
         "task": "code",
         "docs_path": "https://raw.githubusercontent.com/Knuckles-Team/media-downloader/main/README.md",
-        "chunk_token_size": 1000,
+        "chunk_token_size": 8000,
         "model": local_config_list[0]["model"],
-        "client": chromadb.PersistentClient(path="/tmp/chromadb"),
+        #"client": chromadb.PersistentClient(path="/tmp/chromadb"),
         "collection_name": "groupchat",
         "get_or_create": True,
     },

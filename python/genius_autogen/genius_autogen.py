@@ -108,11 +108,13 @@ def call_rag_chat():
         "seed": 42,
     }
 
-    for agent in [agent_constructs.coder, agent_constructs.pm, agent_constructs.reviewer]:
+    for agent in [agent_constructs.geniusbot, agent_constructs.coder,
+                  agent_constructs.pm, agent_constructs.reviewer]:
         # update llm_config for assistant agents.
         agent.llm_config.update(llm_config)
 
-    for agent in [agent_constructs.boss, agent_constructs.coder, agent_constructs.pm, agent_constructs.reviewer]:
+    for agent in [agent_constructs.boss, agent_constructs.geniusbot,
+                  agent_constructs.coder, agent_constructs.pm, agent_constructs.reviewer]:
         # register functions for all agents.
         agent.register_function(
             function_map={
@@ -132,4 +134,5 @@ def call_rag_chat():
         message=PROBLEM,
     )
 
-call_rag_chat()
+#call_rag_chat()
+rag_chat()
