@@ -1,0 +1,4 @@
+./.web
+.gitignore
+./Dockerfile
+docker-compose.yml

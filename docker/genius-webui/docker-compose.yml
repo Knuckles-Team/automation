@@ -1,12 +1,33 @@
 ---
 version: '3.9'
 services:
+  pgvector:
+    image: ankane/pgvector
+    container_name: pgvector
+    hostname: pgvector
+    restart: unless-stopped
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: "postgres"
+      VIRTUAL_HOST: pgvector.arpa
+      VIRTUAL_PORT: 5432
+    ports:
+      - "5432:5432"
+
   genius-webui:
-    build: .
+    container_name: genius-webui
+    build:
+      context: .
+      dockerfile: webui.dockerfile
     ports:
       - "8099:8099"
+      - "8000:8000"
     healthcheck:
-      test: curl -f http://localhost:8099/health || exit 1
+      test: curl -f http://localhost:8099/ping || exit 1
     restart: unless-stopped
     logging:
       options:
@@ -15,3 +36,24 @@ services:
     environment:
       VIRTUAL_HOST: geniusbot.arpa
       VIRTUAL_PORT: 8099
+      OPENAI_API_KEY: "NA"
+      OPENAI_API_BASE: "http://localhost:8080/v1"
+      WEBUI_API_URL: "http://localhost:8000"
+
+  genius-assimilator:
+    container_name: genius-assimilator
+    build:
+      context: .
+      dockerfile: assimilate.dockerfile
+    ports:
+      - "8096:8096"
+    healthcheck:
+      test: curl -f http://localhost:8096/ping || exit 1
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "100"
+    environment:
+      VIRTUAL_HOST: geniusbot.arpa
+      VIRTUAL_PORT: 8096
