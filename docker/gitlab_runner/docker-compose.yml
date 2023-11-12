@@ -14,4 +14,4 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /apps/gitlab-runner/config:/etc/gitlab-runner
       - /apps/gitlab-runner/docker-machine-config:/root/.docker/machine
-      - docker-machine-config:/root/.docker/machine
+#      - docker-machine-config:/root/.docker/machine
