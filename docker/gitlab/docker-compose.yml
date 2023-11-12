@@ -20,6 +20,8 @@ services:
         external_url 'http://gitlab.arpa'
     dns:
       - "192.168.1.199"
+      - "1.1.1.1"
+      - "8.8.8.8"
     ports:
       - '8929:80'
       - '8930:443'
