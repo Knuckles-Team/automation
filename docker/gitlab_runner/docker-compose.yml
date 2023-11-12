@@ -7,7 +7,7 @@ services:
       mode: replicated
       replicas: 3
     extra_hosts:
-      - "gitlab.arpa:192.168.1.60:8929"
+      - "gitlab.arpa:192.168.1.60"
     logging:
       options:
         max-size: "10m"
