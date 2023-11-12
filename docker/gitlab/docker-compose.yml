@@ -15,8 +15,8 @@ services:
       GITLAB_PORT: 80
       EXTERNAL_URL: "http://gitlab.arpa"
       COMPOSE_HTTP_TIMEOUT: 300
-    extra_hosts:
-      - "gitlab.arpa:192.168.1.60:8929"
+    dns:
+      - "192.168.1.199"
     ports:
       - '8929:80'
     volumes:
