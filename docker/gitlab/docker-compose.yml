@@ -3,8 +3,9 @@ services:
   web:
     image: 'gitlab/gitlab-ce:latest'
     restart: always
-    hostname: 'gitlab'
+    hostname: 'gitlab.arpa'
     container_name: gitlab
+    shm_size: '256m'
     logging:
       options:
         max-size: "10m"
@@ -15,10 +16,13 @@ services:
       GITLAB_PORT: 80
       EXTERNAL_URL: "http://gitlab.arpa"
       COMPOSE_HTTP_TIMEOUT: 300
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.arpa'
     dns:
       - "192.168.1.199"
     ports:
       - '8929:80'
+      - '8930:443'
     volumes:
       - '/apps/gitlab/config:/etc/gitlab'
       - '/apps/gitlab/logs:/var/log/gitlab'
