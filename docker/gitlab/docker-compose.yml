@@ -3,7 +3,7 @@ services:
   web:
     image: 'gitlab/gitlab-ce:latest'
     restart: always
-    hostname: 'gitlab'
+    hostname: 'gitlab.arpa'
     container_name: gitlab
     logging:
       options:
