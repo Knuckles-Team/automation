@@ -3,10 +3,21 @@ services:
   gitlab-runner:
     image: gitlab/gitlab-runner:alpine
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    dns:
+      - "192.168.1.199"
+      - "1.1.1.1"
+      - "8.8.8.8"
+    extra_hosts:
+      - "gitlab.arpa:192.168.1.60"
     logging:
       options:
         max-size: "10m"
         max-file: "5"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - '/apps/gitlab/gitlab-runner:/etc/gitlab-runner'
+      - /apps/gitlab-runner/config:/etc/gitlab-runner
+      - /apps/gitlab-runner/docker-machine-config:/root/.docker/machine
+#      - docker-machine-config:/root/.docker/machine
