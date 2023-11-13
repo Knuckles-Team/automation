@@ -12,6 +12,7 @@ services:
       - "8.8.8.8"
     extra_hosts:
       - "gitlab.arpa:192.168.1.60"
+      - "registry.arpa:192.168.1.60"
     logging:
       options:
         max-size: "10m"
