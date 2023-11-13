@@ -35,14 +35,14 @@ concurrent = 4
   network_mode = "gitlab_default"
   executor = "docker"
   builds_dir = ""
-  dns = ["192.168.1.199", "1.1.1.1", "8.8.8.8"]
-  extra_hosts = ["registry.arpa:192.168.1.60", "gitlab.arpa:192.168.1.60"]
   [runners.docker]
     host = ""
     image = "ruby:2.7"
     privileged = false
     disable_cache = false
     cache_dir = ""
+    dns = ["192.168.1.199", "1.1.1.1", "8.8.8.8"]
+    extra_hosts = ["registry.arpa:192.168.1.60", "gitlab.arpa:192.168.1.60"]
 
 
 [[runners]]
