@@ -20,6 +20,7 @@ concurrent = 4
   url = "https://CI/"
   token = "TOKEN"
   limit = 2
+  network_mode = "gitlab_default"
   executor = "shell"
   builds_dir = ""
   shell = "bash"
@@ -29,6 +30,7 @@ concurrent = 4
   url = "https://CI/"
   token = "TOKEN"
   limit = 0
+  network_mode = "gitlab_default"
   executor = "docker"
   builds_dir = ""
   [runners.docker]
@@ -44,6 +46,7 @@ concurrent = 4
   url = "https://CI/"
   token = "TOKEN"
   limit = 0
+  network_mode = "gitlab_default"
   executor = "ssh"
   builds_dir = ""
   [runners.ssh]
