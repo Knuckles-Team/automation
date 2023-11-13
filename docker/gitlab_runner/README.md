@@ -1,3 +1,7 @@
+```bash
+docker build -t registry.arpa/gitlab_runner:latest .
+```
+
 
 ```bash
 docker compose up -d
