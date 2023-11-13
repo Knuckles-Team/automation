@@ -6,4 +6,5 @@ RUN apt update && apt upgrade -y && apt install -y ca-certificates curl gnupg \
     && echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
        tee /etc/apt/sources.list.d/docker.list > /dev/null \
     && apt update \
-    && apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    && apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
+    && echo -e '{\n"insecure-registries": [\n"docker.arpa",\n"registry.arpa"\n],\n"experimental": false\n}' | tee /etc/docker/daemon.json
