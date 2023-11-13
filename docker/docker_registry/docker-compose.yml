@@ -10,6 +10,7 @@ services:
     restart: always
     environment:
       VIRTUAL_HOST: registry.arpa
+      VIRTUAL_PORT: 5000
     volumes:
       - ./volume:/var/lib/registry
 
