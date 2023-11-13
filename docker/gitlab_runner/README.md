@@ -32,7 +32,6 @@ concurrent = 4
   url = "https://CI/"
   token = "TOKEN"
   limit = 0
-  network_mode = "host"
   executor = "docker"
   builds_dir = ""
   [runners.docker]
@@ -41,6 +40,7 @@ concurrent = 4
     privileged = false
     disable_cache = false
     cache_dir = ""
+    network_mode = "host"
     dns = ["192.168.1.199", "1.1.1.1", "8.8.8.8"]
     extra_hosts = ["registry.arpa:192.168.1.60", "gitlab.arpa:192.168.1.60"]
 
