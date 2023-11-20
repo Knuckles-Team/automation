@@ -8,27 +8,83 @@
 .container{
     width: 100%;
     min-height: 100vh;
-    background: #343541;
+    background: var(--background-color);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-#left, #right{
-    width: 300px;
+
+
+p {
+  font-family: "Poppins", sans-serif;
+  margin: 20px;
+  color: var(--text-color);
+}
+
+h1 {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  margin: 20px;
+  color: var(--text-color);
+}
+
+h2 {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  margin: 20px;
+  color: var(--text-color);
+}
+
+h3 {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  margin: 20px;
+  color: var(--text-color);
+}
+
+.card{
+    width: 900px;
     min-height: 400px;
     margin: 20px;
-    border: 2px dashed #fff;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: var(--background-light-color);;
+    color: var(--text-color);
+}
+
+.card_list{
+    width: 95%;
+    min-height: 90%;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background-color: var(--background-light-color);;
+    color: var(--text-color);
+}
+
+#left, #right{
+    width: 42%;
+    min-height: 600px;
+    margin: 15px;
+    border: 2px dashed #808080;
+    border-radius: 6px;
+    color: var(--text-color);
 }
 
 .list{
-    background: #e91e63;
+    background: #5500ff;
     height: 60px;
     margin: 30px;
     color: #fff;
     display: flex;
     align-items: center;
     cursor: grab;
+    border-radius: 5px
+    color: var(--text-color);
 }
 
 .list img{
@@ -80,8 +136,8 @@ body {
 #main {
   transition: margin-left .5s;
   padding: 16px;
-  background: #343541;
-  color: #fff
+  background: var(--background-color);
+  color: var(--text-color);
 }
 
 @media screen and (max-height: 450px) {
@@ -98,6 +154,8 @@ body {
   font-family: "Poppins", sans-serif;
 }
 :root {
+  --background-color: #343541;
+  --background-light-color: #444654;
   --text-color: #FFFFFF;
   --icon-color: #ACACBE;
   --icon-hover-bg: #5b5e71;
@@ -108,6 +166,8 @@ body {
   --incoming-chat-border: #444654;
 }
 .light-mode {
+  --background-color: #FFFFFF;
+  --background-light-color: #F7F7F8;
   --text-color: #343541;
   --icon-color: #a9a9bc;
   --icon-hover-bg: #f1f1f3;
