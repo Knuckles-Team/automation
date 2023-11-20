@@ -3,6 +3,8 @@ const { exec } = require('child_process');
 const bodyParser = require('body-parser');
 const path = require('path');
 const multer = require('multer');
+const axios = require('axios');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = 8099;
@@ -26,25 +28,20 @@ app.get('/', (req, res) => {
 });
 
 app.post('/prompt', (req, res) => {
-    const { parameter } = req.body;
-    if (!parameter) {
-        return res.status(400).send('Missing parameter');
-    }
+  const userMessage = req.body.message;
 
-    const command = `genius-chatbot --prompt ${parameter} --json --mute-stream`;
-
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error: ${error.message}`);
-            return res.status(500).send('Internal Server Error');
-        }
-        if (stderr) {
-            console.error(`Error: ${stderr}`);
-            return res.status(500).send('Internal Server Error');
-        }
-        console.log(`Python script output: ${stdout}`);
-        res.send(`Python script output: ${stdout}`);
+  // Forward the message to the external API
+  try {
+    const response = await axios.post('https://external-api.com/chat/{prompt}', {
+      message: userMessage,
     });
+
+    console.log('External API response:', response.data);
+    res.status(200).send('Message sent successfully');
+  } catch (error) {
+    console.error('Error sending message to external API:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.post('/assimilate', upload.single('file'), (req, res) => {
