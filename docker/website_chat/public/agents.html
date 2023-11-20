@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#">Chat</a>
+    <a href="#">Agents</a>
+</div>
+
+
+<!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+<div id="main">
+    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+    <div class="container">
+        <div id="left">
+            <div class="list" draggable="true"><image src="drag_drop_icon.png">List Item 1</image></div>
+            <div class="list" draggable="true"><image src="drag_drop_icon.png">List Item 2</image></div>
+            <div class="list" draggable="true"><image src="drag_drop_icon.png">List Item 3</image></div>
+            <div class="list" draggable="true"><image src="drag_drop_icon.png">List Item 4</image></div>
+        </div>
+        <div id="right">
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+let lists = document.getElementsByClassName("list");
+let rightBox = document.getElementById("right");
+let leftBox = document.getElementById("left");
+
+
+for(list of lists){
+    list.addEventListener("dragstart", function(e){
+        let selected = e.target;
+
+        rightBox.addEventListener("dragover", function(e){
+            e.preventDefault();
+        });
+        rightBox.addEventListener("drop", function(e){
+            rightBox.appendChild(selected);
+            selected = null;
+        })
+
+        leftBox.addEventListener("dragover", function(e){
+            e.preventDefault();
+        });
+        leftBox.addEventListener("drop", function(e){
+            leftBox.appendChild(selected);
+            selected = null;
+        })
+    })
+}
+
+/* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+  document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("main").style.marginLeft = "0";
+  document.body.style.backgroundColor = "white";
+}
+</script>
+
+</body>
+</html>

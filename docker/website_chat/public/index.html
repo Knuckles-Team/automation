@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!-- Coding By CodingNepal - www.codingnepalweb.com -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>ChatGPT Clone in JavaScript | CodingNepal</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts Link For Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#">Chat</a>
+    <a href="#">Agents</a>
+  </div>
+
+
+  <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+  <div id="main">
+    <span id="menu" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+    <div class="container">
+      <div id="left">
+        <div class="list" draggable="true"><image src="./images/drag_drop_icon.png">Financial Advisor</image></div>
+        <div class="list" draggable="true"><image src="./images/drag_drop_icon.png">Scientist</image></div>
+        <div class="list" draggable="true"><image src="./images/drag_drop_icon.png">Manager</image></div>
+        <div class="list" draggable="true"><image src="./images/drag_drop_icon.png">Engineer</image></div>
+      </div>
+      <div id="right">
+        <div class="list" draggable="true"><image src="./images/drag_drop_icon.png">General Assistant Agent</image></div>
+      </div>
+    </div>
+
+    <!-- Chats container -->
+    <div class="chat-container"></div>
+
+    <!-- Typing container -->
+    <div class="typing-container">
+      <div class="typing-content">
+        <div class="typing-textarea">
+          <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required></textarea>
+          <span id="send-btn" class="material-symbols-rounded">send</span>
+        </div>
+        <div class="typing-controls">
+          <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
+          <span id="delete-btn" class="material-symbols-rounded">delete</span>
+        </div>
+      </div>
+
+  </div>
+
+
+  </body>
+</html>
