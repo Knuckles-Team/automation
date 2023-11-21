@@ -1,5 +1,5 @@
 FROM nodejs:latest AS ubuntu
 WORKDIR /genius
-COPY ./ ./
+COPY .. ./
 RUN npm install
 CMD ["node", "server.js"]
