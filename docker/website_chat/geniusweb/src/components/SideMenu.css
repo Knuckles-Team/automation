@@ -1,0 +1,38 @@
+.side-menu {
+    width: 10%;
+    height: 100%;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 90px;
+    transition: 0.5s;
+}
+
+.side-menu.close {
+    width: 0;
+}
+
+.side-menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.side-menu li {
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.toggle-button {
+    position: fixed;
+    font-size: 21px;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
