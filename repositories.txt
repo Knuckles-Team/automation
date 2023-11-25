@@ -2,6 +2,7 @@ https://github.com/Knuckles-Team/media-manager.git
 https://github.com/Knuckles-Team/media-downloader.git
 https://github.com/Knuckles-Team/webarchiver.git
 https://github.com/Knuckles-Team/geniusbot.git
+https://github.com/Knuckles-Team/genius-agent.git
 https://github.com/Knuckles-Team/genius-chatbot.git
 https://github.com/Knuckles-Team/subshift.git
 https://github.com/Knuckles-Team/automation.git
@@ -19,10 +20,8 @@ https://github.com/Knuckles-Team/fan-manager.git
 https://github.com/Knuckles-Team/cockpit-api.git
 https://github.com/Knuckles-Team/server-automation.git
 https://github.com/Knuckles-Team/barchart-api.git
-https://github.com/Knuckles-Team/genius-chat.git
 https://github.com/Knucklessg1/3ds-toolkit.git
 https://git.fivecat.xyz/AY-Org/wasp-finance-dashboard.git
 https://git.fivecat.xyz/AY-Org/todo-app.git
 https://git.fivecat.xyz/AY-Org/finance-dashboard.git
 https://git.fivecat.xyz/knuckless/reflex-finance-dashboard.git
-https://github.com/Knucklessg1/privateGPT.gitl
