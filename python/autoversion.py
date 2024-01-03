@@ -25,18 +25,21 @@ def main(argv):
             current_version = arg
 
     current_version = re.sub("v", "", current_version)
-    current_version = semantic_version.Version(current_version)
 
     today = datetime.date.today()
     date = today.strftime("%Y.%m")
-    s = semantic_version.SimpleSpec(f'<={date}.0')
-    if s.match(current_version):
+    if current_version == "":
         new_version = f'{date}.0'
+    else:
+        current_version = semantic_version.Version(current_version)
+        s = semantic_version.SimpleSpec(f'<={date}.0')
+        if s.match(current_version):
+            new_version = f'{date}.0'
 
-    s = semantic_version.SimpleSpec(f'<={date}.{current_version.patch}')
-    if s.match(current_version):
-        current_version.next_patch()
-        new_version = f'{date}.{current_version.patch}'
+        s = semantic_version.SimpleSpec(f'<={date}.{current_version.patch}')
+        if s.match(current_version):
+            current_version.next_patch()
+            new_version = f'{date}.{current_version.patch}'
     print(f"Old Version: {current_version}\nNew Version: {new_version}")
     return new_version
 
