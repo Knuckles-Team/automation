@@ -1,3 +1,4 @@
+https://github.com/Knuckles-Team/autoversioner.git
 https://github.com/Knuckles-Team/media-manager.git
 https://github.com/Knuckles-Team/media-downloader.git
 https://github.com/Knuckles-Team/webarchiver.git
