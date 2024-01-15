@@ -60,3 +60,5 @@ http://gitlab.arpa/homelab/pipelines/github-pipelines.git
 http://gitlab.arpa/homelab/bash/bash-scripts.git
 http://gitlab.arpa/homelab/vagrant/vagrant-kubernetes-cluster.git
 http://gitlab.arpa/homelab/powershell/powershell-scripts.git
+http://gitlab.arpa/homelab/adb/phone-automation.git
+http://gitlab.arpa/homelab/adb/bloatware.git
