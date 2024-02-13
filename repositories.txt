@@ -19,6 +19,7 @@ https://github.com/Knuckles-Team/cockpit-api.git
 https://github.com/Knuckles-Team/audio-transcriber.git
 https://github.com/Knuckles-Team/fan-manager.git
 https://github.com/Knuckles-Team/cockpit-api.git
+https://github.com/Knuckles-Team/rom-manager.git
 https://github.com/Knuckles-Team/server-automation.git
 https://github.com/Knuckles-Team/barchart-api.git
 https://github.com/Knucklessg1/3ds-toolkit.git
