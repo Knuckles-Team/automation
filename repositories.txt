@@ -35,6 +35,7 @@ http://gitlab.arpa/homelab/containers/docker-registry.git
 http://gitlab.arpa/homelab/containers/docker-registry-webui.git
 http://gitlab.arpa/homelab/containers/file-browser.git
 http://gitlab.arpa/homelab/containers/github-runner.git
+http://gitlab.arpa/homelab/containers/gitlab.git
 http://gitlab.arpa/homelab/containers/golang.git
 http://gitlab.arpa/homelab/containers/gosec.git
 http://gitlab.arpa/homelab/containers/heimdall.git
