@@ -23,10 +23,6 @@ https://github.com/Knuckles-Team/rom-manager.git
 https://github.com/Knuckles-Team/server-automation.git
 https://github.com/Knuckles-Team/barchart-api.git
 https://github.com/Knucklessg1/3ds-toolkit.git
-https://git.fivecat.xyz/AY-Org/wasp-finance-dashboard.git
-https://git.fivecat.xyz/AY-Org/todo-app.git
-https://git.fivecat.xyz/AY-Org/finance-dashboard.git
-https://git.fivecat.xyz/knuckless/reflex-finance-dashboard.git
 http://gitlab.arpa/homelab/containers/adguard-home.git
 http://gitlab.arpa/homelab/containers/adminer.git
 http://gitlab.arpa/homelab/containers/ansible.git
