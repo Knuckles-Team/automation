@@ -35,11 +35,11 @@ int main() // main program starts here: C++ execution starts here: // must retur
 // The following is to define function IsLeapYear( )
 // Input argument: int year
 // Return to the caller: true or false (to show whether the year is a leap year or not)
-bool IsLeapYear(int year) // check year is a leap year or not // Boolean function
+bool IsLeapYear(int year) // check year is a leap year or not // Boolean functiong+
 // IsLeapYear function returns true if year is a leap year and
 //                     returns false otherwise.
 { // begin IsLeapYear( ) function
-	if (year % 4 != 0)        // Is year NOT divisible by 4?
+	if (year % 4 != 0)        // Is year NOT divisible by 4?gccg
 		return false;         // If so, it is NOT a leap year
 	else if (year % 100 != 0) // Is year NOT a multiple of 100?
 		return true;        // If so, it is a leap year
