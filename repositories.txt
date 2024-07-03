@@ -1,6 +1,7 @@
 https://github.com/Knuckles-Team/autoversioner.git
 https://github.com/Knuckles-Team/media-manager.git
 https://github.com/Knuckles-Team/media-downloader.git
+https://github.com/Knuckles-Team/clarity-api.git
 https://github.com/Knuckles-Team/webarchiver.git
 https://github.com/Knuckles-Team/geniusbot.git
 https://github.com/Knuckles-Team/genius-agent.git
