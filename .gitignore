@@ -4,7 +4,9 @@
 *inventory*
 
 .idea/
+.vs/
 ../../.idea/
+../../.vs/
 *.mkv
 *.mp4
 
