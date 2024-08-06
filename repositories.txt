@@ -46,6 +46,8 @@ http://gitlab.arpa/homelab/containers/jellyfin.git
 http://gitlab.arpa/homelab/containers/audiobookshelf.git
 http://gitlab.arpa/homelab/containers/firefly-iii.git
 http://gitlab.arpa/homelab/containers/paperless-ngx.git
+http://gitlab.arpa/homelab/containers/grafana.git
+http://gitlab.arpa/homelab/containers/teleport.git
 http://gitlab.arpa/homelab/containers/2fauth.git
 http://gitlab.arpa/homelab/containers/immich.git
 http://gitlab.arpa/homelab/containers/localai.git
