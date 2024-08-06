@@ -43,6 +43,8 @@ http://gitlab.arpa/homelab/containers/home-assistant.git
 http://gitlab.arpa/homelab/containers/jdownloader.git
 http://gitlab.arpa/homelab/containers/calibre
 http://gitlab.arpa/homelab/containers/jellyfin.git
+http://gitlab.arpa/homelab/containers/debian-slim.git
+http://gitlab.arpa/homelab/containers/debian-dind.git
 http://gitlab.arpa/homelab/containers/audiobookshelf.git
 http://gitlab.arpa/homelab/containers/firefly-iii.git
 http://gitlab.arpa/homelab/containers/paperless-ngx.git
