@@ -66,6 +66,7 @@ http://gitlab.arpa/homelab/containers/semgrep.git
 http://gitlab.arpa/homelab/containers/server-fan-speed.git
 http://gitlab.arpa/homelab/containers/stable-diffusion.git
 http://gitlab.arpa/homelab/containers/transmission-openvpn.git
+http://gitlab.arpa/homelab/containers/gitlab-runner-provisioned.git
 http://gitlab.arpa/homelab/containers/ubuntu.git
 http://gitlab.arpa/homelab/containers/ubuntu-dind.git
 http://gitlab.arpa/homelab/containers/wireguard.git
