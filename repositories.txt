@@ -59,6 +59,7 @@ http://gitlab.arpa/homelab/containers/nginx-proxy.git
 http://gitlab.arpa/homelab/containers/redis.git
 http://gitlab.arpa/homelab/containers/pgvector.git
 http://gitlab.arpa/homelab/containers/portainer.git
+http://gitlab.arpa/homelab/containers/alpine.git
 http://gitlab.arpa/homelab/containers/postgres.git
 http://gitlab.arpa/homelab/containers/python.git
 http://gitlab.arpa/homelab/containers/retroarch-web.git
