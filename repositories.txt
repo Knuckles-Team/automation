@@ -70,6 +70,7 @@ http://gitlab.arpa/homelab/containers/gitlab-runner-provisioned.git
 http://gitlab.arpa/homelab/containers/ubuntu.git
 http://gitlab.arpa/homelab/containers/ubuntu-dind.git
 http://gitlab.arpa/homelab/containers/wireguard.git
+http://gitlab.arpa/homelab/containers/authentik.git
 http://gitlab.arpa/homelab/pipelines/python-repository-synchronization.git
 http://gitlab.arpa/homelab/containers/gitlab-runner.git
 http://gitlab.arpa/homelab/pipelines/gitlab-pipelines.git
