@@ -57,6 +57,7 @@ http://gitlab.arpa/homelab/containers/localai.git
 http://gitlab.arpa/homelab/containers/vaultwarden.git
 http://gitlab.arpa/homelab/containers/netboot.xyz.git
 http://gitlab.arpa/homelab/containers/nginx-proxy.git
+http://gitlab.arpa/homelab/containers/grafana.git
 http://gitlab.arpa/homelab/containers/redis.git
 http://gitlab.arpa/homelab/containers/pgvector.git
 http://gitlab.arpa/homelab/containers/portainer.git
