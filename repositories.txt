@@ -76,6 +76,7 @@ http://gitlab.arpa/homelab/containers/authentik.git
 http://gitlab.arpa/homelab/pipelines/python-repository-synchronization.git
 http://gitlab.arpa/homelab/containers/gitlab-runner.git
 http://gitlab.arpa/homelab/pipelines/gitlab-pipelines.git
+http://gitlab.arpa/homelab/containers/autogen-studio.git
 http://gitlab.arpa/homelab/pipelines/github-pipelines.git
 http://gitlab.arpa/homelab/bash/bash-scripts.git
 http://gitlab.arpa/homelab/vagrant/vagrant-kubernetes-cluster.git
